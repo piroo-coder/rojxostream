@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -13,13 +12,30 @@ export const MediaDetails: React.FC = () => {
   if (!currentlyPlaying) return null;
 
   const isAudio = currentlyPlaying.type === 'song';
+  const isYoutube = currentlyPlaying.mediaUrl.includes('youtube.com') || currentlyPlaying.mediaUrl.includes('youtu.be');
+  const isVideoFile = currentlyPlaying.mediaUrl.match(/\.(mp4|webm|ogg|mp3|wav)$/i) || currentlyPlaying.mediaUrl.includes('soundhelix');
+  
+  // If it's not a direct video file, not a song, and not YouTube, we treat it as an embeddable page (like watchanimeworld.net/movies/...)
+  const isExternalEmbed = !isAudio && !isVideoFile;
+
+  const getYoutubeEmbedUrl = (url: string) => {
+    let id = '';
+    if (url.includes('shorts/')) {
+      id = url.split('shorts/')[1].split('?')[0];
+    } else if (url.includes('watch?v=')) {
+      id = url.split('v=')[1].split('&')[0];
+    } else if (url.includes('youtu.be/')) {
+      id = url.split('be/')[1].split('?')[0];
+    }
+    return `https://www.youtube.com/embed/${id}?autoplay=1`;
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-xl p-4 md:p-8 animate-in fade-in zoom-in duration-300">
       <Button 
         variant="ghost" 
         size="icon" 
-        className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+        className="absolute top-4 right-4 text-muted-foreground hover:text-foreground z-[60]"
         onClick={() => setCurrentlyPlaying(null)}
       >
         <X size={24} />
@@ -34,8 +50,15 @@ export const MediaDetails: React.FC = () => {
               </div>
               <h2 className="text-3xl font-headline font-bold">{currentlyPlaying.title}</h2>
               <p className="text-accent text-xl">{currentlyPlaying.creator}</p>
-              <audio controls src={currentlyPlaying.mediaUrl} className="w-full mt-4" />
+              <audio controls src={currentlyPlaying.mediaUrl} className="w-full mt-4" autoPlay />
             </div>
+          ) : isExternalEmbed ? (
+            <iframe 
+              src={isYoutube ? getYoutubeEmbedUrl(currentlyPlaying.mediaUrl) : currentlyPlaying.mediaUrl}
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           ) : (
             <video 
               controls 
@@ -113,8 +136,11 @@ export const MediaDetails: React.FC = () => {
             )}
 
             <div className="pt-4">
-              <Button className="w-full h-12 text-lg rounded-xl bg-primary hover:bg-primary/90">
-                <Play className="mr-2 fill-current" /> Continue Watching
+              <Button 
+                className="w-full h-12 text-lg rounded-xl bg-primary hover:bg-primary/90"
+                onClick={() => setCurrentlyPlaying(null)}
+              >
+                Close Player
               </Button>
             </div>
           </div>
