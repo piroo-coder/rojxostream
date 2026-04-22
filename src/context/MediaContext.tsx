@@ -66,7 +66,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'Your Name',
     thumbnailUrl: 'https://4kwallpapers.com/images/walls/thumbs_3t/14943.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/your-name.mp4',
+    mediaUrl: 'https://www.youtube.com/watch?v=m3w1mUXtCj0',
     creator: 'Makoto Shinkai',
     imdbRating: '8.4',
     summary: 'Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart?',
@@ -78,7 +78,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'Weathering with You',
     thumbnailUrl: 'https://m.gettywallpapers.com/wp-content/uploads/2021/09/Weathering-With-You-Background-Images.png',
-    mediaUrl: 'https://watchanimeworld.net/videos/weathering-with-you.mp4',
+    mediaUrl: 'https://www.youtube.com/watch?v=m3w1mUXtCj0',
     creator: 'Makoto Shinkai',
     imdbRating: '7.5',
     summary: 'A high-school boy who has run away to Tokyo befriends a girl who appears to be able to manipulate the weather.',
@@ -195,19 +195,6 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setSearchTerm
     }}>
       {children}
-      {currentlyPlaying && (
-        <div 
-          className="fixed inset-0 z-[-1] pointer-events-none transition-all duration-1000 overflow-hidden"
-        >
-          <div 
-            className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-110 blur-2xl opacity-40"
-            style={{ 
-              backgroundImage: `url(${currentlyPlaying.audioBackgroundUrl || currentlyPlaying.thumbnailUrl})` 
-            }}
-          />
-          <div className="absolute inset-0 bg-background/60" />
-        </div>
-      )}
     </MediaContext.Provider>
   );
 };
