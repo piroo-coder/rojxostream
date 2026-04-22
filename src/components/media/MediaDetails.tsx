@@ -1,7 +1,7 @@
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
-import { X, Play, Music, Info, Star, MessageSquare } from 'lucide-react';
+import { X, Play, Music, Info, Star, MessageSquare, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
@@ -15,7 +15,6 @@ export const MediaDetails: React.FC = () => {
   const isYoutube = currentlyPlaying.mediaUrl.includes('youtube.com') || currentlyPlaying.mediaUrl.includes('youtu.be');
   const isVideoFile = currentlyPlaying.mediaUrl.match(/\.(mp4|webm|ogg|mp3|wav)$/i) || currentlyPlaying.mediaUrl.includes('soundhelix');
   
-  // If it's not a direct video file, not a song, and not YouTube, we treat it as an embeddable page (like watchanimeworld.net/movies/...)
   const isExternalEmbed = !isAudio && !isVideoFile;
 
   const getYoutubeEmbedUrl = (url: string) => {
@@ -30,6 +29,10 @@ export const MediaDetails: React.FC = () => {
     return `https://www.youtube.com/embed/${id}?autoplay=1`;
   };
 
+  const handleOpenSource = () => {
+    window.open(currentlyPlaying.mediaUrl, '_blank');
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-xl p-4 md:p-8 animate-in fade-in zoom-in duration-300">
       <Button 
@@ -42,7 +45,7 @@ export const MediaDetails: React.FC = () => {
       </Button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl w-full h-full lg:h-[80vh]">
-        <div className="relative rounded-2xl overflow-hidden bg-black flex items-center justify-center border border-white/10 shadow-2xl">
+        <div className="relative rounded-2xl overflow-hidden bg-black flex items-center justify-center border border-white/10 shadow-2xl group">
           {isAudio ? (
             <div className="flex flex-col items-center gap-6 p-12 text-center">
               <div className="w-48 h-48 rounded-full bg-gradient-to-tr from-primary to-accent animate-pulse flex items-center justify-center">
@@ -53,12 +56,24 @@ export const MediaDetails: React.FC = () => {
               <audio controls src={currentlyPlaying.mediaUrl} className="w-full mt-4" autoPlay />
             </div>
           ) : isExternalEmbed ? (
-            <iframe 
-              src={isYoutube ? getYoutubeEmbedUrl(currentlyPlaying.mediaUrl) : currentlyPlaying.mediaUrl}
-              className="w-full h-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+            <div className="relative w-full h-full">
+              <iframe 
+                src={isYoutube ? getYoutubeEmbedUrl(currentlyPlaying.mediaUrl) : currentlyPlaying.mediaUrl}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+              />
+              {/* Fallback Overlay if framing is blocked by target site */}
+              {!isYoutube && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity p-6 text-center pointer-events-none group-hover:pointer-events-auto">
+                  <p className="text-sm mb-4 text-white/80">If the video doesn't load, the website might restrict internal playback.</p>
+                  <Button onClick={handleOpenSource} className="bg-primary hover:bg-primary/90">
+                    <ExternalLink size={16} className="mr-2" /> Watch on Original Website
+                  </Button>
+                </div>
+              )}
+            </div>
           ) : (
             <video 
               controls 
@@ -80,9 +95,6 @@ export const MediaDetails: React.FC = () => {
                     <Star size={16} className="text-yellow-500 fill-yellow-500" />
                     <span>{currentlyPlaying.imdbRating} (IMDb)</span>
                   </div>
-                )}
-                {currentlyPlaying.youtubeViews && (
-                  <span>{currentlyPlaying.youtubeViews} views</span>
                 )}
               </div>
             </div>
@@ -122,20 +134,12 @@ export const MediaDetails: React.FC = () => {
               </div>
             )}
 
-            {currentlyPlaying.characters && currentlyPlaying.characters.length > 0 && (
-              <div className="space-y-2">
-                <h3 className="text-lg font-headline font-semibold">Featured Characters</h3>
-                <div className="flex flex-wrap gap-2">
-                  {currentlyPlaying.characters.map((char) => (
-                    <span key={char} className="px-3 py-1 bg-secondary rounded-full text-xs">
-                      {char}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="pt-4">
+            <div className="pt-4 flex flex-col gap-3">
+              {isExternalEmbed && !isYoutube && (
+                <Button variant="secondary" onClick={handleOpenSource} className="w-full h-12 text-lg">
+                  <ExternalLink className="mr-2" size={20} /> Watch on Source
+                </Button>
+              )}
               <Button 
                 className="w-full h-12 text-lg rounded-xl bg-primary hover:bg-primary/90"
                 onClick={() => setCurrentlyPlaying(null)}
