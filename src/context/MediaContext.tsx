@@ -18,41 +18,199 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentlyPlaying, setCurrentlyPlaying] = useState<MediaItem | null>(null);
 
   useEffect(() => {
-    // Initial mock data
+    // Initial data based on user request
     const initialData: MediaItem[] = [
+      // Anime
       {
-        id: '1',
+        id: 'a1',
+        type: 'anime',
+        title: 'Suzume',
+        thumbnailUrl: 'https://picsum.photos/seed/suzume/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Makoto Shinkai',
+        imdbRating: '7.7',
+        summary: 'A 17-year-old girl named Suzume helps a mysterious young man close doors from the other side that are releasing disasters all over Japan.',
+        moral: 'Coming to terms with past trauma is essential for moving forward.',
+        genre: ['Adventure', 'Fantasy']
+      },
+      {
+        id: 'a2',
+        type: 'anime',
+        title: 'I Want to Eat Your Pancreas',
+        thumbnailUrl: 'https://picsum.photos/seed/pancreas/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Shin\'ichirō Ushijima',
+        imdbRating: '8.0',
+        summary: 'An aloof high school student finds the diary of his popular classmate and learns she is dying from a pancreatic disease.',
+        moral: 'Live every day to the fullest, for life is fragile and beautiful.',
+        genre: ['Drama', 'Romance']
+      },
+      {
+        id: 'a3',
+        type: 'anime',
+        title: 'The Garden of Words',
+        thumbnailUrl: 'https://picsum.photos/seed/garden/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Makoto Shinkai',
+        imdbRating: '7.4',
+        summary: 'A 15-year-old boy training to be a shoemaker skips school on rainy days to sketch shoes in a Japanese garden and meets a mysterious older woman.',
+        moral: 'Sometimes, a brief connection can give us the strength to keep walking.',
+        genre: ['Drama', 'Romance']
+      },
+      {
+        id: 'a4',
+        type: 'anime',
+        title: 'A Silent Voice',
+        thumbnailUrl: 'https://picsum.photos/seed/silent/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Naoko Yamada',
+        imdbRating: '8.1',
+        summary: 'A young man who bullied a deaf classmate in elementary school tries to make amends years later after meeting her again.',
+        moral: 'Forgiveness, both for others and oneself, is the path to redemption.',
+        genre: ['Drama', 'Romance']
+      },
+      {
+        id: 'a5',
+        type: 'anime',
+        title: 'Your Name',
+        thumbnailUrl: 'https://picsum.photos/seed/name/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Makoto Shinkai',
+        imdbRating: '8.4',
+        summary: 'Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart?',
+        moral: 'Destiny is real, but it requires effort and memory to fulfill.',
+        genre: ['Fantasy', 'Romance']
+      },
+      {
+        id: 'a6',
+        type: 'anime',
+        title: 'Weathering with You',
+        thumbnailUrl: 'https://picsum.photos/seed/weathering/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Makoto Shinkai',
+        imdbRating: '7.5',
+        summary: 'A high-school boy who has run away to Tokyo befriends a girl who appears to be able to manipulate the weather.',
+        moral: 'Sometimes the world\'s balance matters less than the person you love.',
+        genre: ['Fantasy', 'Drama']
+      },
+      // Movies
+      {
+        id: 'm1',
         type: 'movie',
-        title: 'Project RojXO',
-        thumbnailUrl: 'https://picsum.photos/seed/roj1/600/400',
+        title: '1920',
+        thumbnailUrl: 'https://picsum.photos/seed/1920m/600/400',
         mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        creator: 'Director X',
-        imdbRating: '8.9',
-        rottenTomatoesRating: '95%',
-        summary: 'A futuristic journey through the neon-lit streets of Neo-Tokyo as a young hacker discovers a secret that could change the world forever.',
-        moral: 'Technology is a tool, but humanity is the master.',
-        genre: ['Sci-Fi', 'Cyberpunk']
+        creator: 'Vikram Bhatt',
+        imdbRating: '6.4',
+        summary: 'In 1920, a man moves into a haunted mansion with his wife, who soon becomes possessed by a demonic spirit.',
+        moral: 'Faith and love are the strongest shields against darkness.',
+        genre: ['Horror', 'Mystery']
       },
       {
-        id: '2',
+        id: 'm2',
+        type: 'movie',
+        title: '1920: Evil Returns',
+        thumbnailUrl: 'https://picsum.photos/seed/1920e/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Bhushan Patel',
+        imdbRating: '4.8',
+        summary: 'A famous poet meets a mysterious woman who has lost her memory, leading him to a haunted house where secrets await.',
+        moral: 'Secrets of the past always find a way to resurface.',
+        genre: ['Horror', 'Romance']
+      },
+      {
+        id: 'm3',
+        type: 'movie',
+        title: '1920 London',
+        thumbnailUrl: 'https://picsum.photos/seed/1920l/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Tinu Suresh Desai',
+        imdbRating: '4.1',
+        summary: 'A princess in London seeks help from her former lover, an exorcist, when her husband is possessed by an evil spirit.',
+        moral: 'Sacrifice for love is the ultimate redemption.',
+        genre: ['Horror', 'Drama']
+      },
+      {
+        id: 'm4',
+        type: 'movie',
+        title: '1921',
+        thumbnailUrl: 'https://picsum.photos/seed/1921m/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Vikram Bhatt',
+        imdbRating: '4.5',
+        summary: 'A musician in England must fight malevolent spirits to save himself and his beloved.',
+        moral: 'Our choices in the face of fear define our destiny.',
+        genre: ['Horror', 'Romance']
+      },
+      {
+        id: 'm5',
+        type: 'movie',
+        title: 'Chhichhore',
+        thumbnailUrl: 'https://picsum.photos/seed/chhichhore/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Nitesh Tiwari',
+        imdbRating: '8.3',
+        summary: 'A group of college friends reunite after a tragic incident involving one of their children, recalling their days as "losers".',
+        moral: 'Success is not the destination; the effort we put in is what truly counts.',
+        genre: ['Comedy', 'Drama']
+      },
+      {
+        id: 'm6',
+        type: 'movie',
+        title: 'Half Girlfriend',
+        thumbnailUrl: 'https://picsum.photos/seed/half/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Mohit Suri',
+        imdbRating: '4.5',
+        summary: 'A young man from a rural area falls in love with a wealthy girl at college, leading to a complex relationship.',
+        moral: 'Persistence in love can bridge any gap.',
+        genre: ['Romance', 'Drama']
+      },
+      {
+        id: 'm7',
+        type: 'movie',
+        title: 'Oh My God',
+        thumbnailUrl: 'https://picsum.photos/seed/omg/600/400',
+        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        creator: 'Umesh Shukla',
+        imdbRating: '8.1',
+        summary: 'A shopkeeper sues God after his shop is destroyed in an earthquake, leading to a trial that challenges religious norms.',
+        moral: 'True spirituality is found in humanity, not just in rituals.',
+        genre: ['Comedy', 'Fantasy']
+      },
+      // Songs
+      {
+        id: 's1',
         type: 'song',
-        title: 'Midnight Echoes',
-        thumbnailUrl: 'https://picsum.photos/seed/echoes/600/400',
+        title: 'Suzume Theme Song',
+        thumbnailUrl: 'https://picsum.photos/seed/suzumesong/600/400',
         mediaUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-        creator: 'Luna Violet',
-        description: 'A soothing lofi beat for midnight wandering.',
-        youtubeViews: '1.2M',
-        genre: ['Lofi', 'Chill']
+        creator: 'Radwimps',
+        description: 'The hauntingly beautiful main theme from the movie Suzume.',
+        youtubeViews: '45M',
+        genre: ['J-Pop', 'Soundtrack']
       },
       {
-        id: '3',
+        id: 's2',
+        type: 'song',
+        title: 'Fir Bhi Tumko Chahunga',
+        thumbnailUrl: 'https://picsum.photos/seed/fbt/600/400',
+        mediaUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        creator: 'Arijit Singh',
+        description: 'A soulful ballad about eternal love from the movie Half Girlfriend.',
+        youtubeViews: '150M',
+        genre: ['Bollywood', 'Romantic']
+      },
+      // Shorts
+      {
+        id: 'sh1',
         type: 'short',
-        title: 'Life in 15 Seconds',
-        thumbnailUrl: 'https://picsum.photos/seed/short1/400/600',
+        title: 'True Love Never Ends',
+        thumbnailUrl: 'https://picsum.photos/seed/truelove/400/600',
         mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        creator: 'ShortsDaily',
-        youtubeViews: '500K',
-        description: 'Catching the sunset over the horizon.'
+        creator: 'LoveStories',
+        description: 'A short visual poem about the enduring nature of love.',
+        youtubeViews: '2M'
       }
     ];
     setLibrary(initialData);

@@ -2,28 +2,100 @@
 {
   "placeholderImages": [
     {
-      "id": "anime-1",
-      "description": "Cyberpunk anime city skyline",
-      "imageUrl": "https://picsum.photos/seed/anime1/1200/800",
-      "imageHint": "cyberpunk anime"
+      "id": "suzume",
+      "description": "Suzume Anime Poster",
+      "imageUrl": "https://picsum.photos/seed/suzume/600/400",
+      "imageHint": "anime poster"
     },
     {
-      "id": "movie-1",
-      "description": "Cinematic sci-fi landscape",
-      "imageUrl": "https://picsum.photos/seed/movie1/1200/800",
-      "imageHint": "sci-fi movie"
+      "id": "pancreas",
+      "description": "I Want to Eat Your Pancreas Poster",
+      "imageUrl": "https://picsum.photos/seed/pancreas/600/400",
+      "imageHint": "anime garden"
     },
     {
-      "id": "song-1",
-      "description": "Neon music studio",
-      "imageUrl": "https://picsum.photos/seed/song1/1200/800",
-      "imageHint": "music studio"
+      "id": "garden",
+      "description": "The Garden of Words Scene",
+      "imageUrl": "https://picsum.photos/seed/garden/600/400",
+      "imageHint": "anime rain"
     },
     {
-      "id": "short-1",
-      "description": "Urban street photography",
-      "imageUrl": "https://picsum.photos/seed/short1/1080/1920",
-      "imageHint": "street photography"
+      "id": "silent-voice",
+      "description": "A Silent Voice Poster",
+      "imageUrl": "https://picsum.photos/seed/silent/600/400",
+      "imageHint": "anime school"
+    },
+    {
+      "id": "your-name",
+      "description": "Your Name Scene",
+      "imageUrl": "https://picsum.photos/seed/name/600/400",
+      "imageHint": "anime comet"
+    },
+    {
+      "id": "weathering",
+      "description": "Weathering With You Poster",
+      "imageUrl": "https://picsum.photos/seed/weathering/600/400",
+      "imageHint": "anime sky"
+    },
+    {
+      "id": "1920",
+      "description": "1920 Movie Poster",
+      "imageUrl": "https://picsum.photos/seed/1920m/600/400",
+      "imageHint": "horror mansion"
+    },
+    {
+      "id": "1920-evil",
+      "description": "1920 Evil Returns Poster",
+      "imageUrl": "https://picsum.photos/seed/1920e/600/400",
+      "imageHint": "horror mist"
+    },
+    {
+      "id": "1920-london",
+      "description": "1920 London Poster",
+      "imageUrl": "https://picsum.photos/seed/1920l/600/400",
+      "imageHint": "london gothic"
+    },
+    {
+      "id": "1921",
+      "description": "1921 Movie Poster",
+      "imageUrl": "https://picsum.photos/seed/1921m/600/400",
+      "imageHint": "horror piano"
+    },
+    {
+      "id": "chhichhore",
+      "description": "Chhichhore Movie Poster",
+      "imageUrl": "https://picsum.photos/seed/chhichhore/600/400",
+      "imageHint": "college friends"
+    },
+    {
+      "id": "half-girlfriend",
+      "description": "Half Girlfriend Poster",
+      "imageUrl": "https://picsum.photos/seed/half/600/400",
+      "imageHint": "romance rain"
+    },
+    {
+      "id": "omg",
+      "description": "Oh My God Movie Poster",
+      "imageUrl": "https://picsum.photos/seed/omg/600/400",
+      "imageHint": "divine light"
+    },
+    {
+      "id": "suzume-song",
+      "description": "Suzume Theme Song Cover",
+      "imageUrl": "https://picsum.photos/seed/suzumesong/600/400",
+      "imageHint": "music blue"
+    },
+    {
+      "id": "fbt-song",
+      "description": "Fir Bhi Tumko Chahunga Cover",
+      "imageUrl": "https://picsum.photos/seed/fbt/600/400",
+      "imageHint": "love song"
+    },
+    {
+      "id": "true-love-short",
+      "description": "True Love Never Ends Short",
+      "imageUrl": "https://picsum.photos/seed/truelove/400/600",
+      "imageHint": "couples sunset"
     }
   ]
 }
