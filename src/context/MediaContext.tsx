@@ -78,7 +78,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'Weathering with You',
     thumbnailUrl: 'https://m.gettywallpapers.com/wp-content/uploads/2021/09/Weathering-With-You-Background-Images.png',
-    mediaUrl: 'https://www.youtube.com/watch?v=m3w1mUXtCj0',
+    mediaUrl: 'https://www.dailymotion.com/video/x9fne28',
     creator: 'Makoto Shinkai',
     imdbRating: '7.5',
     summary: 'A high-school boy who has run away to Tokyo befriends a girl who appears to be able to manipulate the weather.',
