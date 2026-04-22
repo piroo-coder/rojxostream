@@ -18,7 +18,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'Suzume',
     thumbnailUrl: 'https://wallpapers.com/images/hd/suzume-anime-movie-poster-69doru0ca93nyhwn.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/suzume.mp4',
+    mediaUrl: 'https://www.dailymotion.com/video/x9te5vk',
     creator: 'Makoto Shinkai',
     imdbRating: '7.7',
     summary: 'A 17-year-old girl named Suzume helps a mysterious young man close doors from the other side that are releasing disasters all over Japan.',

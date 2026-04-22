@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -27,6 +26,7 @@ export const MediaDetails: React.FC = () => {
   const isSong = currentlyPlaying.type === 'song';
   const isYoutube = currentlyPlaying.mediaUrl.includes('youtube.com') || currentlyPlaying.mediaUrl.includes('youtu.be');
   const isVimeo = currentlyPlaying.mediaUrl.includes('vimeo.com');
+  const isDailymotion = currentlyPlaying.mediaUrl.includes('dailymotion.com') || currentlyPlaying.mediaUrl.includes('dai.ly');
   
   const getYoutubeEmbedUrl = (url: string) => {
     let id = '';
@@ -48,6 +48,16 @@ export const MediaDetails: React.FC = () => {
     return `https://player.vimeo.com/video/${id}?autoplay=1&badge=0&autopause=0&player_id=0&app_id=58479`;
   };
 
+  const getDailymotionEmbedUrl = (url: string) => {
+    let id = '';
+    if (url.includes('/video/')) {
+      id = url.split('/video/')[1].split('?')[0];
+    } else if (url.includes('dai.ly/')) {
+      id = url.split('dai.ly/')[1].split('?')[0];
+    }
+    return `https://www.dailymotion.com/embed/video/${id}?autoplay=1&mute=0`;
+  };
+
   const handleOpenSource = () => {
     window.open(currentlyPlaying.mediaUrl, '_blank');
   };
@@ -58,6 +68,15 @@ export const MediaDetails: React.FC = () => {
   };
 
   const bgImage = currentlyPlaying.audioBackgroundUrl || currentlyPlaying.thumbnailUrl;
+
+  const getEmbedSource = () => {
+    if (isYoutube) return getYoutubeEmbedUrl(currentlyPlaying.mediaUrl);
+    if (isVimeo) return getVimeoEmbedUrl(currentlyPlaying.mediaUrl);
+    if (isDailymotion) return getDailymotionEmbedUrl(currentlyPlaying.mediaUrl);
+    return '';
+  };
+
+  const isEmbeddable = isYoutube || isVimeo || isDailymotion;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-500 overflow-hidden">
@@ -89,7 +108,7 @@ export const MediaDetails: React.FC = () => {
         <div className="relative w-full h-full bg-black/20 flex flex-col overflow-hidden border-r border-white/5">
           {/* Playback Area */}
           <div className="flex-1 relative overflow-hidden group">
-            {isYoutube || isVimeo ? (
+            {isEmbeddable ? (
               <div className="w-full h-full relative">
                 {/* Audio Mode View - Default for songs */}
                 {isSong && songMode === 'audio' && (
@@ -120,7 +139,7 @@ export const MediaDetails: React.FC = () => {
 
                     {/* Keep sound playing in background */}
                     <iframe 
-                      src={isYoutube ? getYoutubeEmbedUrl(currentlyPlaying.mediaUrl) : getVimeoEmbedUrl(currentlyPlaying.mediaUrl)}
+                      src={getEmbedSource()}
                       className="absolute opacity-0 pointer-events-none w-1 h-1"
                       allow="autoplay"
                     />
@@ -131,7 +150,7 @@ export const MediaDetails: React.FC = () => {
                 {(!isSong || songMode === 'video') && (
                   <iframe 
                     key="video-player-active"
-                    src={isYoutube ? getYoutubeEmbedUrl(currentlyPlaying.mediaUrl) : getVimeoEmbedUrl(currentlyPlaying.mediaUrl)}
+                    src={getEmbedSource()}
                     className="w-full h-full border-0 animate-in fade-in zoom-in-95 duration-700"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
