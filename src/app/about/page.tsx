@@ -6,8 +6,11 @@ import { Heart, Music, Code, Gamepad2, Stars, Sparkles, MessageSquareHeart } fro
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function AboutPage() {
+  const profileImage = PlaceHolderImages.find(img => img.id === 'priya-profile')?.imageUrl || "https://i.pinimg.com/736x/04/4d/26/044d2642935fb665c6cd6bb72e06b264.jpg";
+
   const hobbies = [
     { name: 'Chess', icon: Gamepad2, color: 'text-blue-400' },
     { name: 'Coding', icon: Code, color: 'text-emerald-400' },
@@ -31,7 +34,7 @@ export default function AboutPage() {
             <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-primary rounded-full blur opacity-40 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
             <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl">
               <Image 
-                src="https://www.deviantart.com/pinkamenalove/art/Hinata-Hyuga-Naruto-968702971"
+                src={profileImage}
                 alt="Priya - Hinata"
                 fill
                 className="object-cover"
