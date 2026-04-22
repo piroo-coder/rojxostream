@@ -30,8 +30,7 @@ const ShortItem = ({
     }
     
     const muteParam = muted ? 1 : 0;
-    // We only use autoplay if isActive is true. 
-    // The key on the wrapper ensures the iframe is destroyed/recreated when isActive changes.
+    // Autoplay is only 1 when isActive is true.
     return `https://www.youtube.com/embed/${id}?autoplay=${active ? 1 : 0}&mute=${muteParam}&controls=1&rel=0&modestbranding=1&enablejsapi=1`;
   };
 
@@ -80,20 +79,20 @@ const ShortItem = ({
         )}
       </div>
       
-      {/* 
-        IMPORTANT: This overlay uses pointer-events-none.
-        It allows clicks to pass through to the YouTube iframe underneath.
-      */}
+      {/* Overlay - allows clicks to reach the iframe */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-10" />
       
-      {/* Interaction Bar - Positioned specifically to avoid blocking player center */}
+      {/* Interaction Bar */}
       <div className="absolute right-4 bottom-32 flex flex-col gap-6 z-20">
         <div className="flex flex-col items-center gap-1">
           <Button 
             size="icon" 
             variant="ghost" 
             className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all w-12 h-12"
-            onClick={onToggleMute}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleMute();
+            }}
           >
             {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
           </Button>
@@ -119,7 +118,7 @@ const ShortItem = ({
         </div>
       </div>
 
-      {/* Bottom Info - Positioned low to avoid blocking central click areas */}
+      {/* Bottom Info */}
       <div className="absolute bottom-10 left-4 right-20 z-20 text-white pointer-events-none">
         <div className="flex items-center gap-3 mb-3 pointer-events-auto">
           <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center ring-2 ring-white/20">
@@ -149,16 +148,45 @@ export default function ShortsPage() {
      item.creator?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  // Set initial active short
   useEffect(() => {
     if (shorts.length > 0 && !activeId) {
       setActiveId(shorts[0].id);
     }
   }, [shorts, activeId]);
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const currentIndex = shorts.findIndex(s => s.id === activeId);
+        if (currentIndex === -1) return;
+
+        let targetIndex = currentIndex;
+        if (e.key === 'ArrowDown') {
+          targetIndex = Math.min(shorts.length - 1, currentIndex + 1);
+        } else {
+          targetIndex = Math.max(0, currentIndex - 1);
+        }
+
+        if (targetIndex !== currentIndex) {
+          const targetId = shorts[targetIndex].id;
+          const targetElement = document.querySelector(`[data-short-id="${targetId}"]`);
+          targetElement?.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [shorts, activeId]);
+
+  // Intersection Observer for scroll-based switching
   useEffect(() => {
     const observerOptions = {
       root: containerRef.current,
-      threshold: 0.8, // Require 80% visibility to trigger a switch
+      threshold: 0.7, // Trigger when 70% of the item is visible
     };
 
     const observer = new IntersectionObserver((entries) => {
