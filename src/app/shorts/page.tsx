@@ -3,17 +3,20 @@
 
 import { useMedia } from '@/context/MediaContext';
 import { Navbar } from '@/components/layout/Navbar';
-import { Heart, MessageCircle, Share2, User } from 'lucide-react';
+import { Heart, MessageCircle, Share2, User, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 export default function ShortsPage() {
   const { library } = useMedia();
+  const [isMuted, setIsMuted] = useState(false);
   const shorts = library.filter(item => item.type === 'short');
 
   const getYoutubeEmbedUrl = (url: string) => {
     if (url.includes('youtube.com/shorts/')) {
       const id = url.split('/shorts/')[1].split('?')[0];
-      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}`;
+      // Removed mute=1 and allowed controls if sound is needed but blocked by autoplay
+      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&controls=1&loop=1&playlist=${id}`;
     }
     return url;
   };
@@ -33,7 +36,7 @@ export default function ShortsPage() {
                 {isYoutube ? (
                   <iframe
                     src={embedUrl}
-                    className="h-full w-full max-w-md aspect-[9/16] pointer-events-none"
+                    className="h-full w-full max-w-md aspect-[9/16]"
                     title={short.title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -45,7 +48,8 @@ export default function ShortsPage() {
                     className="h-full w-full object-cover max-w-md"
                     loop
                     autoPlay
-                    muted
+                    muted={isMuted}
+                    playsInline
                   />
                 )}
                 
@@ -53,6 +57,17 @@ export default function ShortsPage() {
                 
                 {/* Interaction Bar */}
                 <div className="absolute right-4 bottom-24 flex flex-col gap-6 z-10">
+                  <div className="flex flex-col items-center gap-1 group/btn">
+                    <Button 
+                      size="icon" 
+                      variant="ghost" 
+                      className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all"
+                      onClick={() => setIsMuted(!isMuted)}
+                    >
+                      {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                    </Button>
+                    <span className="text-xs font-medium">{isMuted ? 'Muted' : 'Sound'}</span>
+                  </div>
                   <div className="flex flex-col items-center gap-1 group/btn">
                     <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all">
                       <Heart size={24} />
@@ -79,7 +94,7 @@ export default function ShortsPage() {
                     <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
                       <User size={20} />
                     </div>
-                    <span className="font-headline font-bold text-lg">@{short.creator}</span>
+                    <span className="font-headline font-bold text-lg">@{short.creator || 'Creator'}</span>
                     <Button size="sm" className="rounded-full h-8 bg-primary hover:bg-primary/90">Follow</Button>
                   </div>
                   <p className="text-sm line-clamp-2 mb-2 text-white/90">{short.description || short.title}</p>
