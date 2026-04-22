@@ -38,12 +38,19 @@ export default function AboutPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-background pt-32 pb-20 overflow-x-hidden relative">
+    <main className="min-h-screen bg-background pt-32 pb-20 overflow-hidden relative">
       <Navbar />
       
-      {/* Romantic Background Elements */}
-      <div className="absolute top-40 left-10 w-64 h-64 bg-pink-500/10 rounded-full blur-[100px] animate-pulse" />
-      <div className="absolute bottom-40 right-10 w-80 h-80 bg-purple-500/10 rounded-full blur-[120px] animate-pulse delay-700" />
+      {/* Calm & Romantic Background Animations */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[10%] left-[5%] w-[40rem] h-[40rem] bg-pink-500/5 rounded-full blur-[120px] animate-pulse-slow" />
+        <div className="absolute bottom-[10%] right-[5%] w-[50rem] h-[50rem] bg-purple-500/5 rounded-full blur-[150px] animate-pulse-slow delay-1000" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-primary/5 rounded-full blur-[100px] animate-pulse-slow delay-500" />
+        
+        {/* Drifting Sparkles / Bokeh effect */}
+        <div className="absolute top-[20%] right-[20%] w-2 h-2 bg-pink-400/20 rounded-full blur-sm animate-bounce duration-[10s] infinite" />
+        <div className="absolute bottom-[30%] left-[15%] w-3 h-3 bg-purple-400/20 rounded-full blur-sm animate-bounce duration-[12s] infinite delay-700" />
+      </div>
       
       <div className="container mx-auto px-6 max-w-4xl relative z-10">
         <div className="flex flex-col items-center text-center space-y-12">
