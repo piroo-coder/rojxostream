@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -7,13 +6,12 @@ import { MediaCard } from '@/components/media/MediaCard';
 import { MediaDetails } from '@/components/media/MediaDetails';
 import { ChevronDown, Play, Info, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function HomePage() {
   const { library, setCurrentlyPlaying } = useMedia();
-  const [activeSection, setActiveSection] = useState(0);
 
-  const featured = library[0]; // Suzume as default featured
+  const featured = library[0]; 
   const anime = library.filter(item => item.type === 'anime');
   const movies = library.filter(item => item.type === 'movie');
   const songs = library.filter(item => item.type === 'song');
@@ -26,10 +24,13 @@ export default function HomePage() {
       <section className="h-screen w-full snap-start relative flex items-end pb-32 px-6 md:px-16 overflow-hidden">
         {featured && (
           <div className="absolute inset-0 z-0">
-            <img 
+            <Image 
               src={featured.thumbnailUrl} 
               alt={featured.title}
-              className="w-full h-full object-cover scale-105 animate-pulse-slow transition-transform duration-1000"
+              fill
+              className="object-cover scale-105 animate-pulse-slow transition-transform duration-1000"
+              priority
+              data-ai-hint="featured anime"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
@@ -77,7 +78,7 @@ export default function HomePage() {
           <h2 className="text-5xl font-headline font-bold mb-4">World of <span className="text-accent">Anime</span></h2>
           <p className="text-muted-foreground text-lg">Breathtaking visuals and emotional storytelling from the heart of Japan.</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {anime.map((item, idx) => (
             <div key={item.id} className="animate-in slide-in-from-bottom duration-700" style={{ animationDelay: `${idx * 150}ms` }}>
               <MediaCard item={item} />

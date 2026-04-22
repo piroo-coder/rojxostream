@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -12,11 +11,10 @@ export default function ShortsPage() {
   const [isMuted, setIsMuted] = useState(false);
   const shorts = library.filter(item => item.type === 'short');
 
-  const getYoutubeEmbedUrl = (url: string) => {
+  const getYoutubeEmbedUrl = (url: string, muted: boolean) => {
     if (url.includes('youtube.com/shorts/')) {
       const id = url.split('/shorts/')[1].split('?')[0];
-      // Removed mute=1 and allowed controls if sound is needed but blocked by autoplay
-      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&controls=1&loop=1&playlist=${id}`;
+      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=${muted ? 1 : 0}&controls=1&loop=1&playlist=${id}`;
     }
     return url;
   };
@@ -29,12 +27,13 @@ export default function ShortsPage() {
         {shorts.length > 0 ? (
           shorts.map((short) => {
             const isYoutube = short.mediaUrl.includes('youtube.com');
-            const embedUrl = isYoutube ? getYoutubeEmbedUrl(short.mediaUrl) : short.mediaUrl;
+            const embedUrl = isYoutube ? getYoutubeEmbedUrl(short.mediaUrl, isMuted) : short.mediaUrl;
 
             return (
               <div key={short.id} className="short-item relative flex items-center justify-center group bg-neutral-900">
                 {isYoutube ? (
                   <iframe
+                    key={`${short.id}-${isMuted}`} // Force re-render on mute toggle to update iframe param
                     src={embedUrl}
                     className="h-full w-full max-w-md aspect-[9/16]"
                     title={short.title}
