@@ -16,7 +16,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'Suzume',
     thumbnailUrl: 'https://watchanimeworld.net/thumbnails/suzume.jpg',
-    mediaUrl: 'https://watchanimeworld.net/movies/suzume/',
+    mediaUrl: 'https://watchanimeworld.net/videos/suzume.mp4',
     creator: 'Makoto Shinkai',
     imdbRating: '7.7',
     summary: 'A 17-year-old girl named Suzume helps a mysterious young man close doors from the other side that are releasing disasters all over Japan.',
@@ -64,7 +64,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'Your Name',
     thumbnailUrl: 'https://watchanimeworld.net/thumbnails/your-name.jpg',
-    mediaUrl: 'https://watchanimeworld.net/movies/your-name/',
+    mediaUrl: 'https://watchanimeworld.net/videos/your-name.mp4',
     creator: 'Makoto Shinkai',
     imdbRating: '8.4',
     summary: 'Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart?',
@@ -76,7 +76,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'Weathering with You',
     thumbnailUrl: 'https://watchanimeworld.net/thumbnails/weathering-with-you.jpg',
-    mediaUrl: 'https://watchanimeworld.net/movies/suzume/',
+    mediaUrl: 'https://watchanimeworld.net/videos/weathering-with-you.mp4',
     creator: 'Makoto Shinkai',
     imdbRating: '7.5',
     summary: 'A high-school boy who has run away to Tokyo befriends a girl who appears to be able to manipulate the weather.',
@@ -216,8 +216,8 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {children}
       {currentlyPlaying && (
         <div 
-          className="dynamic-bg-blur" 
-          style={{ backgroundImage: `url(${currentlyPlaying.thumbnailUrl})` }}
+          className="fixed inset-0 z-[-1] filter blur-[100px] opacity-30 transition-all duration-1000" 
+          style={{ backgroundImage: `url(${currentlyPlaying.thumbnailUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         />
       )}
     </MediaContext.Provider>
