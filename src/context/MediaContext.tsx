@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
@@ -43,7 +42,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'The Garden of Words',
     thumbnailUrl: 'https://wallpapercat.com/w/full/5/2/a/32983-1920x1080-desktop-full-hd-the-garden-of-words-wallpaper-photo.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/the-garden-of-words.mp4',
+    mediaUrl: 'https://vimeo.com/855974784?fl=pl&fe=sh',
     creator: 'Makoto Shinkai',
     imdbRating: '7.4',
     summary: 'A 15-year-old boy training to be a shoemaker skips school on rainy days to sketch shoes in a Japanese garden and meets a mysterious older woman.',
