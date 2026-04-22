@@ -202,7 +202,7 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         type: 'short',
         title: 'True Love Never Ends',
         thumbnailUrl: 'https://picsum.photos/seed/truelove/400/600',
-        mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        mediaUrl: 'https://www.youtube.com/shorts/9d1N4c5tHxQ',
         creator: 'LoveStories',
         description: 'A short visual poem about the enduring nature of love.',
         youtubeViews: '2M'
