@@ -48,7 +48,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'wallpapercat. Cat',
+        hostname: 'wallpapercat.com',
         port: '',
         pathname: '/**',
       },
@@ -72,7 +72,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'wallpapercat.com',
+        hostname: 'i.ytimg.com',
         port: '',
         pathname: '/**',
       },
