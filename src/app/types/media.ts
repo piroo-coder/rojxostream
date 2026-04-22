@@ -1,4 +1,3 @@
-
 export type MediaType = 'anime' | 'movie' | 'song' | 'short';
 
 export interface MediaItem {
@@ -6,6 +5,7 @@ export interface MediaItem {
   type: MediaType;
   title: string;
   thumbnailUrl: string;
+  audioBackgroundUrl?: string; // Background image for audio-only mode
   mediaUrl: string;
   description?: string;
   summary?: string;

@@ -76,6 +76,18 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images5.alphacoders.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'wallpaperaccess.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

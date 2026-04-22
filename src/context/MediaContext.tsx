@@ -86,7 +86,7 @@ const initialData: MediaItem[] = [
     genre: ['Fantasy', 'Drama']
   },
   {
-    id: 'm5',
+    id: 'm1',
     type: 'movie',
     title: 'Chhichhore',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp6319679.jpg',
@@ -98,7 +98,7 @@ const initialData: MediaItem[] = [
     genre: ['Comedy', 'Drama']
   },
   {
-    id: 'm6',
+    id: 'm2',
     type: 'movie',
     title: 'Half Girlfriend',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp8276890.jpg',
@@ -110,7 +110,7 @@ const initialData: MediaItem[] = [
     genre: ['Romance', 'Drama']
   },
   {
-    id: 'm7',
+    id: 'm3',
     type: 'movie',
     title: 'Oh My God',
     thumbnailUrl: 'https://i.ytimg.com/vi/1d3WlZAgZ7o/maxresdefault.jpg',
@@ -126,10 +126,10 @@ const initialData: MediaItem[] = [
     type: 'song',
     title: 'Suzume Theme Song',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp12664354.jpg',
+    audioBackgroundUrl: 'https://images5.alphacoders.com/131/thumb-1920-1311599.jpg',
     mediaUrl: 'https://www.youtube.com/watch?v=m3w1mUXtCj0',
     creator: 'Radwimps',
     description: 'The hauntingly beautiful main theme from the movie Suzume.',
-    youtubeViews: '45M',
     genre: ['J-Pop', 'Soundtrack']
   },
   {
@@ -137,10 +137,10 @@ const initialData: MediaItem[] = [
     type: 'song',
     title: 'Fir Bhi Tumko Chahunga',
     thumbnailUrl: 'https://wallpapers.com/images/hd/a-silent-voice-crying-couple-2hrblheq4u5w4q8c.jpg',
+    audioBackgroundUrl: 'https://wallpapercat.com/w/full/0/2/d/874883-1920x1080-desktop-1080p-a-silent-voice-anime-wallpaper-photo.jpg',
     mediaUrl: 'https://www.youtube.com/watch?v=jQdDpRTVe9k',
     creator: 'Arijit Singh',
     description: 'A soulful ballad about eternal love from the movie Half Girlfriend.',
-    youtubeViews: '150M',
     genre: ['Bollywood', 'Romantic']
   },
   {
@@ -148,10 +148,10 @@ const initialData: MediaItem[] = [
     type: 'song',
     title: 'Zara Zara Behekta Hai',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp9190577.jpg',
+    audioBackgroundUrl: 'https://wallpaperaccess.com/full/970464.jpg',
     mediaUrl: 'https://www.youtube.com/watch?v=NeXbmEnpSz0',
     creator: 'Bombay Jayashri',
     description: 'A timeless romantic classic from Rehnaa Hai Terre Dil Mein.',
-    youtubeViews: '200M',
     genre: ['Bollywood', 'Romantic']
   },
   {
@@ -161,8 +161,7 @@ const initialData: MediaItem[] = [
     thumbnailUrl: 'https://picsum.photos/seed/truelove/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/9d1N4c5tHxQ',
     creator: 'LoveStories',
-    description: 'A short visual poem about the enduring nature of love.',
-    youtubeViews: '2M'
+    description: 'A short visual poem about the enduring nature of love.'
   },
   {
     id: 'sh2',
@@ -171,8 +170,7 @@ const initialData: MediaItem[] = [
     thumbnailUrl: 'https://picsum.photos/seed/perspective/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/wXpvE2QLgio',
     creator: 'DailyInsights',
-    description: 'A profound look at life through a different lens.',
-    youtubeViews: '5M'
+    description: 'A profound look at life through a different lens.'
   }
 ];
 
