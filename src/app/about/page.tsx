@@ -130,7 +130,7 @@ export default function AboutPage() {
           {/* Copyright Footer */}
           <div className="pt-28 pb-10 space-y-3 opacity-30 select-none cursor-default">
             <p className="text-[10px] uppercase tracking-[0.5em] font-bold text-white">
-              © 2025 Priya • All Rights Reserved
+              © 2026 Priya • All Rights Reserved
             </p>
             <p className="text-[8px] uppercase tracking-[0.15em] font-medium max-w-xs mx-auto leading-relaxed text-white/80">
               The creative essence and intellectual properties within this sanctuary belong exclusively to Priya. 
