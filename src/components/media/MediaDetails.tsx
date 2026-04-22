@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -25,8 +26,9 @@ export const MediaDetails: React.FC = () => {
 
   const isSong = currentlyPlaying.type === 'song';
   const isYoutube = currentlyPlaying.mediaUrl.includes('youtube.com') || currentlyPlaying.mediaUrl.includes('youtu.be');
+  const isVimeo = currentlyPlaying.mediaUrl.includes('vimeo.com');
   
-  const getYoutubeEmbedUrl = (url: string, mode: 'video' | 'audio') => {
+  const getYoutubeEmbedUrl = (url: string) => {
     let id = '';
     if (url.includes('shorts/')) {
       id = url.split('shorts/')[1].split('?')[0];
@@ -36,8 +38,14 @@ export const MediaDetails: React.FC = () => {
       id = url.split('be/')[1].split('?')[0];
     }
     
-    // In audio mode, we still play the video but keep it hidden/underlayed
     return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`;
+  };
+
+  const getVimeoEmbedUrl = (url: string) => {
+    const parts = url.split('vimeo.com/');
+    const idPart = parts[1] || '';
+    const id = idPart.split('?')[0];
+    return `https://player.vimeo.com/video/${id}?autoplay=1&badge=0&autopause=0&player_id=0&app_id=58479`;
   };
 
   const handleOpenSource = () => {
@@ -53,7 +61,7 @@ export const MediaDetails: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-500 overflow-hidden">
-      {/* Immersive Full Screen Background - Fills complete screen as requested */}
+      {/* Immersive Full Screen Background */}
       <div className="absolute inset-0 z-0">
         <Image 
           src={bgImage} 
@@ -81,9 +89,9 @@ export const MediaDetails: React.FC = () => {
         <div className="relative w-full h-full bg-black/20 flex flex-col overflow-hidden border-r border-white/5">
           {/* Playback Area */}
           <div className="flex-1 relative overflow-hidden group">
-            {isYoutube ? (
+            {isYoutube || isVimeo ? (
               <div className="w-full h-full relative">
-                {/* Audio Mode View - Default first */}
+                {/* Audio Mode View - Default for songs */}
                 {isSong && songMode === 'audio' && (
                   <div key="audio-player-ui" className="absolute inset-0 z-20 flex flex-col items-center justify-center animate-in zoom-in-95 duration-500">
                     <div className="absolute inset-0 z-10">
@@ -110,9 +118,9 @@ export const MediaDetails: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* The YouTube iframe is present but hidden in Audio mode to keep sound playing */}
+                    {/* Keep sound playing in background */}
                     <iframe 
-                      src={getYoutubeEmbedUrl(currentlyPlaying.mediaUrl, 'audio')}
+                      src={isYoutube ? getYoutubeEmbedUrl(currentlyPlaying.mediaUrl) : getVimeoEmbedUrl(currentlyPlaying.mediaUrl)}
                       className="absolute opacity-0 pointer-events-none w-1 h-1"
                       allow="autoplay"
                     />
@@ -123,7 +131,7 @@ export const MediaDetails: React.FC = () => {
                 {(!isSong || songMode === 'video') && (
                   <iframe 
                     key="video-player-active"
-                    src={getYoutubeEmbedUrl(currentlyPlaying.mediaUrl, 'video')}
+                    src={isYoutube ? getYoutubeEmbedUrl(currentlyPlaying.mediaUrl) : getVimeoEmbedUrl(currentlyPlaying.mediaUrl)}
                     className="w-full h-full border-0 animate-in fade-in zoom-in-95 duration-700"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -148,7 +156,7 @@ export const MediaDetails: React.FC = () => {
             )}
           </div>
 
-          {/* Mode Toggle for Songs - Prominent switcher */}
+          {/* Mode Toggle for Songs */}
           {isSong && (
             <div className="p-8 bg-black/40 backdrop-blur-3xl border-t border-white/5 flex items-center justify-center gap-10 z-30">
               <Button 
