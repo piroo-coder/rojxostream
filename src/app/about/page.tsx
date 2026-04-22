@@ -12,10 +12,30 @@ export default function AboutPage() {
   const profileImage = PlaceHolderImages.find(img => img.id === 'priya-profile')?.imageUrl || "https://i.pinimg.com/736x/04/4d/26/044d2642935fb665c6cd6bb72e06b264.jpg";
 
   const hobbies = [
-    { name: 'Chess', icon: Gamepad2, color: 'text-blue-400' },
-    { name: 'Coding', icon: Code, color: 'text-emerald-400' },
-    { name: 'Dancing', icon: Sparkles, color: 'text-pink-400' },
-    { name: 'Singing', icon: Music, color: 'text-purple-400' },
+    { 
+      name: 'Chess', 
+      icon: Gamepad2, 
+      color: 'text-blue-400',
+      description: 'very fond of chess, i just feel good'
+    },
+    { 
+      name: 'Coding', 
+      icon: Code, 
+      color: 'text-emerald-400',
+      description: 'really , its just i get lost in to and hours feels like seconds'
+    },
+    { 
+      name: 'Dancing', 
+      icon: Sparkles, 
+      color: 'text-pink-400',
+      description: 'just to be free from everything'
+    },
+    { 
+      name: 'Singing', 
+      icon: Music, 
+      color: 'text-purple-400',
+      description: 'can sing quite well , i guess so , but shy '
+    },
   ];
 
   return (
@@ -64,12 +84,24 @@ export default function AboutPage() {
           </div>
 
           {/* Hobbies Grid */}
-          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-8">
             {hobbies.map((hobby) => (
-              <Card key={hobby.name} className="bg-white/5 border-white/10 backdrop-blur-xl hover:bg-white/10 transition-all duration-300 group cursor-default">
-                <CardContent className="p-6 flex flex-col items-center gap-3">
-                  <hobby.icon className={`${hobby.color} group-hover:scale-125 transition-transform duration-500`} size={32} />
-                  <span className="font-headline font-semibold text-lg">{hobby.name}</span>
+              <Card 
+                key={hobby.name} 
+                className="bg-white/5 border-white/10 backdrop-blur-xl hover:bg-white/10 transition-all duration-500 group cursor-default relative overflow-hidden"
+              >
+                <CardContent className="p-8 flex flex-col items-center gap-4 h-full min-h-[160px] justify-center">
+                  <hobby.icon className={`${hobby.color} group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-500`} size={40} />
+                  
+                  <div className="space-y-2 flex flex-col items-center">
+                    <span className="font-headline font-bold text-xl transition-all duration-500 group-hover:text-white">
+                      {hobby.name}
+                    </span>
+                    
+                    <p className="text-xs text-pink-200/60 italic leading-relaxed opacity-0 group-hover:opacity-100 transition-all duration-500 h-0 group-hover:h-auto overflow-hidden text-center max-w-[150px]">
+                      {hobby.description}
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
             ))}
