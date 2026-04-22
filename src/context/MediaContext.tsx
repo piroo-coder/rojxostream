@@ -75,7 +75,7 @@ const initialData: MediaItem[] = [
     id: 'a6',
     type: 'anime',
     title: 'Weathering with You',
-    thumbnailUrl: 'https://images.wallpapersden.com/image/download/hina-amano-and-hodaka-morishima_a25ramiUmZqaraWkpJRmbmdlrWZpZ2s.jpg',
+    thumbnailUrl: 'https://m.gettywallpapers.com/wp-content/uploads/2021/09/Weathering-With-You-Background-Images.png',
     mediaUrl: 'https://watchanimeworld.net/videos/weathering-with-you.mp4',
     creator: 'Makoto Shinkai',
     imdbRating: '7.5',

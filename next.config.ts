@@ -48,7 +48,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'wallpapercat.com',
+        hostname: 'wallpapercat. Cat',
         port: '',
         pathname: '/**',
       },
@@ -61,6 +61,18 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'images.wallpapersden.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'm.gettywallpapers.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'wallpapercat.com',
         port: '',
         pathname: '/**',
       },

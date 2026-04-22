@@ -6,15 +6,28 @@ import { MediaCard } from '@/components/media/MediaCard';
 import { MediaDetails } from '@/components/media/MediaDetails';
 import { ChevronDown, Play, Info, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 export default function HomePage() {
   const { library, setCurrentlyPlaying } = useMedia();
+  const [featuredIndex, setFeaturedIndex] = useState(0);
 
-  const featured = library[0]; 
   const anime = library.filter(item => item.type === 'anime');
   const movies = library.filter(item => item.type === 'movie');
   const songs = library.filter(item => item.type === 'song');
+
+  const featured = anime[featuredIndex] || anime[0];
+
+  useEffect(() => {
+    if (anime.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setFeaturedIndex((prev) => (prev + 1) % anime.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [anime.length]);
 
   return (
     <main className="h-screen overflow-y-scroll snap-y snap-mandatory bg-background relative scroll-smooth">
@@ -25,10 +38,11 @@ export default function HomePage() {
         {featured && (
           <div className="absolute inset-0 z-0">
             <Image 
+              key={featured.id}
               src={featured.thumbnailUrl} 
               alt={featured.title}
               fill
-              className="object-cover scale-105 animate-pulse-slow transition-transform duration-1000"
+              className="object-cover scale-105 animate-pulse-slow transition-all duration-1000 animate-in fade-in duration-1000"
               priority
               data-ai-hint="featured anime"
             />
@@ -37,7 +51,7 @@ export default function HomePage() {
           </div>
         )}
         
-        <div className="relative z-10 max-w-4xl animate-in slide-in-from-left duration-1000">
+        <div className="relative z-10 max-w-4xl animate-in slide-in-from-left duration-1000" key={`info-${featured?.id}`}>
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="text-accent animate-bounce" size={20} />
             <span className="text-accent font-bold tracking-widest uppercase text-sm">Featured Masterpiece</span>
