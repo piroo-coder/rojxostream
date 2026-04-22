@@ -49,7 +49,14 @@ export const MediaDetails: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl w-full h-full lg:h-[85vh] bg-card/30 rounded-3xl border border-white/5 overflow-hidden shadow-2xl">
         <div className="relative w-full h-full bg-black flex items-center justify-center overflow-hidden">
-          {isAudio ? (
+          {isYoutube ? (
+            <iframe 
+              src={getYoutubeEmbedUrl(currentlyPlaying.mediaUrl)}
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : isAudio ? (
             <div className="flex flex-col items-center gap-8 p-12 text-center w-full">
               <div className="w-64 h-64 rounded-full bg-gradient-to-tr from-primary to-accent animate-pulse flex items-center justify-center shadow-[0_0_80px_-20px_rgba(var(--primary),0.6)]">
                 <Music size={80} className="text-white" />
@@ -60,13 +67,6 @@ export const MediaDetails: React.FC = () => {
               </div>
               <audio controls src={currentlyPlaying.mediaUrl} className="w-full max-w-md mt-8" autoPlay />
             </div>
-          ) : isYoutube ? (
-            <iframe 
-              src={getYoutubeEmbedUrl(currentlyPlaying.mediaUrl)}
-              className="w-full h-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
           ) : isVideoFile ? (
             <video 
               controls 
