@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -85,6 +86,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'wallpaperaccess.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.deviantart.com',
         port: '',
         pathname: '/**',
       },

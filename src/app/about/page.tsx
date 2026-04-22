@@ -31,11 +31,12 @@ export default function AboutPage() {
             <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-primary rounded-full blur opacity-40 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
             <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl">
               <Image 
-                src="https://wallpaperaccess.com/full/1162446.jpg"
+                src="https://www.deviantart.com/pinkamenalove/art/Hinata-Hyuga-Naruto-968702971"
                 alt="Priya - Hinata"
                 fill
                 className="object-cover"
                 data-ai-hint="hinata cute"
+                unoptimized
               />
             </div>
             <div className="absolute -bottom-4 -right-4 bg-pink-500 p-3 rounded-2xl shadow-xl animate-bounce">
