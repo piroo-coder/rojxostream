@@ -7,9 +7,14 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
 export default function ShortsPage() {
-  const { library } = useMedia();
+  const { library, searchTerm } = useMedia();
   const [isMuted, setIsMuted] = useState(false);
-  const shorts = library.filter(item => item.type === 'short');
+  
+  const shorts = library.filter(item => 
+    item.type === 'short' && 
+    (item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+     item.creator?.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   const getYoutubeEmbedUrl = (url: string, muted: boolean) => {
     if (url.includes('youtube.com/shorts/')) {
@@ -105,8 +110,9 @@ export default function ShortsPage() {
             );
           })
         ) : (
-          <div className="h-full flex items-center justify-center text-muted-foreground">
-            No shorts available yet.
+          <div className="h-full flex flex-col items-center justify-center text-muted-foreground pt-20">
+            <h3 className="text-xl font-bold mb-2">No shorts match "{searchTerm}"</h3>
+            <p className="text-sm">Try a different search term.</p>
           </div>
         )}
       </div>

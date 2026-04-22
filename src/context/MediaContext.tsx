@@ -8,6 +8,8 @@ interface MediaContextType {
   currentlyPlaying: MediaItem | null;
   setCurrentlyPlaying: (item: MediaItem | null) => void;
   addToLibrary: (item: MediaItem) => void;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 }
 
 const initialData: MediaItem[] = [
@@ -84,54 +86,6 @@ const initialData: MediaItem[] = [
     genre: ['Fantasy', 'Drama']
   },
   {
-    id: 'm1',
-    type: 'movie',
-    title: '1920',
-    thumbnailUrl: 'https://watchanimeworld.net/thumbnails/1920.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/1920.mp4',
-    creator: 'Vikram Bhatt',
-    imdbRating: '6.4',
-    summary: 'In 1920, a man moves into a haunted mansion with his wife, who soon becomes possessed by a demonic spirit.',
-    moral: 'Faith and love are the strongest shields against darkness.',
-    genre: ['Horror', 'Mystery']
-  },
-  {
-    id: 'm2',
-    type: 'movie',
-    title: '1920: Evil Returns',
-    thumbnailUrl: 'https://watchanimeworld.net/thumbnails/1920-evil-returns.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/1920-evil-returns.mp4',
-    creator: 'Bhushan Patel',
-    imdbRating: '4.8',
-    summary: 'A famous poet meets a mysterious woman who has lost her memory, leading him to a haunted house where secrets await.',
-    moral: 'Secrets of the past always find a way to resurface.',
-    genre: ['Horror', 'Romance']
-  },
-  {
-    id: 'm3',
-    type: 'movie',
-    title: '1920 London',
-    thumbnailUrl: 'https://watchanimeworld.net/thumbnails/1920-london.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/1920-london.mp4',
-    creator: 'Tinu Suresh Desai',
-    imdbRating: '4.1',
-    summary: 'A princess in London seeks help from her former lover, an exorcist, when her husband is possessed by an evil spirit.',
-    moral: 'Sacrifice for love is the ultimate redemption.',
-    genre: ['Horror', 'Drama']
-  },
-  {
-    id: 'm4',
-    type: 'movie',
-    title: '1921',
-    thumbnailUrl: 'https://watchanimeworld.net/thumbnails/1921.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/1921.mp4',
-    creator: 'Vikram Bhatt',
-    imdbRating: '4.5',
-    summary: 'A musician in England must fight malevolent spirits to save himself and his beloved.',
-    moral: 'Our choices in the face of fear define our destiny.',
-    genre: ['Horror', 'Romance']
-  },
-  {
     id: 'm5',
     type: 'movie',
     title: 'Chhichhore',
@@ -190,6 +144,17 @@ const initialData: MediaItem[] = [
     genre: ['Bollywood', 'Romantic']
   },
   {
+    id: 's3',
+    type: 'song',
+    title: 'Zara Zara Behekta Hai',
+    thumbnailUrl: 'https://picsum.photos/seed/zarazara/600/400',
+    mediaUrl: 'https://www.youtube.com/watch?v=NeXbmEnpSz0',
+    creator: 'Bombay Jayashri',
+    description: 'A timeless romantic classic from Rehnaa Hai Terre Dil Mein.',
+    youtubeViews: '200M',
+    genre: ['Bollywood', 'Romantic']
+  },
+  {
     id: 'sh1',
     type: 'short',
     title: 'True Love Never Ends',
@@ -198,6 +163,16 @@ const initialData: MediaItem[] = [
     creator: 'LoveStories',
     description: 'A short visual poem about the enduring nature of love.',
     youtubeViews: '2M'
+  },
+  {
+    id: 'sh2',
+    type: 'short',
+    title: 'Life in Perspective',
+    thumbnailUrl: 'https://picsum.photos/seed/perspective/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/wXpvE2QLgio',
+    creator: 'DailyInsights',
+    description: 'A profound look at life through a different lens.',
+    youtubeViews: '5M'
   }
 ];
 
@@ -206,13 +181,21 @@ const MediaContext = createContext<MediaContextType | undefined>(undefined);
 export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [library, setLibrary] = useState<MediaItem[]>(initialData);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<MediaItem | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const addToLibrary = (item: MediaItem) => {
     setLibrary((prev) => [item, ...prev]);
   };
 
   return (
-    <MediaContext.Provider value={{ library, currentlyPlaying, setCurrentlyPlaying, addToLibrary }}>
+    <MediaContext.Provider value={{ 
+      library, 
+      currentlyPlaying, 
+      setCurrentlyPlaying, 
+      addToLibrary,
+      searchTerm,
+      setSearchTerm
+    }}>
       {children}
       {currentlyPlaying && (
         <div 

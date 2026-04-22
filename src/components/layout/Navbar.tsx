@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -6,9 +5,11 @@ import { Play, Home, Layers, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
+import { useMedia } from '@/context/MediaContext';
 
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
+  const { searchTerm, setSearchTerm } = useMedia();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300">
@@ -48,6 +49,8 @@ export const Navbar: React.FC = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={16} />
             <Input 
               placeholder="Search universe..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-72 pl-12 h-11 bg-white/5 border-white/10 focus-visible:ring-1 focus-visible:ring-accent rounded-full backdrop-blur-md placeholder:text-white/20"
             />
           </div>
