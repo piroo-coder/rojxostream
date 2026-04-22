@@ -29,52 +29,64 @@ const ShortItem = ({
       id = url.split('v=')[1].split('&')[0];
     }
     
-    // We only want autoplay if it's the active short
-    const autoplay = active ? 1 : 0;
     const muteParam = muted ? 1 : 0;
-    
-    // Using standard embed parameters to ensure controls are available
-    return `https://www.youtube.com/embed/${id}?autoplay=${autoplay}&mute=${muteParam}&controls=1&rel=0&modestbranding=1&enablejsapi=1`;
+    // We only use autoplay if isActive is true. 
+    // The key on the wrapper ensures the iframe is destroyed/recreated when isActive changes.
+    return `https://www.youtube.com/embed/${id}?autoplay=${active ? 1 : 0}&mute=${muteParam}&controls=1&rel=0&modestbranding=1&enablejsapi=1`;
   };
 
   return (
-    <div className="short-item relative flex items-center justify-center bg-black w-full h-screen overflow-hidden">
-      {isActive ? (
-        <div className="relative w-full h-full max-w-[450px] aspect-[9/16] bg-neutral-900">
-          {isYoutube ? (
-            <iframe
-              src={getYoutubeEmbedUrl(short.mediaUrl, isActive, isMuted)}
-              className="w-full h-full"
-              title={short.title}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
+    <div 
+      className="short-item relative flex items-center justify-center bg-black w-full h-screen overflow-hidden"
+      data-short-id={short.id}
+    >
+      {/* Video Container */}
+      <div className="relative w-full h-full max-w-[450px] aspect-[9/16] bg-neutral-900 shadow-2xl">
+        {isActive ? (
+          <>
+            {isYoutube ? (
+              <iframe
+                src={getYoutubeEmbedUrl(short.mediaUrl, isActive, isMuted)}
+                className="w-full h-full"
+                title={short.title}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            ) : (
+              <video 
+                src={short.mediaUrl} 
+                className="w-full h-full object-cover"
+                loop
+                autoPlay
+                muted={isMuted}
+                playsInline
+              />
+            )}
+          </>
+        ) : (
+          <div className="w-full h-full relative flex items-center justify-center">
+            <img 
+              src={short.thumbnailUrl} 
+              alt={short.title} 
+              className="w-full h-full object-cover opacity-30 blur-xl"
             />
-          ) : (
-            <video 
-              src={short.mediaUrl} 
-              className="w-full h-full object-cover"
-              loop
-              autoPlay
-              muted={isMuted}
-              playsInline
-            />
-          )}
-        </div>
-      ) : (
-        <div className="w-full h-full max-w-[450px] aspect-[9/16] bg-neutral-900 flex items-center justify-center">
-          <img 
-            src={short.thumbnailUrl} 
-            alt={short.title} 
-            className="w-full h-full object-cover opacity-50 blur-sm"
-          />
-        </div>
-      )}
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center animate-pulse">
+                <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[15px] border-l-white border-b-[10px] border-b-transparent ml-1" />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
       
-      {/* Visual Overlay - Using pointer-events-none to let clicks pass through to the iframe */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+      {/* 
+        IMPORTANT: This overlay uses pointer-events-none.
+        It allows clicks to pass through to the YouTube iframe underneath.
+      */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-10" />
       
-      {/* Interaction Bar - Positioned to the side to avoid overlapping central controls */}
+      {/* Interaction Bar - Positioned specifically to avoid blocking player center */}
       <div className="absolute right-4 bottom-32 flex flex-col gap-6 z-20">
         <div className="flex flex-col items-center gap-1">
           <Button 
@@ -85,40 +97,40 @@ const ShortItem = ({
           >
             {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
           </Button>
-          <span className="text-[10px] font-medium uppercase tracking-tighter">Sound</span>
+          <span className="text-[10px] font-medium uppercase tracking-tighter shadow-sm">Sound</span>
         </div>
         <div className="flex flex-col items-center gap-1">
           <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all w-12 h-12">
             <Heart size={24} />
           </Button>
-          <span className="text-[10px] font-medium">12K</span>
+          <span className="text-[10px] font-medium shadow-sm">12K</span>
         </div>
         <div className="flex flex-col items-center gap-1">
           <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all w-12 h-12">
             <MessageCircle size={24} />
           </Button>
-          <span className="text-[10px] font-medium">420</span>
+          <span className="text-[10px] font-medium shadow-sm">420</span>
         </div>
         <div className="flex flex-col items-center gap-1">
           <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all w-12 h-12">
             <Share2 size={24} />
           </Button>
-          <span className="text-[10px] font-medium">Share</span>
+          <span className="text-[10px] font-medium shadow-sm">Share</span>
         </div>
       </div>
 
-      {/* Bottom Info - Positioned at the very bottom to clear the player progress bar */}
-      <div className="absolute bottom-6 left-4 right-20 z-20 text-white pointer-events-none">
+      {/* Bottom Info - Positioned low to avoid blocking central click areas */}
+      <div className="absolute bottom-10 left-4 right-20 z-20 text-white pointer-events-none">
         <div className="flex items-center gap-3 mb-3 pointer-events-auto">
           <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center ring-2 ring-white/20">
             <User size={20} />
           </div>
-          <span className="font-headline font-bold text-lg">@{short.creator || 'Creator'}</span>
-          <Button size="sm" className="rounded-full h-7 px-4 bg-primary hover:bg-primary/90 text-xs">Follow</Button>
+          <span className="font-headline font-bold text-lg drop-shadow-lg">@{short.creator || 'Creator'}</span>
+          <Button size="sm" className="rounded-full h-7 px-4 bg-primary hover:bg-primary/90 text-xs shadow-lg">Follow</Button>
         </div>
         <div className="pointer-events-auto">
-          <p className="text-sm font-medium line-clamp-1 mb-1">{short.title}</p>
-          <p className="text-xs text-white/70 line-clamp-2 max-w-sm">{short.description}</p>
+          <p className="text-sm font-medium line-clamp-1 mb-1 drop-shadow-lg">{short.title}</p>
+          <p className="text-xs text-white/70 line-clamp-2 max-w-sm drop-shadow-md">{short.description}</p>
         </div>
       </div>
     </div>
@@ -144,17 +156,21 @@ export default function ShortsPage() {
   }, [shorts, activeId]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.getAttribute('data-id');
-            if (id) setActiveId(id);
+    const observerOptions = {
+      root: containerRef.current,
+      threshold: 0.8, // Require 80% visibility to trigger a switch
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('data-short-id');
+          if (id) {
+            setActiveId(id);
           }
-        });
-      },
-      { threshold: 0.6 } // Video must be 60% visible to switch
-    );
+        }
+      });
+    }, observerOptions);
 
     const elements = document.querySelectorAll('.short-item');
     elements.forEach((el) => observer.observe(el));
@@ -168,10 +184,13 @@ export default function ShortsPage() {
     <main className="h-screen bg-black overflow-hidden relative">
       <Navbar />
       
-      <div ref={containerRef} className="shorts-container h-full">
+      <div ref={containerRef} className="shorts-container h-full snap-y snap-mandatory scroll-smooth">
         {shorts.length > 0 ? (
           shorts.map((short) => (
-            <div key={short.id} data-id={short.id} className="w-full h-full">
+            <div 
+              key={short.id} 
+              className="w-full h-full snap-start"
+            >
               <ShortItem 
                 short={short} 
                 isActive={activeId === short.id} 
