@@ -197,9 +197,16 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {children}
       {currentlyPlaying && (
         <div 
-          className="fixed inset-0 z-[-1] filter blur-[100px] opacity-30 transition-all duration-1000" 
-          style={{ backgroundImage: `url(${currentlyPlaying.thumbnailUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-        />
+          className="fixed inset-0 z-[-1] pointer-events-none transition-all duration-1000 overflow-hidden"
+        >
+          <div 
+            className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-110 blur-2xl opacity-40"
+            style={{ 
+              backgroundImage: `url(${currentlyPlaying.audioBackgroundUrl || currentlyPlaying.thumbnailUrl})` 
+            }}
+          />
+          <div className="absolute inset-0 bg-background/60" />
+        </div>
       )}
     </MediaContext.Provider>
   );
