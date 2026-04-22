@@ -27,6 +27,7 @@ export const MediaDetails: React.FC = () => {
   const isYoutube = currentlyPlaying.mediaUrl.includes('youtube.com') || currentlyPlaying.mediaUrl.includes('youtu.be');
   const isVimeo = currentlyPlaying.mediaUrl.includes('vimeo.com');
   const isDailymotion = currentlyPlaying.mediaUrl.includes('dailymotion.com') || currentlyPlaying.mediaUrl.includes('dai.ly');
+  const isFacebook = currentlyPlaying.mediaUrl.includes('facebook.com');
   
   const getYoutubeEmbedUrl = (url: string) => {
     let id = '';
@@ -58,6 +59,10 @@ export const MediaDetails: React.FC = () => {
     return `https://www.dailymotion.com/embed/video/${id}?autoplay=1&mute=0`;
   };
 
+  const getFacebookEmbedUrl = (url: string) => {
+    return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&t=0&autoplay=true`;
+  };
+
   const handleOpenSource = () => {
     window.open(currentlyPlaying.mediaUrl, '_blank');
   };
@@ -73,10 +78,11 @@ export const MediaDetails: React.FC = () => {
     if (isYoutube) return getYoutubeEmbedUrl(currentlyPlaying.mediaUrl);
     if (isVimeo) return getVimeoEmbedUrl(currentlyPlaying.mediaUrl);
     if (isDailymotion) return getDailymotionEmbedUrl(currentlyPlaying.mediaUrl);
+    if (isFacebook) return getFacebookEmbedUrl(currentlyPlaying.mediaUrl);
     return '';
   };
 
-  const isEmbeddable = isYoutube || isVimeo || isDailymotion;
+  const isEmbeddable = isYoutube || isVimeo || isDailymotion || isFacebook;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-500 overflow-hidden">
