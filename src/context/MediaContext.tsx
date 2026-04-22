@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
@@ -90,7 +91,7 @@ const initialData: MediaItem[] = [
     type: 'movie',
     title: 'Chhichhore',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp6319679.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/chhichhore.mp4',
+    mediaUrl: 'https://www.youtube.com/watch?v=tsxemFW46Dk',
     creator: 'Nitesh Tiwari',
     imdbRating: '8.3',
     summary: 'A group of college friends reunite after a tragic incident involving one of their children, recalling their days as "losers".',
@@ -102,7 +103,7 @@ const initialData: MediaItem[] = [
     type: 'movie',
     title: 'Half Girlfriend',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp8276890.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/half-girlfriend.mp4',
+    mediaUrl: 'https://www.youtube.com/watch?v=KmlBnmyelHI',
     creator: 'Mohit Suri',
     imdbRating: '4.5',
     summary: 'A young man from a rural area falls in love with a wealthy girl at college, leading to a complex relationship.',
@@ -114,7 +115,7 @@ const initialData: MediaItem[] = [
     type: 'movie',
     title: 'Oh My God',
     thumbnailUrl: 'https://i.ytimg.com/vi/1d3WlZAgZ7o/maxresdefault.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/oh-my-god.mp4',
+    mediaUrl: 'https://www.youtube.com/watch?v=yWUXE3SPh_8',
     creator: 'Umesh Shukla',
     imdbRating: '8.1',
     summary: 'A shopkeeper sues God after his shop is destroyed in an earthquake, leading to a trial that challenges religious norms.',
