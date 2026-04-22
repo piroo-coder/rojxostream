@@ -1,10 +1,11 @@
+
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
 import { Navbar } from '@/components/layout/Navbar';
 import { MediaCard } from '@/components/media/MediaCard';
 import { MediaDetails } from '@/components/media/MediaDetails';
-import { ChevronDown, Play, Info, Sparkles, Heart } from 'lucide-react';
+import { ChevronDown, Play, Info, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -23,7 +24,6 @@ export default function HomePage() {
   const movies = filteredLibrary.filter(item => item.type === 'movie');
   const songs = filteredLibrary.filter(item => item.type === 'song');
 
-  // Featured rotates only through existing anime
   const allAnime = library.filter(item => item.type === 'anime');
   const featured = allAnime[featuredIndex] || allAnime[0];
 
@@ -41,7 +41,6 @@ export default function HomePage() {
     <main className="h-screen overflow-y-scroll snap-y snap-mandatory bg-background relative scroll-smooth">
       <Navbar />
       
-      {/* Hero Section */}
       {!searchTerm && (
         <section className="h-screen w-full snap-start relative flex items-end pb-32 px-6 md:px-16 overflow-hidden">
           {featured && (
@@ -95,9 +94,7 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* Results Rendering */}
       <div className={searchTerm ? "pt-24 px-6 md:px-16" : ""}>
-        {/* Anime Section */}
         {anime.length > 0 && (
           <section className="min-h-screen w-full snap-start py-24 px-6 md:px-16 bg-background flex flex-col justify-center">
             <div className="mb-12">
@@ -114,7 +111,6 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* Movies Section */}
         {movies.length > 0 && (
           <section className="min-h-screen w-full snap-start py-24 px-6 md:px-16 bg-card/20 flex flex-col justify-center">
             <div className="mb-12">
@@ -131,7 +127,6 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* Music Section */}
         {songs.length > 0 && (
           <section className="min-h-screen w-full snap-start py-24 px-6 md:px-16 bg-background flex flex-col justify-center">
             <div className="mb-12">
@@ -144,24 +139,6 @@ export default function HomePage() {
                   <MediaCard item={item} />
                 </div>
               ))}
-            </div>
-          </section>
-        )}
-
-        {/* About Section */}
-        {!searchTerm && (
-          <section className="w-full snap-start py-24 px-6 md:px-16 bg-secondary/10 border-t border-white/5 flex flex-col items-center justify-center text-center">
-            <div className="max-w-xl">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
-                <Heart size={24} className="text-primary fill-current" />
-              </div>
-              <h2 className="text-3xl font-headline font-bold mb-4">About the Experience</h2>
-              <p className="text-2xl font-light text-white/60 italic tracking-wide">
-                "just a little girl -Priya"
-              </p>
-              <div className="mt-12 opacity-30 text-xs uppercase tracking-widest font-bold">
-                Premium Media Destination
-              </div>
             </div>
           </section>
         )}

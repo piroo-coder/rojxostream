@@ -1,7 +1,8 @@
+
 "use client";
 
 import Link from 'next/link';
-import { Play, Home, Layers, Search } from 'lucide-react';
+import { Play, Home, Layers, Search, Heart } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
@@ -12,7 +13,7 @@ export const Navbar: React.FC = () => {
   const { searchTerm, setSearchTerm } = useMedia();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent transition-all duration-300">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-xl border-b border-white/5 transition-all duration-300">
       <div className="container mx-auto px-6 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/40 group-hover:scale-110 transition-transform duration-300">
@@ -23,7 +24,7 @@ export const Navbar: React.FC = () => {
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-10 text-sm font-semibold tracking-wide uppercase">
+        <div className="hidden md:flex items-center gap-8 text-sm font-semibold tracking-wide uppercase">
           <Link 
             href="/" 
             className={cn(
@@ -41,6 +42,15 @@ export const Navbar: React.FC = () => {
             )}
           >
             <Layers size={18} /> Shorts
+          </Link>
+          <Link 
+            href="/about" 
+            className={cn(
+              "flex items-center gap-2 transition-all duration-300 hover:text-pink-400",
+              pathname === "/about" ? "text-pink-400" : "text-white/70"
+            )}
+          >
+            <Heart size={18} /> About
           </Link>
         </div>
 
