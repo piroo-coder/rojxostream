@@ -30,7 +30,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'I Want to Eat Your Pancreas',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp5496669.jpg',
-    mediaUrl: 'https://watchanimeworld.net/videos/i-want-to-eat-your-pancreas.mp4',
+    mediaUrl: 'https://app.videas.fr/embed/media/69469d2b-d21b-4636-94d2-b6613c005089/',
     creator: 'Shin\'ichirō Ushijima',
     imdbRating: '8.0',
     summary: 'An aloof high school student finds the diary of his popular classmate and learns she is dying from a pancreatic disease.',

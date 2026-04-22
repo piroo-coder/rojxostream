@@ -29,6 +29,7 @@ export const MediaDetails: React.FC = () => {
   const isDailymotion = currentlyPlaying.mediaUrl.includes('dailymotion.com') || currentlyPlaying.mediaUrl.includes('dai.ly');
   const isFacebook = currentlyPlaying.mediaUrl.includes('facebook.com');
   const isFebspot = currentlyPlaying.mediaUrl.includes('febspot.com');
+  const isVideas = currentlyPlaying.mediaUrl.includes('videas.fr');
   
   const getYoutubeEmbedUrl = (url: string) => {
     let id = '';
@@ -70,6 +71,11 @@ export const MediaDetails: React.FC = () => {
     return `https://www.febspot.com/embed/${id}`;
   };
 
+  const getVideasEmbedUrl = (url: string) => {
+    // Videas links provided are already embed links, but we ensure it's treated correctly
+    return url;
+  };
+
   const handleOpenSource = () => {
     window.open(currentlyPlaying.mediaUrl, '_blank');
   };
@@ -87,10 +93,11 @@ export const MediaDetails: React.FC = () => {
     if (isDailymotion) return getDailymotionEmbedUrl(currentlyPlaying.mediaUrl);
     if (isFacebook) return getFacebookEmbedUrl(currentlyPlaying.mediaUrl);
     if (isFebspot) return getFebspotEmbedUrl(currentlyPlaying.mediaUrl);
+    if (isVideas) return getVideasEmbedUrl(currentlyPlaying.mediaUrl);
     return '';
   };
 
-  const isEmbeddable = isYoutube || isVimeo || isDailymotion || isFacebook || isFebspot;
+  const isEmbeddable = isYoutube || isVimeo || isDailymotion || isFacebook || isFebspot || isVideas;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-500 overflow-hidden">
