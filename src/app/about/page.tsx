@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Navbar } from '@/components/layout/Navbar';
@@ -88,21 +87,22 @@ export default function AboutPage() {
             {hobbies.map((hobby) => (
               <Card 
                 key={hobby.name} 
-                className="bg-white/5 border-white/10 backdrop-blur-xl hover:bg-white/10 transition-all duration-500 group cursor-default relative overflow-hidden"
+                className="bg-white/5 border-white/10 backdrop-blur-xl transition-all duration-500 group cursor-default relative overflow-hidden h-full"
               >
-                <CardContent className="p-8 flex flex-col items-center gap-4 h-full min-h-[160px] justify-center">
-                  <hobby.icon className={`${hobby.color} group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-500`} size={40} />
-                  
-                  <div className="space-y-2 flex flex-col items-center">
-                    <span className="font-headline font-bold text-xl transition-all duration-500 group-hover:text-white">
-                      {hobby.name}
-                    </span>
-                    
-                    <p className="text-xs text-pink-200/60 italic leading-relaxed opacity-0 group-hover:opacity-100 transition-all duration-500 h-0 group-hover:h-auto overflow-hidden text-center max-w-[150px]">
-                      {hobby.description}
-                    </p>
-                  </div>
+                <CardContent className="p-8 flex flex-col items-center gap-4 h-full min-h-[180px] justify-center transition-all duration-500 group-hover:scale-90 group-hover:blur-sm">
+                  <hobby.icon className={`${hobby.color}`} size={44} />
+                  <span className="font-headline font-bold text-xl text-white/80">
+                    {hobby.name}
+                  </span>
                 </CardContent>
+
+                {/* Translucent Hover Overlay Box */}
+                <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center p-6 text-center">
+                   <div className="absolute inset-2 bg-pink-500/20 backdrop-blur-md rounded-2xl border border-pink-500/30 shadow-xl" />
+                   <p className="relative z-20 text-sm text-white font-medium italic leading-relaxed drop-shadow-md">
+                    {hobby.description}
+                  </p>
+                </div>
               </Card>
             ))}
           </div>
