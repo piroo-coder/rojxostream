@@ -66,7 +66,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'Your Name',
     thumbnailUrl: 'https://4kwallpapers.com/images/walls/thumbs_3t/14943.jpg',
-    mediaUrl: 'https://www.facebook.com/100066648078956/videos/your-name-full-anime-movie-hindi-dubbed-1080p-full-hd-reel-yournameanime-yournam/840091834925484/',
+    mediaUrl: 'https://www.febspot.com/video/524385',
     creator: 'Makoto Shinkai',
     imdbRating: '8.4',
     summary: 'Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart?',
