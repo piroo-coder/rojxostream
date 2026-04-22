@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -64,14 +65,15 @@ export const Navbar: React.FC = () => {
             <div className="absolute -inset-1 bg-gradient-to-r from-pink-500/20 via-primary/20 to-accent/20 rounded-full blur opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition duration-500" />
             
             <div className="relative flex items-center">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-accent transition-colors duration-300" size={14} />
+              {/* Stylish Light Purple Search Icon */}
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400/50 group-focus-within:text-accent transition-colors duration-300" size={16} />
               <Input 
                 placeholder="Find your universe..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className={cn(
-                  "w-48 xl:w-64 pl-10 h-10 bg-white/10 border-white/10 focus:bg-white/15",
-                  "focus-visible:ring-2 focus-visible:ring-accent/30 rounded-full backdrop-blur-xl",
+                  "w-48 xl:w-64 pl-12 h-11 bg-white/10 border-white/10 focus:bg-white/15",
+                  "focus-visible:ring-2 focus-visible:ring-purple-400/30 rounded-full backdrop-blur-xl",
                   "placeholder:text-white/30 text-sm transition-all duration-500",
                   "focus:w-72 xl:focus:w-80 shadow-2xl group-hover:border-white/20",
                   "font-medium"
@@ -79,7 +81,7 @@ export const Navbar: React.FC = () => {
               />
               <Sparkles 
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-pink-500/0 group-focus-within:text-pink-500/50 transition-all duration-700 pointer-events-none" 
-                size={12} 
+                size={14} 
               />
             </div>
           </div>
