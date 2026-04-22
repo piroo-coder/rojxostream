@@ -43,13 +43,24 @@ export default function AboutPage() {
       
       {/* Calm & Romantic Background Animations */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[10%] left-[5%] w-[40rem] h-[40rem] bg-pink-500/5 rounded-full blur-[120px] animate-pulse-slow" />
-        <div className="absolute bottom-[10%] right-[5%] w-[50rem] h-[50rem] bg-purple-500/5 rounded-full blur-[150px] animate-pulse-slow delay-1000" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-primary/5 rounded-full blur-[100px] animate-pulse-slow delay-500" />
+        {/* Ambient Pulsing Blobs - Increased Opacity */}
+        <div className="absolute top-[5%] left-[10%] w-[45rem] h-[45rem] bg-pink-500/10 rounded-full blur-[140px] animate-pulse-slow" />
+        <div className="absolute bottom-[10%] right-[10%] w-[55rem] h-[55rem] bg-purple-500/10 rounded-full blur-[160px] animate-pulse-slow delay-1000" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[35rem] h-[35rem] bg-primary/10 rounded-full blur-[120px] animate-pulse-slow delay-500" />
         
-        {/* Drifting Sparkles / Bokeh effect */}
-        <div className="absolute top-[20%] right-[20%] w-2 h-2 bg-pink-400/20 rounded-full blur-sm animate-bounce duration-[10s] infinite" />
-        <div className="absolute bottom-[30%] left-[15%] w-3 h-3 bg-purple-400/20 rounded-full blur-sm animate-bounce duration-[12s] infinite delay-700" />
+        {/* Drifting Bokeh Sparkles - More visible and identifiable */}
+        <div className="absolute top-[15%] right-[25%] w-4 h-4 bg-pink-400/30 rounded-full blur-md animate-bounce duration-[15s] infinite" />
+        <div className="absolute bottom-[25%] left-[20%] w-6 h-6 bg-purple-400/20 rounded-full blur-lg animate-pulse duration-[8s] infinite delay-1000" />
+        <div className="absolute top-[40%] left-[15%] w-3 h-3 bg-white/20 rounded-full blur-sm animate-bounce duration-[12s] infinite delay-700" />
+        <div className="absolute bottom-[40%] right-[15%] w-5 h-5 bg-accent/20 rounded-full blur-md animate-pulse duration-[10s] infinite delay-2000" />
+        
+        {/* Subtle Star Particles */}
+        <div className="absolute top-[10%] left-[40%] text-pink-500/20 animate-pulse">
+          <Stars size={40} />
+        </div>
+        <div className="absolute bottom-[20%] right-[30%] text-purple-500/20 animate-pulse delay-500">
+          <Sparkles size={30} />
+        </div>
       </div>
       
       <div className="container mx-auto px-6 max-w-4xl relative z-10">
