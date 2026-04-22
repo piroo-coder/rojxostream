@@ -94,7 +94,7 @@ export default function HomePage() {
         </section>
       )}
 
-      <div className={searchTerm ? "pt-24 px-6 md:px-16" : ""}>
+      <div className={searchTerm ? "pt-20 px-6 md:px-16" : ""}>
         {anime.length > 0 && (
           <section className="min-h-screen w-full snap-start py-24 px-6 md:px-16 bg-background flex flex-col justify-center">
             <div className="mb-12">

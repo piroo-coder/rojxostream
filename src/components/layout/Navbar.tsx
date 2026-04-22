@@ -13,7 +13,7 @@ export const Navbar: React.FC = () => {
   const { searchTerm, setSearchTerm } = useMedia();
 
   return (
-    <nav className="fixed top-6 left-0 right-0 z-50 px-6 md:px-12 h-16 bg-transparent border-none shadow-none transition-all duration-500 flex items-center">
+    <nav className="fixed top-3 left-0 right-0 z-50 px-6 md:px-12 h-16 bg-transparent border-none shadow-none transition-all duration-500 flex items-center">
       <div className="w-full flex items-center justify-between relative">
         {/* Top Left: Logo */}
         <div className="flex items-center justify-start min-w-[150px]">

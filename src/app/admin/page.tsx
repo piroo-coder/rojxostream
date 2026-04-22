@@ -79,7 +79,7 @@ export default function AdminPage() {
   };
 
   return (
-    <main className="min-h-screen pb-20 pt-24 bg-background">
+    <main className="min-h-screen pb-20 pt-20 bg-background">
       <Navbar />
       
       <div className="container mx-auto px-4 max-w-5xl">

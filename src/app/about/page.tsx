@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Navbar } from '@/components/layout/Navbar';
@@ -38,7 +39,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-background pt-32 pb-20 overflow-hidden relative">
+    <main className="min-h-screen bg-background pt-24 pb-20 overflow-hidden relative">
       <Navbar />
       
       {/* Calm & Romantic Background Animations */}
