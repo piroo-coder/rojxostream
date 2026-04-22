@@ -5,26 +5,26 @@
 
 @layer base {
   :root {
-    --background: 256 23% 15%;
+    --background: 256 23% 10%;
     --foreground: 0 0% 100%;
-    --card: 256 23% 18%;
+    --card: 256 23% 14%;
     --card-foreground: 0 0% 100%;
-    --popover: 256 23% 15%;
+    --popover: 256 23% 10%;
     --popover-foreground: 0 0% 100%;
-    --primary: 259 75% 50%;
+    --primary: 259 75% 55%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 256 23% 25%;
+    --secondary: 256 23% 20%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 256 10% 30%;
-    --muted-foreground: 256 10% 70%;
-    --accent: 203 96% 59%;
-    --accent-foreground: 256 23% 15%;
+    --muted: 256 10% 25%;
+    --muted-foreground: 256 10% 65%;
+    --accent: 195 90% 55%;
+    --accent-foreground: 256 23% 10%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 256 23% 25%;
-    --input: 256 23% 25%;
-    --ring: 259 75% 50%;
-    --radius: 0.75rem;
+    --border: 256 23% 20%;
+    --input: 256 23% 20%;
+    --ring: 259 75% 55%;
+    --radius: 1rem;
   }
 }
 
@@ -33,11 +33,21 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground font-body overflow-x-hidden;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline;
   }
+}
+
+/* Custom Animations */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.8; transform: scale(1.02); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 8s infinite ease-in-out;
 }
 
 .shorts-container {
@@ -58,7 +68,19 @@
   right: 0;
   bottom: 0;
   z-index: -1;
-  filter: blur(80px);
-  opacity: 0.4;
-  transition: background-image 1s ease-in-out;
+  filter: blur(100px);
+  opacity: 0.5;
+  transition: background-image 1.5s ease-in-out;
+}
+
+/* Full Screen Layout Adjustments */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+.snap-container {
+  scroll-snap-type: y mandatory;
+  height: 100vh;
+  overflow-y: auto;
 }

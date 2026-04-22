@@ -18,14 +18,12 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentlyPlaying, setCurrentlyPlaying] = useState<MediaItem | null>(null);
 
   useEffect(() => {
-    // Initial data based on user request
     const initialData: MediaItem[] = [
-      // Anime
       {
         id: 'a1',
         type: 'anime',
         title: 'Suzume',
-        thumbnailUrl: 'https://picsum.photos/seed/suzume/600/400',
+        thumbnailUrl: 'https://picsum.photos/seed/suzume/1200/800',
         mediaUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
         creator: 'Makoto Shinkai',
         imdbRating: '7.7',
@@ -93,7 +91,6 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         moral: 'Sometimes the world\'s balance matters less than the person you love.',
         genre: ['Fantasy', 'Drama']
       },
-      // Movies
       {
         id: 'm1',
         type: 'movie',
@@ -178,7 +175,6 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         moral: 'True spirituality is found in humanity, not just in rituals.',
         genre: ['Comedy', 'Fantasy']
       },
-      // Songs
       {
         id: 's1',
         type: 'song',
@@ -201,7 +197,6 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         youtubeViews: '150M',
         genre: ['Bollywood', 'Romantic']
       },
-      // Shorts
       {
         id: 'sh1',
         type: 'short',
