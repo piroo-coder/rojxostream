@@ -66,7 +66,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'Your Name',
     thumbnailUrl: 'https://4kwallpapers.com/images/walls/thumbs_3t/14943.jpg',
-    mediaUrl: 'https://www.febspot.com/video/524385',
+    mediaUrl: 'https://mega.nz/file/zkl1iA6C#KKh2eRJzhBy6yiUNbWOvKyp6S3UxvBrEptMJ1h47MyQ',
     creator: 'Makoto Shinkai',
     imdbRating: '8.4',
     summary: 'Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart?',
