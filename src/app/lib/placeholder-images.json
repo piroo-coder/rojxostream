@@ -1,0 +1,29 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "anime-1",
+      "description": "Cyberpunk anime city skyline",
+      "imageUrl": "https://picsum.photos/seed/anime1/1200/800",
+      "imageHint": "cyberpunk anime"
+    },
+    {
+      "id": "movie-1",
+      "description": "Cinematic sci-fi landscape",
+      "imageUrl": "https://picsum.photos/seed/movie1/1200/800",
+      "imageHint": "sci-fi movie"
+    },
+    {
+      "id": "song-1",
+      "description": "Neon music studio",
+      "imageUrl": "https://picsum.photos/seed/song1/1200/800",
+      "imageHint": "music studio"
+    },
+    {
+      "id": "short-1",
+      "description": "Urban street photography",
+      "imageUrl": "https://picsum.photos/seed/short1/1080/1920",
+      "imageHint": "street photography"
+    }
+  ]
+}
