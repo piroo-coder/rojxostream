@@ -27,6 +27,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ item }) => {
           src={item.thumbnailUrl}
           alt={item.title}
           fill
+          sizes="400px"
           className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
           data-ai-hint={item.type + " cover"}
         />

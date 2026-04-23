@@ -50,6 +50,7 @@ export default function HomePage() {
                 src={featured.thumbnailUrl} 
                 alt={featured.title}
                 fill
+                sizes="100vw"
                 className="object-cover scale-105 animate-pulse-slow transition-all duration-1000 animate-in fade-in duration-1000"
                 priority
               />
@@ -63,7 +64,7 @@ export default function HomePage() {
               <Sparkles className="text-accent animate-bounce" size={20} />
               <span className="text-accent font-bold tracking-widest uppercase text-sm">Featured Masterpiece</span>
             </div>
-            <h1 className="text-6xl md:text-9xl font-headline font-extrabold mb-6 tracking-tighter leading-none">
+            <h1 className="text-6xl md:text-9xl font-headline font-bold mb-6 tracking-tighter leading-none">
               {featured?.title}
             </h1>
             <p className="text-xl md:text-2xl text-white/70 mb-8 max-w-2xl font-light leading-relaxed">

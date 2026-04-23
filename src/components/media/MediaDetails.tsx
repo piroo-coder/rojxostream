@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -107,6 +108,7 @@ export const MediaDetails: React.FC = () => {
           src={bgImage} 
           alt="Immersive Background"
           fill
+          sizes="100vw"
           className="object-cover scale-110 blur-xl opacity-40 transition-all duration-1000"
           priority
         />
@@ -139,6 +141,7 @@ export const MediaDetails: React.FC = () => {
                         src={currentlyPlaying.audioBackgroundUrl || currentlyPlaying.thumbnailUrl} 
                         alt="Audio Visualization Background"
                         fill
+                        sizes="100vw"
                         className="object-cover opacity-60 transition-opacity duration-1000"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />

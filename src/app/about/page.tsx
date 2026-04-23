@@ -75,6 +75,7 @@ export default function AboutPage() {
                 src={profileImage}
                 alt="Priya - Hinata"
                 fill
+                sizes="192px"
                 className="object-cover"
                 data-ai-hint="hinata cute"
                 unoptimized
