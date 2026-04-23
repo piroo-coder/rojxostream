@@ -39,10 +39,10 @@ export default function DMCAPage() {
             </CardHeader>
             <CardContent className="p-8 space-y-6 text-white/70 leading-relaxed font-body">
               <p>
-                This website, <span className="text-white font-bold italic">RojXOStream</span>, is owned and operated by <span className="text-primary font-bold">Priya</span>. We respect the intellectual property rights of others and expect our users to do the same.
+                This website, <span className="text-white font-bold italic">RojXOStream</span>, is owned and operated by me, <span className="text-primary font-bold">Priya</span>. I am an individual creator, and I respect the intellectual property rights of others. I expect everyone who visits my site to do the same.
               </p>
               <p>
-                In accordance with the Digital Millennium Copyright Act (DMCA), we will respond expeditiously to claims of copyright infringement that are reported to our designated owner.
+                In accordance with the Digital Millennium Copyright Act (DMCA), I will respond expeditiously to claims of copyright infringement that are reported directly to me.
               </p>
             </CardContent>
           </Card>
@@ -56,7 +56,7 @@ export default function DMCAPage() {
             </CardHeader>
             <CardContent className="p-8 space-y-6 text-white/70 leading-relaxed">
               <p>
-                If you are a copyright owner, or are authorized to act on behalf of one, please report alleged copyright infringements taking place on or through the site by contacting <span className="text-white font-bold">Priya</span>.
+                If you are a copyright owner, or are authorized to act on behalf of one, please report alleged copyright infringements taking place on or through this site by contacting me, <span className="text-white font-bold">Priya</span>.
               </p>
               
               <div className="bg-black/40 p-6 rounded-2xl border border-white/5 space-y-4">
@@ -65,10 +65,10 @@ export default function DMCAPage() {
                   Required Information
                 </h4>
                 <ul className="text-sm space-y-3 list-disc pl-5">
-                  <li>Clear identification of the copyrighted work claimed to have been infringed.</li>
-                  <li>Identification of the material that is claimed to be infringing and where it is located on the site (URLs).</li>
-                  <li>Your contact information (Email, Phone number).</li>
-                  <li><span className="text-white font-bold italic">Crucial:</span> Valid proof of ownership or authorization to act for the owner.</li>
+                  <li>Clear identification of the copyrighted work you claim has been infringed.</li>
+                  <li>Identification of the material that is claimed to be infringing and where it is located on the site (please provide specific URLs).</li>
+                  <li>Your contact information (Email and Phone number).</li>
+                  <li><span className="text-white font-bold italic">Crucial:</span> Valid proof of ownership or clear authorization to act for the owner.</li>
                   <li>A statement that you have a good faith belief that use of the material is not authorized.</li>
                 </ul>
               </div>
@@ -79,7 +79,7 @@ export default function DMCAPage() {
                 </div>
                 <div>
                   <p className="text-xs uppercase tracking-widest font-black text-white/40">Contact for Takedowns</p>
-                  <p className="text-lg font-headline font-bold text-white">Contact Priya directly via social channels.</p>
+                  <p className="text-lg font-headline font-bold text-white">Contact me directly via my social channels.</p>
                 </div>
               </div>
             </CardContent>
