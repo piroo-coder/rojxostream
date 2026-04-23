@@ -96,7 +96,7 @@
 }
 
 .animate-heartbeat {
-  animation: heartbeat 1.5s ease-in-out infinite;
+  animation: heartbeat 0.8s ease-in-out infinite;
 }
 
 .animate-heart-pop {
