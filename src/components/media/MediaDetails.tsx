@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -60,16 +61,21 @@ export const MediaDetails: React.FC = () => {
   };
 
   const getDropboxEmbedUrl = (url: string) => {
-    return url.replace('dl=0', 'raw=1');
+    // Convert to a direct download/stream link
+    return url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('dl=0', 'raw=1');
   };
 
   const getBilibiliEmbedUrl = (url: string) => {
-    // For bilibili.tv (Global), the ID is usually the last part of the numeric path
+    if (url.includes('bilibili.com')) {
+      const bvidMatch = url.match(/BV[a-zA-Z0-9]+/);
+      if (bvidMatch) return `https://player.bilibili.com/player.html?bvid=${bvidMatch[0]}&autoplay=1`;
+    }
     const parts = url.split('/');
     const id = parts[parts.length - 1].split('?')[0];
-    // Global Bilibili TV usually doesn't have a direct "embed" subdomain like YouTube, 
-    // but some regions support a specific route. We'll try the common Global iframe pattern.
-    return `https://www.bilibili.tv/en/video/${id}`;
+    if (url.includes('bilibili.tv')) {
+      return `https://www.bilibili.tv/en/video/${id}`;
+    }
+    return url;
   };
 
   const handleOpenSource = () => window.open(currentlyPlaying.mediaUrl, '_blank');
@@ -179,7 +185,7 @@ export const MediaDetails: React.FC = () => {
                   )}
 
                   {(!isSong || songMode === 'video') && (
-                    (isDropbox || isBilibili) ? (
+                    (isDropbox) ? (
                       <video 
                         src={getEmbedSource()}
                         className="w-full h-full object-contain absolute inset-0"
