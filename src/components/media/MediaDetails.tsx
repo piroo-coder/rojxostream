@@ -28,6 +28,7 @@ export const MediaDetails: React.FC = () => {
   const isFacebook = currentlyPlaying.mediaUrl.includes('facebook.com');
   const isDropbox = currentlyPlaying.mediaUrl.includes('dropbox.com');
   const isVideas = currentlyPlaying.mediaUrl.includes('videas.fr');
+  const isBilibili = currentlyPlaying.mediaUrl.includes('bilibili.tv') || currentlyPlaying.mediaUrl.includes('bilibili.com');
   const isGenericEmbed = currentlyPlaying.mediaUrl.includes('/embed/');
   
   const getYoutubeEmbedUrl = (url: string) => {
@@ -59,8 +60,16 @@ export const MediaDetails: React.FC = () => {
   };
 
   const getDropboxEmbedUrl = (url: string) => {
-    // Dropbox dl=0 doesn't embed, dl=1 or raw=1 does.
     return url.replace('dl=0', 'raw=1');
+  };
+
+  const getBilibiliEmbedUrl = (url: string) => {
+    // For bilibili.tv (Global), the ID is usually the last part of the numeric path
+    const parts = url.split('/');
+    const id = parts[parts.length - 1].split('?')[0];
+    // Global Bilibili TV usually doesn't have a direct "embed" subdomain like YouTube, 
+    // but some regions support a specific route. We'll try the common Global iframe pattern.
+    return `https://www.bilibili.tv/en/video/${id}`;
   };
 
   const handleOpenSource = () => window.open(currentlyPlaying.mediaUrl, '_blank');
@@ -78,10 +87,11 @@ export const MediaDetails: React.FC = () => {
     if (isVimeo) return getVimeoEmbedUrl(currentlyPlaying.mediaUrl);
     if (isFacebook) return getFacebookEmbedUrl(currentlyPlaying.mediaUrl);
     if (isDropbox) return getDropboxEmbedUrl(currentlyPlaying.mediaUrl);
+    if (isBilibili) return getBilibiliEmbedUrl(currentlyPlaying.mediaUrl);
     return currentlyPlaying.mediaUrl;
   };
 
-  const isEmbeddable = isYoutube || isDailymotion || isVimeo || isFacebook || isDropbox || isVideas || isGenericEmbed;
+  const isEmbeddable = isYoutube || isDailymotion || isVimeo || isFacebook || isDropbox || isVideas || isGenericEmbed || isBilibili;
 
   const barDelays = [0.5, 0.2, 1.2, 0.9, 2.3, 1.3, 3.1, 1.9];
 
@@ -143,7 +153,7 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* New Pulse Visualizer Container */}
+                      {/* Pulse Visualizer Container */}
                       <div className="relative z-30 flex flex-col items-center gap-6">
                         <div className="flex items-end gap-1.5 h-[60px]">
                           {barDelays.map((delay, i) => (
@@ -169,7 +179,7 @@ export const MediaDetails: React.FC = () => {
                   )}
 
                   {(!isSong || songMode === 'video') && (
-                    isDropbox ? (
+                    (isDropbox || isBilibili) ? (
                       <video 
                         src={getEmbedSource()}
                         className="w-full h-full object-contain absolute inset-0"
