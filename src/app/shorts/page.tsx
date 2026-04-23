@@ -30,8 +30,6 @@ const ShortItem = ({
     }
     
     const muteParam = muted ? 1 : 0;
-    // Autoplay is only 1 when isActive is true.
-    // To enable looping in YouTube embed, 'loop=1' and 'playlist=ID' are required.
     return `https://www.youtube.com/embed/${id}?autoplay=${active ? 1 : 0}&mute=${muteParam}&controls=1&rel=0&modestbranding=1&enablejsapi=1&loop=1&playlist=${id}`;
   };
 
@@ -41,9 +39,9 @@ const ShortItem = ({
       data-short-id={short.id}
     >
       {/* Video Container */}
-      <div className="relative w-full h-full max-w-[450px] aspect-[9/16] bg-neutral-900 shadow-2xl">
+      <div className="relative w-full h-full max-w-[450px] aspect-[9/16] bg-neutral-900 shadow-2xl flex items-center justify-center">
         {isActive ? (
-          <>
+          <div className="w-full h-full">
             {isYoutube ? (
               <iframe
                 src={getYoutubeEmbedUrl(short.mediaUrl, isActive, isMuted)}
@@ -63,76 +61,81 @@ const ShortItem = ({
                 playsInline
               />
             )}
-          </>
+          </div>
         ) : (
           <div className="w-full h-full relative flex items-center justify-center">
             <img 
               src={short.thumbnailUrl} 
               alt={short.title} 
-              className="w-full h-full object-cover opacity-30 blur-xl"
+              className="w-full h-full object-cover opacity-30 blur-2xl"
             />
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center animate-pulse">
-                <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[15px] border-l-white border-b-[10px] border-b-transparent ml-1" />
+              <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center animate-pulse border border-white/20">
+                <div className="w-0 h-0 border-t-[12px] border-t-transparent border-l-[20px] border-l-white border-b-[12px] border-b-transparent ml-2" />
               </div>
             </div>
           </div>
         )}
       </div>
       
-      {/* Overlay - allows clicks to reach the iframe */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-10" />
-      
-      {/* Interaction Bar */}
-      <div className="absolute right-4 bottom-32 flex flex-col gap-6 z-20">
-        <div className="flex flex-col items-center gap-1">
-          <Button 
-            size="icon" 
-            variant="ghost" 
-            className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all w-12 h-12"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleMute();
-            }}
-          >
-            {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-          </Button>
-          <span className="text-[10px] font-medium uppercase tracking-tighter shadow-sm">Sound</span>
-        </div>
-        <div className="flex flex-col items-center gap-1">
-          <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all w-12 h-12">
-            <Heart size={24} />
-          </Button>
-          <span className="text-[10px] font-medium shadow-sm">12K</span>
-        </div>
-        <div className="flex flex-col items-center gap-1">
-          <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all w-12 h-12">
-            <MessageCircle size={24} />
-          </Button>
-          <span className="text-[10px] font-medium shadow-sm">420</span>
-        </div>
-        <div className="flex flex-col items-center gap-1">
-          <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-md hover:bg-primary hover:text-white transition-all w-12 h-12">
-            <Share2 size={24} />
-          </Button>
-          <span className="text-[10px] font-medium shadow-sm">Share</span>
+      {/* Interaction UI */}
+      <div className="absolute inset-0 pointer-events-none flex flex-col justify-end p-6 z-20">
+        <div className="flex justify-between items-end gap-4 max-w-[450px] mx-auto w-full">
+          {/* Info Side */}
+          <div className="flex-1 pointer-events-auto text-white space-y-4 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center ring-2 ring-white/20 overflow-hidden">
+                <User size={24} />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-headline font-bold text-lg leading-none">@{short.creator || 'Creator'}</span>
+                <span className="text-[10px] uppercase tracking-widest text-white/60">Following</span>
+              </div>
+            </div>
+            <div>
+              <p className="text-base font-bold line-clamp-2 drop-shadow-lg mb-1">{short.title}</p>
+              <p className="text-sm text-white/80 line-clamp-1 drop-shadow-md font-light">{short.description}</p>
+            </div>
+          </div>
+
+          {/* Buttons Side */}
+          <div className="flex flex-col gap-6 pointer-events-auto mb-6">
+             <div className="flex flex-col items-center gap-1">
+              <Button 
+                size="icon" 
+                variant="ghost" 
+                className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-primary transition-all w-14 h-14 border border-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleMute();
+                }}
+              >
+                {isMuted ? <VolumeX size={28} /> : <Volume2 size={28} />}
+              </Button>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-pink-500 transition-all w-14 h-14 border border-white/10">
+                <Heart size={28} className="fill-current" />
+              </Button>
+              <span className="text-xs font-bold shadow-sm">24K</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-blue-500 transition-all w-14 h-14 border border-white/10">
+                <MessageCircle size={28} />
+              </Button>
+              <span className="text-xs font-bold shadow-sm">1.2K</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Button size="icon" variant="ghost" className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-accent transition-all w-14 h-14 border border-white/10">
+                <Share2 size={28} />
+              </Button>
+              <span className="text-xs font-bold shadow-sm">Share</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Bottom Info */}
-      <div className="absolute bottom-10 left-4 right-20 z-20 text-white pointer-events-none">
-        <div className="flex items-center gap-3 mb-3 pointer-events-auto">
-          <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center ring-2 ring-white/20">
-            <User size={20} />
-          </div>
-          <span className="font-headline font-bold text-lg drop-shadow-lg">@{short.creator || 'Creator'}</span>
-          <Button size="sm" className="rounded-full h-7 px-4 bg-primary hover:bg-primary/90 text-xs shadow-lg">Follow</Button>
-        </div>
-        <div className="pointer-events-auto">
-          <p className="text-sm font-medium line-clamp-1 mb-1 drop-shadow-lg">{short.title}</p>
-          <p className="text-xs text-white/70 line-clamp-2 max-w-sm drop-shadow-md">{short.description}</p>
-        </div>
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 pointer-events-none z-10" />
     </div>
   );
 };
@@ -149,14 +152,12 @@ export default function ShortsPage() {
      item.creator?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  // Set initial active short
   useEffect(() => {
     if (shorts.length > 0 && !activeId) {
       setActiveId(shorts[0].id);
     }
   }, [shorts, activeId]);
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
@@ -183,11 +184,10 @@ export default function ShortsPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [shorts, activeId]);
 
-  // Intersection Observer for scroll-based switching
   useEffect(() => {
     const observerOptions = {
       root: containerRef.current,
-      threshold: 0.7, // Trigger when 70% of the item is visible
+      threshold: 0.8,
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -229,9 +229,12 @@ export default function ShortsPage() {
             </div>
           ))
         ) : (
-          <div className="h-full flex flex-col items-center justify-center text-muted-foreground pt-20">
-            <h3 className="text-xl font-bold mb-2">No shorts found</h3>
-            <p className="text-sm">Try a different search term.</p>
+          <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8 text-center pt-24">
+            <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-6">
+              <Layers size={40} className="text-white/20" />
+            </div>
+            <h3 className="text-2xl font-headline font-bold mb-2">No Shorts available</h3>
+            <p className="text-sm max-w-xs">Your search didn't reveal any short universes. Try exploring everything!</p>
           </div>
         )}
       </div>

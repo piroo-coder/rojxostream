@@ -12,10 +12,8 @@ import { cn } from '@/lib/utils';
 
 export const MediaDetails: React.FC = () => {
   const { currentlyPlaying, setCurrentlyPlaying } = useMedia();
-  // Default to audio mode as requested
   const [songMode, setSongMode] = useState<'video' | 'audio'>('audio');
 
-  // Reset mode to audio whenever a new item is selected
   useEffect(() => {
     if (currentlyPlaying) {
       setSongMode('audio');
@@ -26,11 +24,6 @@ export const MediaDetails: React.FC = () => {
 
   const isSong = currentlyPlaying.type === 'song';
   const isYoutube = currentlyPlaying.mediaUrl.includes('youtube.com') || currentlyPlaying.mediaUrl.includes('youtu.be');
-  const isVimeo = currentlyPlaying.mediaUrl.includes('vimeo.com');
-  const isDailymotion = currentlyPlaying.mediaUrl.includes('dailymotion.com') || currentlyPlaying.mediaUrl.includes('dai.ly');
-  const isFacebook = currentlyPlaying.mediaUrl.includes('facebook.com');
-  const isFebspot = currentlyPlaying.mediaUrl.includes('febspot.com');
-  const isVideas = currentlyPlaying.mediaUrl.includes('videas.fr');
   
   const getYoutubeEmbedUrl = (url: string) => {
     let id = '';
@@ -41,45 +34,10 @@ export const MediaDetails: React.FC = () => {
     } else if (url.includes('youtu.be/')) {
       id = url.split('be/')[1].split('?')[0];
     }
-    
-    return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`;
+    return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&loop=1&playlist=${id}`;
   };
 
-  const getVimeoEmbedUrl = (url: string) => {
-    const parts = url.split('vimeo.com/');
-    const idPart = parts[1] || '';
-    const id = idPart.split('?')[0];
-    return `https://player.vimeo.com/video/${id}?autoplay=1&badge=0&autopause=0&player_id=0&app_id=58479`;
-  };
-
-  const getDailymotionEmbedUrl = (url: string) => {
-    let id = '';
-    if (url.includes('/video/')) {
-      id = url.split('/video/')[1].split('?')[0];
-    } else if (url.includes('dai.ly/')) {
-      id = url.split('dai.ly/')[1].split('?')[0];
-    }
-    return `https://www.dailymotion.com/embed/video/${id}?autoplay=1&mute=0`;
-  };
-
-  const getFacebookEmbedUrl = (url: string) => {
-    return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&t=0&autoplay=true`;
-  };
-
-  const getFebspotEmbedUrl = (url: string) => {
-    const parts = url.split('/video/');
-    const id = parts[1] || '';
-    return `https://www.febspot.com/embed/${id}`;
-  };
-
-  const getVideasEmbedUrl = (url: string) => {
-    // Videas links provided are already embed links, but we ensure it's treated correctly
-    return url;
-  };
-
-  const handleOpenSource = () => {
-    window.open(currentlyPlaying.mediaUrl, '_blank');
-  };
+  const handleOpenSource = () => window.open(currentlyPlaying.mediaUrl, '_blank');
 
   const handleModeChange = (mode: 'video' | 'audio') => {
     if (mode === songMode) return;
@@ -90,78 +48,65 @@ export const MediaDetails: React.FC = () => {
 
   const getEmbedSource = () => {
     if (isYoutube) return getYoutubeEmbedUrl(currentlyPlaying.mediaUrl);
-    if (isVimeo) return getVimeoEmbedUrl(currentlyPlaying.mediaUrl);
-    if (isDailymotion) return getDailymotionEmbedUrl(currentlyPlaying.mediaUrl);
-    if (isFacebook) return getFacebookEmbedUrl(currentlyPlaying.mediaUrl);
-    if (isFebspot) return getFebspotEmbedUrl(currentlyPlaying.mediaUrl);
-    if (isVideas) return getVideasEmbedUrl(currentlyPlaying.mediaUrl);
-    return '';
+    return currentlyPlaying.mediaUrl;
   };
 
-  const isEmbeddable = isYoutube || isVimeo || isDailymotion || isFacebook || isFebspot || isVideas;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-500 overflow-hidden">
-      {/* Immersive Full Screen Background */}
+    <div className="fixed inset-0 z-[60] flex items-center justify-center animate-in fade-in duration-500 overflow-hidden bg-background">
+      {/* Immersive Background Blur */}
       <div className="absolute inset-0 z-0">
         <Image 
           src={bgImage} 
           alt="Immersive Background"
           fill
           sizes="100vw"
-          className="object-cover scale-110 blur-xl opacity-40 transition-all duration-1000"
+          className="object-cover scale-110 blur-[100px] opacity-20"
           priority
         />
-        <div className="absolute inset-0 bg-background/60" />
+        <div className="absolute inset-0 bg-background/80" />
       </div>
 
+      {/* Close Button */}
       <Button 
         variant="ghost" 
         size="icon" 
-        className="absolute top-6 right-6 text-white/50 hover:text-white z-[70] bg-white/10 rounded-full backdrop-blur-xl transition-all hover:scale-110"
-        onClick={() => {
-          setCurrentlyPlaying(null);
-        }}
+        className="fixed top-4 right-4 md:top-8 md:right-8 text-white z-[80] bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-3xl border border-white/10 w-12 h-12"
+        onClick={() => setCurrentlyPlaying(null)}
       >
-        <X size={28} />
+        <X size={24} />
       </Button>
 
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0 max-w-7xl w-full h-full lg:h-[85vh] bg-card/10 rounded-[2.5rem] border border-white/10 overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] backdrop-blur-3xl transition-all duration-500">
+      <div className="relative z-10 flex flex-col lg:flex-row w-full h-full max-w-[1920px] mx-auto overflow-hidden">
         
-        <div className="relative w-full h-full bg-black/20 flex flex-col overflow-hidden border-r border-white/5">
-          {/* Playback Area */}
-          <div className="flex-1 relative overflow-hidden group">
-            {isEmbeddable ? (
+        {/* Left Section: Playback Player */}
+        <div className="relative w-full lg:w-[60%] xl:w-[65%] h-[40vh] sm:h-[50vh] lg:h-full bg-black flex flex-col shadow-2xl">
+          <div className="flex-1 relative overflow-hidden">
+            {isYoutube ? (
               <div className="w-full h-full relative">
-                {/* Audio Mode View - Default for songs */}
                 {isSong && songMode === 'audio' && (
-                  <div key="audio-player-ui" className="absolute inset-0 z-20 flex flex-col items-center justify-center animate-in zoom-in-95 duration-500">
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center animate-in zoom-in-95 duration-500 overflow-hidden">
                     <div className="absolute inset-0 z-10">
                        <Image 
-                        src={currentlyPlaying.audioBackgroundUrl || currentlyPlaying.thumbnailUrl} 
-                        alt="Audio Visualization Background"
+                        src={bgImage} 
+                        alt="Visualization"
                         fill
                         sizes="100vw"
-                        className="object-cover opacity-60 transition-opacity duration-1000"
+                        className="object-cover opacity-40 blur-2xl"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                     </div>
                     
-                    <div className="relative z-30 flex flex-col items-center gap-8 text-center p-6">
-                      <div className="w-56 h-56 rounded-full bg-primary/10 backdrop-blur-2xl flex items-center justify-center animate-pulse border-4 border-primary/20 shadow-[0_0_100px_rgba(var(--primary),0.3)]">
-                        <div className="relative">
-                           <Music className="text-primary animate-bounce-slow" size={90} />
-                           <div className="absolute -inset-4 bg-primary/20 blur-2xl rounded-full -z-10" />
-                        </div>
+                    <div className="relative z-30 flex flex-col items-center gap-6 md:gap-10 text-center p-8 max-w-2xl">
+                      <div className="w-40 h-40 md:w-64 md:h-64 rounded-full bg-primary/20 backdrop-blur-3xl flex items-center justify-center animate-pulse border-2 border-primary/30 shadow-[0_0_80px_rgba(var(--primary),0.2)]">
+                         <Music className="text-primary animate-bounce-slow w-16 h-16 md:w-24 md:h-24" />
                       </div>
-                      <div className="space-y-3">
-                        <p className="text-xs font-black uppercase tracking-[0.8em] text-accent/80 drop-shadow-md">Now Playing Audio</p>
-                        <h2 className="text-4xl font-headline font-bold text-white drop-shadow-2xl">{currentlyPlaying.title}</h2>
-                        <p className="text-xl text-white/70 font-medium tracking-wide">{currentlyPlaying.creator}</p>
+                      <div className="space-y-4">
+                        <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.6em] text-accent/80">Listening Mode Active</p>
+                        <h2 className="text-2xl md:text-5xl font-headline font-bold text-white line-clamp-2 leading-tight">{currentlyPlaying.title}</h2>
+                        <p className="text-lg md:text-2xl text-white/60 font-medium">{currentlyPlaying.creator}</p>
                       </div>
                     </div>
 
-                    {/* Keep sound playing in background */}
                     <iframe 
                       src={getEmbedSource()}
                       className="absolute opacity-0 pointer-events-none w-1 h-1"
@@ -170,28 +115,24 @@ export const MediaDetails: React.FC = () => {
                   </div>
                 )}
 
-                {/* Video Mode View */}
                 {(!isSong || songMode === 'video') && (
                   <iframe 
-                    key="video-player-active"
                     src={getEmbedSource()}
-                    className="w-full h-full border-0 animate-in fade-in zoom-in-95 duration-700"
+                    className="w-full h-full border-0 animate-in fade-in duration-700"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center h-full p-12 text-center gap-8">
-                <div className="w-24 h-24 rounded-3xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-2xl">
-                  <ExternalLink size={48} />
+              <div className="flex flex-col items-center justify-center h-full p-12 text-center gap-10">
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                  <ExternalLink className="w-12 h-12 md:w-16 md:h-16" />
                 </div>
                 <div className="max-w-md">
-                  <h3 className="text-3xl font-headline font-bold mb-3">Launch Content</h3>
-                  <p className="text-white/60 text-lg mb-8">
-                    This masterpiece is ready for launch.
-                  </p>
-                  <Button onClick={handleOpenSource} size="lg" className="h-16 px-12 rounded-2xl bg-primary hover:bg-primary/90 text-xl font-bold shadow-2xl shadow-primary/20">
+                  <h3 className="text-2xl md:text-4xl font-headline font-bold mb-4">Launch Content</h3>
+                  <p className="text-white/50 mb-8 font-light leading-relaxed">This universe is hosted on an external plane. Ready to teleport?</p>
+                  <Button onClick={handleOpenSource} size="lg" className="h-16 px-12 rounded-2xl bg-primary text-xl font-bold w-full shadow-2xl shadow-primary/20">
                     <Play size={24} className="mr-3 fill-current" /> Play Now
                   </Button>
                 </div>
@@ -199,51 +140,51 @@ export const MediaDetails: React.FC = () => {
             )}
           </div>
 
-          {/* Mode Toggle for Songs */}
+          {/* Mode Selector for Songs */}
           {isSong && (
-            <div className="p-8 bg-black/40 backdrop-blur-3xl border-t border-white/5 flex items-center justify-center gap-10 z-30">
+            <div className="p-6 md:p-8 bg-black/80 backdrop-blur-3xl border-t border-white/5 flex items-center justify-center gap-6">
               <Button 
                 variant={songMode === 'audio' ? 'default' : 'ghost'} 
-                size="lg"
                 className={cn(
-                  "rounded-full gap-3 px-10 h-16 text-lg font-black transition-all hover:scale-105",
-                  songMode === 'audio' ? "bg-primary shadow-[0_0_30px_rgba(var(--primary),0.4)]" : "text-white/40 hover:text-white"
+                  "rounded-2xl gap-3 px-8 h-14 md:h-16 text-sm md:text-lg font-bold transition-all flex-1 md:flex-none",
+                  songMode === 'audio' ? "bg-primary shadow-xl shadow-primary/20" : "text-white/40 hover:text-white"
                 )}
                 onClick={() => handleModeChange('audio')}
               >
-                <Headset size={22} /> Audio
+                <Headset size={22} /> Audio Only
               </Button>
               <Button 
                 variant={songMode === 'video' ? 'default' : 'ghost'} 
-                size="lg"
                 className={cn(
-                  "rounded-full gap-3 px-10 h-16 text-lg font-black transition-all hover:scale-105",
-                  songMode === 'video' ? "bg-primary shadow-[0_0_30px_rgba(var(--primary),0.4)]" : "text-white/40 hover:text-white"
+                  "rounded-2xl gap-3 px-8 h-14 md:h-16 text-sm md:text-lg font-bold transition-all flex-1 md:flex-none",
+                  songMode === 'video' ? "bg-primary shadow-xl shadow-primary/20" : "text-white/40 hover:text-white"
                 )}
                 onClick={() => handleModeChange('video')}
               >
-                <Video size={22} /> Video
+                <Video size={22} /> Video Mode
               </Button>
             </div>
           )}
         </div>
 
-        {/* Info Sidebar */}
-        <ScrollArea className="h-full bg-black/10 backdrop-blur-md">
-          <div className="p-10 lg:p-14 space-y-12">
+        {/* Right Section: Details & Info */}
+        <ScrollArea className="flex-1 h-[60vh] sm:h-[50vh] lg:h-full bg-black/40 backdrop-blur-md">
+          <div className="p-8 md:p-16 lg:p-20 space-y-12">
             <div className="animate-in slide-in-from-right duration-700">
               <div className="flex items-center gap-3 mb-6">
-                <span className="text-xs font-black uppercase tracking-[0.4em] text-accent bg-accent/10 px-6 py-2 rounded-full border border-accent/20">
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent bg-accent/10 px-6 py-2 rounded-full border border-accent/20">
                   {currentlyPlaying.type}
                 </span>
               </div>
-              <h1 className="text-6xl font-headline font-bold mb-6 tracking-tighter leading-none drop-shadow-2xl">{currentlyPlaying.title}</h1>
-              <div className="flex flex-wrap items-center gap-8 text-white/70">
-                <span className="text-accent font-bold text-2xl tracking-tight">{currentlyPlaying.creator}</span>
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-headline font-bold mb-6 tracking-tighter leading-[1.1] text-white">
+                {currentlyPlaying.title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-6 text-white/70">
+                <span className="text-accent font-bold text-xl md:text-3xl tracking-tight">{currentlyPlaying.creator}</span>
                 {currentlyPlaying.imdbRating && (
-                  <div className="flex items-center gap-2.5 bg-yellow-500/10 text-yellow-500 px-5 py-2.5 rounded-2xl border border-yellow-500/20">
+                  <div className="flex items-center gap-2.5 bg-yellow-500/10 text-yellow-500 px-5 py-2.5 rounded-2xl border border-yellow-500/10">
                     <Star size={20} className="fill-current" />
-                    <span className="font-black text-xl">{currentlyPlaying.imdbRating}</span>
+                    <span className="font-black text-lg md:text-2xl">{currentlyPlaying.imdbRating}</span>
                   </div>
                 )}
               </div>
@@ -253,40 +194,40 @@ export const MediaDetails: React.FC = () => {
 
             {(currentlyPlaying.summary || currentlyPlaying.description) && (
               <div className="space-y-6 animate-in slide-in-from-right duration-700 delay-150">
-                <h3 className="text-2xl font-headline font-bold flex items-center gap-3 text-accent/80">
-                  <Info size={28} />
-                  Universe Story
+                <h3 className="text-xl md:text-2xl font-headline font-bold flex items-center gap-3 text-accent/80 uppercase tracking-widest">
+                  <Info size={28} className="text-accent" />
+                  Chronicle
                 </h3>
-                <p className="text-white/80 text-2xl leading-relaxed font-light tracking-wide italic">
+                <p className="text-white/80 text-lg md:text-2xl leading-relaxed font-light italic">
                   {currentlyPlaying.summary || currentlyPlaying.description}
                 </p>
               </div>
             )}
 
             {currentlyPlaying.moral && (
-              <div className="p-10 rounded-[3rem] bg-primary/5 border border-primary/10 space-y-6 relative overflow-hidden group shadow-inner animate-in slide-in-from-right duration-700 delay-300">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px] group-hover:bg-primary/20 transition-colors" />
-                <h3 className="text-2xl font-headline font-bold flex items-center gap-3 text-primary relative z-10">
-                  <MessageSquare size={30} />
+              <div className="p-8 md:p-12 rounded-[3rem] bg-primary/5 border border-primary/10 space-y-6 relative overflow-hidden group animate-in slide-in-from-right duration-700 delay-300">
+                <div className="absolute top-0 right-0 p-8 opacity-10">
+                  <MessageSquare size={120} className="text-primary" />
+                </div>
+                <h3 className="text-xl md:text-2xl font-headline font-bold flex items-center gap-3 text-primary relative z-10 uppercase tracking-widest">
                   The Essence
                 </h3>
-                <p className="text-white text-2xl font-medium leading-relaxed italic relative z-10 pl-6 border-l-4 border-primary/30">
+                <p className="text-white text-xl md:text-3xl font-medium leading-relaxed italic relative z-10 pl-6 border-l-4 border-primary/40">
                   "{currentlyPlaying.moral}"
                 </p>
               </div>
             )}
 
-            <div className="pt-10 flex flex-col gap-6 animate-in slide-in-from-bottom duration-700 delay-500">
-              <Button onClick={handleOpenSource} variant="outline" className="h-20 rounded-[2rem] border-white/10 hover:bg-white/10 text-xl font-bold transition-all hover:scale-[1.02] backdrop-blur-xl">
-                <ExternalLink className="mr-3" size={24} /> Source Metadata
+            <div className="pt-8 flex flex-col sm:flex-row gap-4 animate-in slide-in-from-bottom duration-700 delay-500 pb-10">
+              <Button onClick={handleOpenSource} variant="outline" className="h-16 md:h-20 rounded-[2rem] border-white/10 text-lg md:text-xl font-bold flex-1 hover:bg-white/5 transition-all">
+                <ExternalLink className="mr-3" size={24} /> Metadata Origin
               </Button>
               <Button 
-                className="h-20 rounded-[2rem] bg-white/5 text-white/50 hover:bg-destructive hover:text-white text-2xl font-black transition-all"
-                onClick={() => {
-                  setCurrentlyPlaying(null);
-                }}
+                variant="secondary"
+                className="h-16 md:h-20 rounded-[2rem] text-lg md:text-xl font-black flex-1 active:scale-95 transition-all"
+                onClick={() => setCurrentlyPlaying(null)}
               >
-                Exit Universe
+                Close Universe
               </Button>
             </div>
           </div>

@@ -19,64 +19,64 @@ export const MediaCard: React.FC<MediaCardProps> = ({ item }) => {
 
   return (
     <div 
-      className="group relative cursor-pointer overflow-hidden rounded-2xl bg-card/40 backdrop-blur-md border border-white/5 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_50px_-12px_rgba(var(--primary),0.5)] hover:bg-card/80"
+      className="group relative cursor-pointer overflow-hidden rounded-3xl bg-card/20 backdrop-blur-md border border-white/5 transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] hover:bg-card/40"
       onClick={() => setCurrentlyPlaying(item)}
     >
-      <div className="relative aspect-[16/9] w-full overflow-hidden">
+      <div className="relative aspect-[16/10] w-full overflow-hidden">
         <Image
           src={item.thumbnailUrl}
           alt={item.title}
           fill
-          sizes="400px"
-          className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
           data-ai-hint={item.type + " cover"}
         />
         
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+        {/* Gradient Overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-40 transition-opacity duration-500" />
         
-        <div className="absolute inset-0 opacity-0 transition-all duration-500 group-hover:opacity-100 flex items-center justify-center scale-90 group-hover:scale-100">
-          <div className="rounded-full bg-primary p-5 text-white shadow-2xl shadow-primary/50 transform transition-transform hover:scale-110 active:scale-95">
-            <Play fill="currentColor" size={32} />
+        {/* Play Icon */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 transition-all duration-500">
+          <div className="rounded-full bg-white/20 backdrop-blur-2xl p-6 text-white shadow-2xl border border-white/30 transform transition-transform hover:scale-110 active:scale-95">
+            <Play fill="currentColor" size={36} />
           </div>
         </div>
 
-        <div className="absolute top-4 right-4">
-          <Badge variant="secondary" className="bg-background/90 backdrop-blur-md border-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider">
+        <div className="absolute top-4 right-4 z-10">
+          <Badge variant="secondary" className="bg-black/40 backdrop-blur-xl border-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white">
             <Icon size={12} className="mr-2" />
             {item.type}
           </Badge>
         </div>
       </div>
 
-      <div className="p-6">
+      <div className="p-6 md:p-8">
         <div className="flex justify-between items-start mb-2">
-          <h3 className="text-xl font-headline font-bold line-clamp-1 group-hover:text-accent transition-colors duration-300">
+          <h3 className="text-xl md:text-2xl font-headline font-bold line-clamp-1 group-hover:text-accent transition-colors duration-300">
             {item.title}
           </h3>
         </div>
         
-        <p className="text-sm text-white/50 line-clamp-1 mb-4">
+        <p className="text-sm md:text-base text-white/50 line-clamp-1 mb-6 font-medium">
           {item.creator || 'Featured Artist'}
         </p>
         
-        <div className="flex items-center gap-3">
-          {item.imdbRating && (
-            <div className="flex items-center gap-1.5 bg-yellow-500/10 text-yellow-500 px-2.5 py-1 rounded-lg text-[11px] font-black border border-yellow-500/20">
-              IMDb {item.imdbRating}
-            </div>
-          )}
-          {item.genre && item.genre.length > 0 && (
-            <span className="text-[11px] text-white/40 uppercase tracking-widest font-bold">
-              {item.genre[0]}
-            </span>
-          )}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {item.imdbRating && (
+              <div className="flex items-center gap-1.5 bg-yellow-500/10 text-yellow-500 px-3 py-1.5 rounded-xl text-[10px] font-black border border-yellow-500/10">
+                IMDb {item.imdbRating}
+              </div>
+            )}
+            {item.genre && item.genre.length > 0 && (
+              <span className="text-[10px] text-white/40 uppercase tracking-[0.2em] font-black">
+                {item.genre[0]}
+              </span>
+            )}
+          </div>
+          <Info size={18} className="text-white/20 group-hover:text-white/50 transition-colors" />
         </div>
-      </div>
-
-      {/* Hover Info Tip */}
-      <div className="absolute bottom-4 right-6 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-500">
-        <Info size={18} className="text-white/30" />
       </div>
     </div>
   );
