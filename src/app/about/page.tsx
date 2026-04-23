@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import Link from 'next/link';
 
 export default function AboutPage() {
   const profileImage = PlaceHolderImages.find(img => img.id === 'priya-profile')?.imageUrl || "https://i.pinimg.com/736x/04/4d/26/044d2642935fb665c6cd6bb72e06b264.jpg";
@@ -162,11 +163,17 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Copyright Footer */}
-          <div className="pt-20 pb-10 space-y-2 opacity-30 select-none cursor-default">
+          {/* Copyright Footer & DMCA */}
+          <div className="pt-20 pb-10 space-y-4 opacity-30 select-none cursor-default flex flex-col items-center">
             <p className="text-[9px] uppercase tracking-[0.5em] font-bold text-white">
               © 2026 Priya • All Rights Reserved
             </p>
+            <Link 
+              href="/dmca" 
+              className="text-[9px] uppercase tracking-[0.3em] font-bold text-white/60 hover:text-accent transition-colors duration-300"
+            >
+              DMCA Takedown Policy
+            </Link>
           </div>
         </div>
       </div>
