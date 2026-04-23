@@ -5,15 +5,20 @@ import { useMedia } from '@/context/MediaContext';
 import { Navbar } from '@/components/layout/Navbar';
 import { MediaCard } from '@/components/media/MediaCard';
 import { MediaDetails } from '@/components/media/MediaDetails';
-import { ChevronDown, Play, Info, Sparkles } from 'lucide-react';
+import { ChevronDown, Play, Info, Sparkles, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 export default function HomePage() {
   const { library, setCurrentlyPlaying, searchTerm } = useMedia();
-  const [featuredIndex, setFeaturedIndex] = useState(0);
 
   const filteredLibrary = library.filter(item => 
     item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -26,72 +31,76 @@ export default function HomePage() {
   const songs = filteredLibrary.filter(item => item.type === 'song');
 
   const allAnime = library.filter(item => item.type === 'anime');
-  const featured = allAnime[featuredIndex] || allAnime[0];
-
-  useEffect(() => {
-    if (allAnime.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setFeaturedIndex((prev) => (prev + 1) % allAnime.length);
-    }, 8000);
-
-    return () => clearInterval(interval);
-  }, [allAnime.length]);
 
   return (
     <main className="h-screen overflow-y-scroll snap-y snap-mandatory bg-background relative scroll-smooth">
       <Navbar />
       
-      {!searchTerm && (
-        <section className="h-screen w-full snap-start relative flex items-center md:items-end pb-16 md:pb-32 px-6 md:px-16 overflow-hidden">
-          {featured && (
-            <div className="absolute inset-0 z-0">
-              <Image 
-                key={featured.id}
-                src={featured.thumbnailUrl} 
-                alt={featured.title}
-                fill
-                sizes="100vw"
-                className="object-cover scale-105 animate-pulse-slow transition-all duration-1000"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent hidden md:block" />
-              <div className="absolute inset-0 bg-black/60 md:hidden" />
-            </div>
-          )}
-          
-          <div className="relative z-10 max-w-5xl animate-in slide-in-from-left duration-1000 text-center md:text-left mx-auto md:mx-0">
-            <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-              <Sparkles className="text-accent animate-bounce" size={20} />
-              <span className="text-accent font-bold tracking-widest uppercase text-xs md:text-sm">Featured Masterpiece</span>
-            </div>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-headline font-bold mb-6 tracking-tighter leading-[0.9] text-white">
-              {featured?.title}
-            </h1>
-            <p className="text-base sm:text-lg md:text-2xl text-white/70 mb-8 max-w-3xl font-light leading-relaxed line-clamp-3 md:line-clamp-none mx-auto md:mx-0">
-              {featured?.summary || "Experience the magic of cinema like never before. Immerse yourself in worlds beyond imagination."}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <Button 
-                size="lg" 
-                className="h-14 md:h-16 px-8 md:px-10 text-lg md:text-xl rounded-2xl bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 transition-all hover:scale-105 active:scale-95"
-                onClick={() => setCurrentlyPlaying(featured)}
-              >
-                <Play className="mr-3 fill-current" size={24} /> Start Streaming
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="h-14 md:h-16 px-8 md:px-10 text-lg md:text-xl rounded-2xl border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all active:scale-95"
-                onClick={() => setCurrentlyPlaying(featured)}
-              >
-                <Info className="mr-3" size={24} /> More Info
-              </Button>
-            </div>
-          </div>
+      {!searchTerm && allAnime.length > 0 && (
+        <section className="h-screen w-full snap-start relative overflow-hidden">
+          <Carousel 
+            opts={{ loop: true }}
+            plugins={[
+              Autoplay({
+                delay: 8000,
+              }),
+            ]}
+            className="w-full h-full"
+          >
+            <CarouselContent className="h-full ml-0">
+              {allAnime.map((item) => (
+                <CarouselItem key={item.id} className="h-full pl-0 relative flex items-center md:items-end pb-16 md:pb-32 px-6 md:px-16 overflow-hidden">
+                  {/* Background Image with Overlay */}
+                  <div className="absolute inset-0 z-0">
+                    <Image 
+                      src={item.thumbnailUrl} 
+                      alt={item.title}
+                      fill
+                      sizes="100vw"
+                      className="object-cover scale-105 animate-pulse-slow transition-transform duration-[8000ms] ease-linear group-data-[state=active]:scale-110"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent hidden md:block" />
+                    <div className="absolute inset-0 bg-black/60 md:hidden" />
+                  </div>
+                  
+                  {/* Slide Content */}
+                  <div className="relative z-10 max-w-5xl animate-in slide-in-from-left duration-1000 text-center md:text-left mx-auto md:mx-0">
+                    <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+                      <Sparkles className="text-accent animate-bounce" size={20} />
+                      <span className="text-accent font-bold tracking-widest uppercase text-xs md:text-sm">Featured Masterpiece</span>
+                    </div>
+                    <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-headline font-bold mb-6 tracking-tighter leading-[0.9] text-white">
+                      {item.title}
+                    </h1>
+                    <p className="text-base sm:text-lg md:text-2xl text-white/70 mb-8 max-w-3xl font-light leading-relaxed line-clamp-3 md:line-clamp-none mx-auto md:mx-0">
+                      {item.summary || "Experience the magic of cinema like never before. Immerse yourself in worlds beyond imagination."}
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                      <Button 
+                        size="lg" 
+                        className="h-14 md:h-16 px-8 md:px-10 text-lg md:text-xl rounded-2xl bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 transition-all hover:scale-105 active:scale-95"
+                        onClick={() => setCurrentlyPlaying(item)}
+                      >
+                        <Play className="mr-3 fill-current" size={24} /> Start Streaming
+                      </Button>
+                      <Button 
+                        size="lg" 
+                        variant="outline" 
+                        className="h-14 md:h-16 px-8 md:px-10 text-lg md:text-xl rounded-2xl border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all active:scale-95"
+                        onClick={() => setCurrentlyPlaying(item)}
+                      >
+                        <Info className="mr-3" size={24} /> More Info
+                      </Button>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
 
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-30 hidden md:block">
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-30 hidden md:block z-20 pointer-events-none">
             <ChevronDown size={32} />
           </div>
         </section>
