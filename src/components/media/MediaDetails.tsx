@@ -133,10 +133,10 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Slow Fading Pulse Animation */}
+                      {/* Slow Fading Pulse Animation - Barely visible for high-end feel */}
                       <div className="relative z-30 flex flex-col items-center justify-center">
-                        <div className="w-28 h-28 sm:w-32 md:w-40 rounded-full bg-white/5 backdrop-blur-3xl flex items-center justify-center animate-pulse-slow border border-white/10 shadow-2xl relative z-10 overflow-hidden">
-                           <Music className="text-accent/10 w-10 h-10 sm:w-14 md:w-16 drop-shadow-[0_0_8px_rgba(var(--accent),0.2)]" />
+                        <div className="w-28 h-28 sm:w-32 md:w-40 rounded-full bg-white/[0.01] backdrop-blur-3xl flex items-center justify-center animate-pulse-slow border border-white/[0.05] relative z-10 overflow-hidden">
+                           <Music className="text-accent/[0.03] w-10 h-10 sm:w-14 md:w-16" />
                         </div>
                       </div>
 
