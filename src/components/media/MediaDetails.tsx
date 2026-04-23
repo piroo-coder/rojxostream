@@ -26,6 +26,7 @@ export const MediaDetails: React.FC = () => {
   const isDailymotion = currentlyPlaying.mediaUrl.includes('dailymotion.com') || currentlyPlaying.mediaUrl.includes('dai.ly');
   const isVimeo = currentlyPlaying.mediaUrl.includes('vimeo.com');
   const isFacebook = currentlyPlaying.mediaUrl.includes('facebook.com');
+  const isDropbox = currentlyPlaying.mediaUrl.includes('dropbox.com');
   const isVideas = currentlyPlaying.mediaUrl.includes('videas.fr');
   const isGenericEmbed = currentlyPlaying.mediaUrl.includes('/embed/');
   
@@ -57,6 +58,11 @@ export const MediaDetails: React.FC = () => {
     return `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0&autoplay=1`;
   };
 
+  const getDropboxEmbedUrl = (url: string) => {
+    // Dropbox dl=0 doesn't embed, dl=1 or raw=1 does.
+    return url.replace('dl=0', 'raw=1');
+  };
+
   const handleOpenSource = () => window.open(currentlyPlaying.mediaUrl, '_blank');
 
   const handleModeChange = (mode: 'video' | 'audio') => {
@@ -71,10 +77,11 @@ export const MediaDetails: React.FC = () => {
     if (isDailymotion) return getDailymotionEmbedUrl(currentlyPlaying.mediaUrl);
     if (isVimeo) return getVimeoEmbedUrl(currentlyPlaying.mediaUrl);
     if (isFacebook) return getFacebookEmbedUrl(currentlyPlaying.mediaUrl);
+    if (isDropbox) return getDropboxEmbedUrl(currentlyPlaying.mediaUrl);
     return currentlyPlaying.mediaUrl;
   };
 
-  const isEmbeddable = isYoutube || isDailymotion || isVimeo || isFacebook || isVideas || isGenericEmbed;
+  const isEmbeddable = isYoutube || isDailymotion || isVimeo || isFacebook || isDropbox || isVideas || isGenericEmbed;
 
   const barDelays = [0.5, 0.2, 1.2, 0.9, 2.3, 1.3, 3.1, 1.9];
 
@@ -162,12 +169,21 @@ export const MediaDetails: React.FC = () => {
                   )}
 
                   {(!isSong || songMode === 'video') && (
-                    <iframe 
-                      src={getEmbedSource()}
-                      className="w-full h-full border-0 absolute inset-0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
+                    isDropbox ? (
+                      <video 
+                        src={getEmbedSource()}
+                        className="w-full h-full object-contain absolute inset-0"
+                        controls
+                        autoPlay
+                      />
+                    ) : (
+                      <iframe 
+                        src={getEmbedSource()}
+                        className="w-full h-full border-0 absolute inset-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    )
                   )}
                 </>
               ) : (

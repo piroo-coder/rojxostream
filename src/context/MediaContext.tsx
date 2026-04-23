@@ -54,7 +54,7 @@ const initialData: MediaItem[] = [
     type: 'anime',
     title: 'A Silent Voice',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp5165277.jpg',
-    mediaUrl: 'https://www.facebook.com/100066648078956/videos/a-silent-voice-full-hd-movie-hindi-dubbed-asilentvoice-movies-asilentvoicemovie-/993532068839088/',
+    mediaUrl: 'https://www.dropbox.com/scl/fi/wo0nqqg27jckoym42v8hc/a-silent-voice.mp4?rlkey=nl6cmtjct02abzjtebje4ouy2&st=z3n2evlg&dl=0',
     creator: 'Naoko Yamada',
     imdbRating: '8.1',
     summary: 'A young man who bullied a deaf classmate in elementary school tries to make amends years later after meeting her again.',
