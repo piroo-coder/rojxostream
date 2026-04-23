@@ -71,6 +71,7 @@ export const Navbar: React.FC = () => {
   const { library, searchTerm, setSearchTerm } = useMedia();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [localInput, setLocalInput] = useState(searchTerm);
   const searchRef = useRef<HTMLDivElement>(null);
 
   const navLinks = [
@@ -79,11 +80,16 @@ export const Navbar: React.FC = () => {
     { href: '/about', icon: Heart, label: 'About', activeColor: 'text-pink-400' },
   ];
 
+  // Sync local input with global search term if it changes externally
+  useEffect(() => {
+    setLocalInput(searchTerm);
+  }, [searchTerm]);
+
   // Advanced Filtering with Fuzzy Matching
   const getSuggestions = () => {
-    if (searchTerm.length === 0) return [];
+    if (localInput.length === 0) return [];
     
-    const query = searchTerm.toLowerCase();
+    const query = localInput.toLowerCase();
     
     // 1. Direct matches (includes)
     const directMatches = library.filter(item => 
@@ -129,7 +135,7 @@ export const Navbar: React.FC = () => {
   };
 
   const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
+    setLocalInput(value);
     setShowSuggestions(true);
     
     if (value === "") {
@@ -138,6 +144,7 @@ export const Navbar: React.FC = () => {
   };
 
   const handleClearSearch = () => {
+    setLocalInput("");
     setSearchTerm("");
     setShowSuggestions(false);
     
@@ -150,7 +157,19 @@ export const Navbar: React.FC = () => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && localInput.trim()) {
+      setSearchTerm(localInput);
+      setShowSuggestions(false);
+      // Default to Home if we are not already on Home/Shorts properly
+      if (pathname !== '/') {
+        router.push('/');
+      }
+    }
+  };
+
   const handleSuggestionClick = (item: MediaItem) => {
+    setLocalInput(item.title);
     setSearchTerm(item.title);
     setShowSuggestions(false);
     
@@ -178,7 +197,7 @@ export const Navbar: React.FC = () => {
       <div className="container mx-auto flex items-center justify-between gap-4">
         {/* Logo */}
         <div className={cn("flex items-center gap-2 flex-shrink-0 transition-all duration-300", isSearchOpen && "scale-0 w-0 opacity-0 overflow-hidden sm:scale-100 sm:w-auto sm:opacity-100")}>
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2 group" onClick={() => handleClearSearch()}>
             <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
               <Play fill="currentColor" size={14} className="text-white ml-0.5" />
             </div>
@@ -212,9 +231,10 @@ export const Navbar: React.FC = () => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400/40 group-focus-within:text-accent transition-colors duration-300" size={18} />
               <Input 
                 placeholder="Find universe..." 
-                value={searchTerm}
+                value={localInput}
                 onFocus={() => setShowSuggestions(true)}
                 onChange={(e) => handleSearchChange(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className={cn(
                   "w-full pl-12 h-10 bg-white/5 border-white/10 focus:bg-white/10",
                   "focus-visible:ring-1 focus-visible:ring-purple-400/20 rounded-full backdrop-blur-xl",
@@ -223,7 +243,7 @@ export const Navbar: React.FC = () => {
                   "font-medium"
                 )}
               />
-              {searchTerm && (
+              {localInput && (
                 <button 
                   onClick={handleClearSearch}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"
@@ -233,7 +253,7 @@ export const Navbar: React.FC = () => {
               )}
 
               {/* Suggestions Dropdown (Desktop) */}
-              {showSuggestions && searchTerm.length > 0 && (
+              {showSuggestions && localInput.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-background/95 backdrop-blur-3xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 duration-300 z-[100]">
                   <div className="py-2">
                     {suggestions.length > 0 ? (
@@ -255,7 +275,7 @@ export const Navbar: React.FC = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-white truncate">
-                              <HighlightText text={item.title} highlight={searchTerm} />
+                              <HighlightText text={item.title} highlight={localInput} />
                             </p>
                             <p className="text-[10px] text-white/40 uppercase tracking-widest font-black">{item.type}</p>
                           </div>
@@ -280,8 +300,9 @@ export const Navbar: React.FC = () => {
                   <Input 
                     autoFocus
                     placeholder="Search..." 
-                    value={searchTerm}
+                    value={localInput}
                     onChange={(e) => handleSearchChange(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     onFocus={() => setShowSuggestions(true)}
                     className="h-10 bg-white/5 border-white/10 rounded-full pl-10 pr-10 focus:bg-white/10 w-full"
                   />
@@ -299,7 +320,7 @@ export const Navbar: React.FC = () => {
                   </Button>
 
                   {/* Suggestions Dropdown (Mobile) */}
-                  {showSuggestions && searchTerm.length > 0 && (
+                  {showSuggestions && localInput.length > 0 && (
                     <div className="absolute top-full left-0 right-0 mt-2 bg-background/95 backdrop-blur-3xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-[100]">
                       {suggestions.length > 0 ? (
                         suggestions.map((item) => (
@@ -316,7 +337,7 @@ export const Navbar: React.FC = () => {
                             </div>
                             <div className="flex-1 min-w-0 text-left">
                               <p className="text-xs font-bold text-white truncate">
-                                <HighlightText text={item.title} highlight={searchTerm} />
+                                <HighlightText text={item.title} highlight={localInput} />
                               </p>
                               <p className="text-[8px] text-white/40 uppercase font-black">{item.type}</p>
                             </div>
