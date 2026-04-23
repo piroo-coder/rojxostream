@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -57,8 +58,8 @@
 }
 
 @keyframes pulse-fade {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.7; }
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
 }
 
 .animate-pulse-slow {
@@ -73,12 +74,10 @@
 .shorts-container {
   scroll-snap-type: y mandatory;
   overflow-y: scroll;
-  height: 100vh;
 }
 
 .short-item {
   scroll-snap-align: start;
-  height: 100vh;
 }
 
 /* Responsive Viewport Height Fix */

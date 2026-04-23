@@ -57,9 +57,9 @@ const ShortItem = ({
         </div>
       </div>
 
-      {/* Main Video Container (YouTube Shorts Proportions) */}
+      {/* Main Video Container (Sleeker Proportions) */}
       <div className={cn(
-        "relative z-10 w-full h-full max-w-[400px] aspect-[9/16] bg-black shadow-[0_0_100px_rgba(0,0,0,0.6)]",
+        "relative z-10 w-full h-full max-w-[360px] aspect-[9/16] bg-black shadow-[0_0_100px_rgba(0,0,0,0.6)]",
         "flex items-center justify-center sm:rounded-[2rem] md:rounded-[2.5rem] overflow-hidden border border-white/10 group transition-all duration-500"
       )}>
         
@@ -108,7 +108,7 @@ const ShortItem = ({
           {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
         </button>
 
-        {/* Interaction Overlays (Aligned with YouTube Layout) */}
+        {/* Interaction Overlays (YouTube Layout) */}
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-end p-4 sm:p-6 z-20">
           <div className="flex items-end justify-between w-full">
             
@@ -283,7 +283,14 @@ export default function ShortsPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80rem] h-[80rem] bg-pink-500/5 rounded-full blur-[200px] animate-pulse-slow" />
       </div>
       
-      <div ref={containerRef} className="shorts-container h-full pt-16 md:pt-20 snap-y snap-mandatory scroll-smooth relative z-10 scrollbar-hide">
+      <div 
+        ref={containerRef} 
+        className={cn(
+          "shorts-container h-full pt-16 md:pt-20",
+          "snap-y snap-mandatory scroll-smooth relative z-10 scrollbar-hide",
+          "scroll-pt-16 md:scroll-pt-20"
+        )}
+      >
         {shorts.length > 0 ? (
           shorts.map((short) => (
             <div 
