@@ -136,7 +136,7 @@ export const MediaDetails: React.FC = () => {
                           {barDelays.map((delay, i) => (
                             <div 
                               key={i}
-                              className="w-2.5 rounded-full bg-gradient-to-t from-primary to-accent animate-music-pulse"
+                              className="w-2.5 rounded-full border border-accent/40 bg-transparent animate-music-pulse"
                               style={{ 
                                 animationDelay: `${delay}s`,
                                 height: '1px'
@@ -144,9 +144,6 @@ export const MediaDetails: React.FC = () => {
                             />
                           ))}
                         </div>
-                        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 animate-pulse">
-                          Now Playing.
-                        </span>
                       </div>
 
                       {/* Background Audio Source */}
