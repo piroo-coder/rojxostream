@@ -27,6 +27,8 @@ export const MediaDetails: React.FC = () => {
   const isYoutube = currentlyPlaying.mediaUrl.includes('youtube.com') || currentlyPlaying.mediaUrl.includes('youtu.be');
   const isDailymotion = currentlyPlaying.mediaUrl.includes('dailymotion.com') || currentlyPlaying.mediaUrl.includes('dai.ly');
   const isVimeo = currentlyPlaying.mediaUrl.includes('vimeo.com');
+  const isVideas = currentlyPlaying.mediaUrl.includes('videas.fr');
+  const isGenericEmbed = currentlyPlaying.mediaUrl.includes('/embed/');
   
   const getYoutubeEmbedUrl = (url: string) => {
     let id = '';
@@ -65,10 +67,10 @@ export const MediaDetails: React.FC = () => {
     if (isYoutube) return getYoutubeEmbedUrl(currentlyPlaying.mediaUrl);
     if (isDailymotion) return getDailymotionEmbedUrl(currentlyPlaying.mediaUrl);
     if (isVimeo) return getVimeoEmbedUrl(currentlyPlaying.mediaUrl);
-    return currentlyPlaying.mediaUrl;
+    return currentlyPlaying.mediaUrl; // videas.fr and others with /embed/ already work directly
   };
 
-  const isEmbeddable = isYoutube || isDailymotion || isVimeo;
+  const isEmbeddable = isYoutube || isDailymotion || isVimeo || isVideas || isGenericEmbed;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center animate-in fade-in duration-500 overflow-hidden bg-background">
@@ -146,7 +148,7 @@ export const MediaDetails: React.FC = () => {
             ) : (
               <div className="flex flex-col items-center justify-center h-full p-12 text-center gap-10">
                 <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                  <ExternalLink className="w-12 h-12 md:w-16 md:h-16" />
+                  <ExternalLink size={48} className="md:w-16 md:h-16" />
                 </div>
                 <div className="max-w-md">
                   <h3 className="text-2xl md:text-4xl font-headline font-bold mb-4">Launch Content</h3>
