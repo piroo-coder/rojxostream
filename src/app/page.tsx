@@ -49,7 +49,7 @@ export default function HomePage() {
           >
             <CarouselContent className="h-full ml-0">
               {allAnime.map((item) => (
-                <CarouselItem key={item.id} className="h-full w-full pl-0 relative flex flex-col justify-end pb-24 md:pb-32 px-6 md:px-20 overflow-hidden">
+                <CarouselItem key={item.id} className="h-full w-full pl-0 relative flex flex-col justify-end pb-20 md:pb-32 px-6 sm:px-12 md:px-20 overflow-hidden">
                   {/* Immersive Background Image */}
                   <div className="absolute inset-0 z-0">
                     <Image 
@@ -64,41 +64,41 @@ export default function HomePage() {
                     {/* Multi-layered Gradients for Visibility */}
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-transparent hidden md:block" />
-                    <div className="absolute inset-0 bg-black/50 md:hidden" />
+                    <div className="absolute inset-0 bg-black/40 md:hidden" />
                   </div>
                   
                   {/* Slide Content Overlay */}
                   <div className="relative z-10 max-w-5xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                    <div className="flex items-center gap-3 mb-4 md:mb-6">
-                      <div className="bg-primary/20 backdrop-blur-xl px-4 py-1.5 rounded-full flex items-center gap-2 border border-primary/30 shadow-2xl">
-                        <Sparkles className="text-primary animate-pulse" size={14} />
-                        <span className="text-primary font-black tracking-[0.2em] uppercase text-[10px] md:text-xs">Featured Universe</span>
+                    <div className="flex items-center gap-3 mb-3 md:mb-6">
+                      <div className="bg-primary/20 backdrop-blur-xl px-3 py-1 md:px-4 md:py-1.5 rounded-full flex items-center gap-2 border border-primary/30 shadow-2xl">
+                        <Sparkles className="text-primary animate-pulse" size={12} />
+                        <span className="text-primary font-black tracking-[0.2em] uppercase text-[9px] md:text-xs">Featured Universe</span>
                       </div>
                     </div>
                     
-                    <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-headline font-bold mb-6 tracking-tighter leading-[0.85] text-white drop-shadow-2xl">
+                    <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-headline font-bold mb-4 md:mb-6 tracking-tighter leading-[0.9] text-white drop-shadow-2xl">
                       {item.title}
                     </h1>
                     
-                    <p className="text-lg md:text-2xl text-white/80 mb-8 max-w-3xl font-light leading-relaxed line-clamp-3 md:line-clamp-none drop-shadow-lg italic">
+                    <p className="text-base sm:text-lg md:text-2xl text-white/80 mb-6 md:mb-8 max-w-3xl font-light leading-relaxed line-clamp-3 md:line-clamp-none drop-shadow-lg italic">
                       {item.summary || "Experience the magic of cinema like never before. Immerse yourself in worlds beyond imagination."}
                     </p>
                     
-                    <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
+                    <div className="flex flex-col sm:flex-row gap-3 md:gap-6">
                       <Button 
                         size="lg" 
-                        className="h-16 md:h-20 px-10 md:px-12 text-xl font-bold rounded-2xl bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 transition-all hover:scale-105 active:scale-95 border-0"
+                        className="h-14 sm:h-16 md:h-20 px-8 sm:px-10 md:px-12 text-lg sm:text-xl font-bold rounded-2xl bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 transition-all hover:scale-105 active:scale-95 border-0"
                         onClick={() => setCurrentlyPlaying(item)}
                       >
-                        <Play className="mr-3 fill-current" size={24} /> Stream Now
+                        <Play className="mr-2 sm:mr-3 fill-current" size={20} /> Stream Now
                       </Button>
                       <Button 
                         size="lg" 
                         variant="outline" 
-                        className="h-16 md:h-20 px-10 md:px-12 text-xl font-bold rounded-2xl border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all active:scale-95 text-white"
+                        className="h-14 sm:h-16 md:h-20 px-8 sm:px-10 md:px-12 text-lg sm:text-xl font-bold rounded-2xl border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all active:scale-95 text-white"
                         onClick={() => setCurrentlyPlaying(item)}
                       >
-                        <Info className="mr-3" size={24} /> Details
+                        <Info className="mr-2 sm:mr-3" size={20} /> Details
                       </Button>
                     </div>
                   </div>
@@ -115,15 +115,15 @@ export default function HomePage() {
       )}
 
       {/* Content Sections Container */}
-      <div className={cn("px-6 md:px-16", searchTerm ? "pt-24 md:pt-32" : "")}>
+      <div className={cn("px-4 sm:px-8 md:px-16", searchTerm ? "pt-24 md:pt-32" : "")}>
         
         {anime.length > 0 && (
-          <section className="min-h-screen w-full snap-start py-16 md:py-28 flex flex-col justify-center">
-            <div className="mb-12 md:mb-20">
-              <h2 className="text-4xl md:text-7xl font-headline font-bold mb-6 tracking-tight">World of <span className="text-accent">Anime</span></h2>
-              <p className="text-muted-foreground text-lg md:text-2xl max-w-3xl font-light leading-relaxed">Breathtaking visuals and emotional storytelling from the heart of Japan's most legendary studios.</p>
+          <section className="min-h-screen w-full snap-start py-12 md:py-28 flex flex-col justify-center">
+            <div className="mb-8 md:mb-20">
+              <h2 className="text-3xl sm:text-5xl md:text-7xl font-headline font-bold mb-4 md:mb-6 tracking-tight">World of <span className="text-accent">Anime</span></h2>
+              <p className="text-muted-foreground text-base sm:text-lg md:text-2xl max-w-3xl font-light leading-relaxed">Breathtaking visuals and emotional storytelling from the heart of Japan's most legendary studios.</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 md:gap-12">
               {anime.map((item, idx) => (
                 <div key={item.id} className="animate-in slide-in-from-bottom-12 duration-700" style={{ animationDelay: `${idx * 150}ms` }}>
                   <MediaCard item={item} />
@@ -134,12 +134,12 @@ export default function HomePage() {
         )}
 
         {movies.length > 0 && (
-          <section className="min-h-screen w-full snap-start py-16 md:py-28 flex flex-col justify-center">
-            <div className="mb-12 md:mb-20">
-              <h2 className="text-4xl md:text-7xl font-headline font-bold mb-6 tracking-tight">The <span className="text-primary">Cinema</span> Gallery</h2>
-              <p className="text-muted-foreground text-lg md:text-2xl max-w-3xl font-light leading-relaxed">From spine-chilling horror to heartwarming drama, experience every spectrum of human emotion on the silver screen.</p>
+          <section className="min-h-screen w-full snap-start py-12 md:py-28 flex flex-col justify-center">
+            <div className="mb-8 md:mb-20">
+              <h2 className="text-3xl sm:text-5xl md:text-7xl font-headline font-bold mb-4 md:mb-6 tracking-tight">The <span className="text-primary">Cinema</span> Gallery</h2>
+              <p className="text-muted-foreground text-base sm:text-lg md:text-2xl max-w-3xl font-light leading-relaxed">From spine-chilling horror to heartwarming drama, experience every spectrum of human emotion on the silver screen.</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-10">
               {movies.map((item, idx) => (
                 <div key={item.id} className="animate-in slide-in-from-bottom-12 duration-700" style={{ animationDelay: `${idx * 100}ms` }}>
                   <MediaCard item={item} />
@@ -150,12 +150,12 @@ export default function HomePage() {
         )}
 
         {songs.length > 0 && (
-          <section className="min-h-screen w-full snap-start py-16 md:py-28 flex flex-col justify-center">
-            <div className="mb-12 md:mb-20">
-              <h2 className="text-4xl md:text-7xl font-headline font-bold mb-6 tracking-tight">Sonic <span className="text-accent">Vibrations</span></h2>
-              <p className="text-muted-foreground text-lg md:text-2xl max-w-3xl font-light leading-relaxed">Immerse yourself in the soundtracks that define your favorite cinematic moments and memories.</p>
+          <section className="min-h-screen w-full snap-start py-12 md:py-28 flex flex-col justify-center">
+            <div className="mb-8 md:mb-20">
+              <h2 className="text-3xl sm:text-5xl md:text-7xl font-headline font-bold mb-4 md:mb-6 tracking-tight">Sonic <span className="text-accent">Vibrations</span></h2>
+              <p className="text-muted-foreground text-base sm:text-lg md:text-2xl max-w-3xl font-light leading-relaxed">Immerse yourself in the soundtracks that define your favorite cinematic moments and memories.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
               {songs.map((item, idx) => (
                 <div key={item.id} className="animate-in zoom-in-95 duration-700" style={{ animationDelay: `${idx * 200}ms` }}>
                   <MediaCard item={item} />
@@ -167,11 +167,11 @@ export default function HomePage() {
 
         {searchTerm && filteredLibrary.length === 0 && (
           <div className="h-[60vh] flex flex-col items-center justify-center text-center px-4">
-            <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-8 border border-white/10 shadow-inner">
-              <Search size={40} className="text-white/10" />
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/5 flex items-center justify-center mb-6 md:mb-8 border border-white/10 shadow-inner">
+              <Search size={32} className="text-white/10 md:w-10 md:h-10" />
             </div>
-            <h3 className="text-3xl md:text-4xl font-headline font-bold mb-4 tracking-tight">No universes found</h3>
-            <p className="text-muted-foreground text-lg md:text-xl font-light max-w-md">Try searching for something else, like <span className="text-primary font-medium">Anime</span>, <span className="text-accent font-medium">Suzume</span>, or a specific director.</p>
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-headline font-bold mb-3 md:mb-4 tracking-tight">No universes found</h3>
+            <p className="text-muted-foreground text-base sm:text-lg md:text-xl font-light max-w-md">Try searching for something else, like <span className="text-primary font-medium">Anime</span>, <span className="text-accent font-medium">Suzume</span>, or a specific director.</p>
           </div>
         )}
       </div>
@@ -179,8 +179,8 @@ export default function HomePage() {
       {/* Persistent Components */}
       <MediaDetails />
       
-      {/* Scroll to top button area or footer could go here */}
-      <div className="h-20" /> 
+      {/* Footer spacer */}
+      <div className="h-16 md:h-20" /> 
     </main>
   );
 }
