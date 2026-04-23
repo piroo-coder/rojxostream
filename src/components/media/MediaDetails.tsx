@@ -73,65 +73,68 @@ export const MediaDetails: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center animate-in fade-in duration-500 overflow-hidden bg-background">
-      {/* Immersive Background Blur */}
-      <div className="absolute inset-0 z-0">
+      {/* Immersive Background Image - Clearly Visible */}
+      <div className="absolute inset-0 z-0 h-full w-full">
         <Image 
           src={bgImage} 
           alt="Immersive Background"
           fill
           sizes="100vw"
-          className="object-cover scale-110 blur-[100px] opacity-20"
+          className="object-cover transition-transform duration-[8000ms] ease-out"
           priority
           unoptimized
         />
-        <div className="absolute inset-0 bg-background/80" />
+        {/* Layered gradients for visibility and readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/80 to-background" />
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
       </div>
 
       {/* Close Button */}
       <Button 
         variant="ghost" 
         size="icon" 
-        className="fixed top-3 right-3 sm:top-6 sm:right-6 md:top-8 md:right-8 text-white z-[80] bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-3xl border border-white/10 w-10 h-10 sm:w-12 sm:h-12"
+        className="fixed top-4 right-4 sm:top-6 sm:right-6 md:top-8 md:right-8 text-white z-[80] bg-white/5 hover:bg-white/10 rounded-full backdrop-blur-3xl border border-white/10 w-10 h-10 sm:w-12 sm:h-12 shadow-2xl"
         onClick={() => setCurrentlyPlaying(null)}
       >
-        <X size={20} className="sm:w-6 sm:h-6" />
+        <X size={20} className="sm:size-24" />
       </Button>
 
       <div className="relative z-10 flex flex-col lg:flex-row w-full h-full max-w-[1920px] mx-auto overflow-hidden">
         
         {/* Left Section: Playback Player */}
-        <div className="relative w-full lg:w-[60%] xl:w-[65%] h-[40vh] sm:h-[50vh] lg:h-full bg-black flex flex-col shadow-2xl">
-          <div className="flex-1 relative overflow-hidden">
+        <div className="relative w-full lg:w-[60%] xl:w-[65%] h-[45vh] sm:h-[55vh] lg:h-full flex flex-col bg-black/20 overflow-hidden">
+          <div className="flex-1 relative overflow-hidden flex items-center justify-center">
             {isEmbeddable ? (
               <div className="w-full h-full relative">
                 {isSong && songMode === 'audio' && (
                   <div className="absolute inset-0 z-20 flex flex-col items-center justify-center animate-in zoom-in-95 duration-500 overflow-hidden">
-                    {/* Enhanced Visualization Background */}
+                    {/* Song Background Visualization */}
                     <div className="absolute inset-0 z-10">
                        <Image 
                         src={bgImage} 
                         alt="Visualization"
                         fill
                         sizes="100vw"
-                        className="object-cover opacity-60 blur-xl"
+                        className="object-cover opacity-70"
                         unoptimized
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/20" />
                     </div>
                     
-                    {/* Responsive Content Container */}
-                    <div className="relative z-30 flex flex-col items-center gap-4 sm:gap-8 md:gap-12 text-center p-4 sm:p-8 max-w-2xl w-full">
+                    {/* Visualization Disk - Responsive Sizing */}
+                    <div className="relative z-30 flex flex-col items-center gap-4 sm:gap-8 md:gap-12 text-center p-6 max-w-2xl w-full">
                       <div className="relative group">
-                        <div className="absolute -inset-4 bg-primary/20 rounded-full blur-2xl group-hover:bg-primary/30 transition-all duration-1000 animate-pulse" />
-                        <div className="w-32 h-32 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-full bg-black/40 backdrop-blur-3xl flex items-center justify-center animate-pulse border-2 border-primary/30 shadow-[0_0_80px_rgba(var(--primary),0.2)] relative z-10">
-                           <Music className="text-primary animate-bounce w-12 h-12 sm:w-20 sm:h-20 md:w-24 md:h-24" />
+                        <div className="absolute -inset-4 bg-primary/30 rounded-full blur-3xl group-hover:bg-primary/50 transition-all duration-1000 animate-pulse" />
+                        <div className="w-28 h-28 sm:w-44 sm:h-44 md:w-56 md:h-56 lg:w-72 lg:h-72 rounded-full bg-black/60 backdrop-blur-3xl flex items-center justify-center animate-[spin_10s_linear_infinite] border-4 border-primary/40 shadow-[0_0_100px_rgba(var(--primary),0.3)] relative z-10 overflow-hidden">
+                           <div className="absolute inset-4 rounded-full border-2 border-white/10" />
+                           <Music className="text-primary w-12 h-12 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32" />
                         </div>
                       </div>
 
-                      <div className="space-y-1 sm:space-y-4 px-4">
-                        <p className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-[0.4em] sm:tracking-[0.6em] text-accent/90 drop-shadow-md">Listening Mode Active</p>
-                        <h2 className="text-lg sm:text-3xl md:text-5xl font-headline font-bold text-white line-clamp-1 leading-tight drop-shadow-2xl">{currentlyPlaying.title}</h2>
-                        <p className="text-sm sm:text-xl md:text-2xl text-white/80 font-medium drop-shadow-lg">{currentlyPlaying.creator}</p>
+                      <div className="space-y-2 sm:space-y-4 px-4 bg-black/40 backdrop-blur-xl p-4 sm:p-6 rounded-3xl border border-white/10">
+                        <p className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.4em] sm:tracking-[0.6em] text-accent drop-shadow-md">Now Vibrating</p>
+                        <h2 className="text-base sm:text-2xl md:text-4xl lg:text-5xl font-headline font-bold text-white line-clamp-1 leading-tight drop-shadow-2xl">{currentlyPlaying.title}</h2>
+                        <p className="text-xs sm:text-lg md:text-xl lg:text-2xl text-white/80 font-medium drop-shadow-lg">{currentlyPlaying.creator}</p>
                       </div>
                     </div>
 
@@ -156,64 +159,64 @@ export const MediaDetails: React.FC = () => {
             ) : (
               <div className="flex flex-col items-center justify-center h-full p-8 sm:p-12 text-center gap-6 sm:gap-10">
                 <div className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-3xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                  <ExternalLink size={24} className="sm:w-12 sm:h-12 md:w-16 md:h-16" />
+                  <ExternalLink className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16" />
                 </div>
                 <div className="max-w-md">
-                  <h3 className="text-xl sm:text-3xl md:text-4xl font-headline font-bold mb-2 md:mb-4">Launch Content</h3>
+                  <h3 className="text-xl sm:text-2xl md:text-4xl font-headline font-bold mb-2 md:mb-4">Launch Content</h3>
                   <p className="text-white/50 mb-6 md:mb-8 text-xs sm:text-base font-light leading-relaxed">This universe is hosted on an external plane. Ready to teleport?</p>
-                  <Button onClick={handleOpenSource} size="lg" className="h-12 sm:h-16 px-8 sm:px-12 rounded-2xl bg-primary text-sm sm:text-xl font-bold w-full shadow-2xl shadow-primary/20">
-                    <Play size={16} className="sm:size-24 mr-3 fill-current" /> Play Now
+                  <Button onClick={handleOpenSource} size="lg" className="h-12 sm:h-14 md:h-16 px-8 sm:px-12 rounded-2xl bg-primary text-sm sm:text-lg font-bold w-full shadow-2xl shadow-primary/20 border-0">
+                    <Play className="mr-2 sm:mr-3 fill-current" size={14} /> Play Now
                   </Button>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Mode Selector for Songs */}
+          {/* Mode Selector for Songs - Responsive Scaling */}
           {isSong && (
-            <div className="p-3 sm:p-6 md:p-8 bg-black/90 backdrop-blur-3xl border-t border-white/5 flex items-center justify-center gap-3 sm:gap-6">
+            <div className="p-4 sm:p-6 md:p-8 bg-background/60 backdrop-blur-2xl border-t border-white/5 flex items-center justify-center gap-3 sm:gap-6 z-30">
               <Button 
                 variant={songMode === 'audio' ? 'default' : 'ghost'} 
                 className={cn(
-                  "rounded-xl sm:rounded-2xl gap-2 sm:gap-3 px-3 sm:px-8 h-10 sm:h-14 md:h-16 text-[10px] sm:text-sm md:text-lg font-bold transition-all flex-1 md:flex-none",
-                  songMode === 'audio' ? "bg-primary shadow-xl shadow-primary/20" : "text-white/40 hover:text-white"
+                  "rounded-xl sm:rounded-2xl gap-2 sm:gap-3 px-4 sm:px-8 h-10 sm:h-12 md:h-14 text-[10px] sm:text-xs md:text-sm font-bold transition-all flex-1 md:flex-none",
+                  songMode === 'audio' ? "bg-primary shadow-xl shadow-primary/20 border-0" : "text-white/40 hover:text-white hover:bg-white/5"
                 )}
                 onClick={() => handleModeChange('audio')}
               >
-                <Headset size={14} className="sm:size-22" /> Audio
+                <Headset size={14} className="sm:size-16" /> Audio
               </Button>
               <Button 
                 variant={songMode === 'video' ? 'default' : 'ghost'} 
                 className={cn(
-                  "rounded-xl sm:rounded-2xl gap-2 sm:gap-3 px-3 sm:px-8 h-10 sm:h-14 md:h-16 text-[10px] sm:text-sm md:text-lg font-bold transition-all flex-1 md:flex-none",
-                  songMode === 'video' ? "bg-primary shadow-xl shadow-primary/20" : "text-white/40 hover:text-white"
+                  "rounded-xl sm:rounded-2xl gap-2 sm:gap-3 px-4 sm:px-8 h-10 sm:h-12 md:h-14 text-[10px] sm:text-xs md:text-sm font-bold transition-all flex-1 md:flex-none",
+                  songMode === 'video' ? "bg-primary shadow-xl shadow-primary/20 border-0" : "text-white/40 hover:text-white hover:bg-white/5"
                 )}
                 onClick={() => handleModeChange('video')}
               >
-                <Video size={14} className="sm:size-22" /> Video
+                <Video size={14} className="sm:size-16" /> Video
               </Button>
             </div>
           )}
         </div>
 
-        {/* Right Section: Details & Info */}
-        <ScrollArea className="flex-1 h-[60vh] sm:h-[50vh] lg:h-full bg-black/40 backdrop-blur-md">
-          <div className="p-6 sm:p-10 md:p-16 lg:p-20 space-y-8 sm:space-y-12">
+        {/* Right Section: Details & Info - Improved Responsive Padding */}
+        <ScrollArea className="flex-1 h-[55vh] sm:h-[45vh] lg:h-full bg-background/40 backdrop-blur-sm lg:border-l border-white/5">
+          <div className="p-6 sm:p-10 md:p-12 lg:p-16 space-y-8 lg:space-y-12 pb-24 lg:pb-16">
             <div className="animate-in slide-in-from-right duration-700">
               <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-accent bg-accent/10 px-4 py-1.5 sm:px-6 sm:py-2 rounded-full border border-accent/20">
+                <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-accent bg-accent/10 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full border border-accent/20">
                   {currentlyPlaying.type}
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-headline font-bold mb-4 sm:mb-6 tracking-tighter leading-[1.1] text-white">
+              <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-6xl font-headline font-bold mb-3 sm:mb-4 tracking-tighter leading-tight text-white drop-shadow-xl">
                 {currentlyPlaying.title}
               </h1>
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-white/70">
-                <span className="text-accent font-bold text-lg sm:text-2xl md:text-3xl tracking-tight">{currentlyPlaying.creator}</span>
+              <div className="flex flex-wrap items-center gap-3 sm:gap-5 text-white/70">
+                <span className="text-accent font-bold text-base sm:text-xl lg:text-2xl tracking-tight">{currentlyPlaying.creator}</span>
                 {currentlyPlaying.imdbRating && (
-                  <div className="flex items-center gap-2 bg-yellow-500/10 text-yellow-500 px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-2xl border border-yellow-500/10">
-                    <Star size={14} className="sm:size-20 fill-current" />
-                    <span className="font-black text-sm sm:text-xl md:text-2xl">{currentlyPlaying.imdbRating}</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 bg-yellow-500/10 text-yellow-500 px-2.5 py-1 sm:px-4 sm:py-2 rounded-xl border border-yellow-500/10">
+                    <Star size={12} className="sm:size-16 fill-current" />
+                    <span className="font-black text-xs sm:text-lg lg:text-xl">{currentlyPlaying.imdbRating}</span>
                   </div>
                 )}
               </div>
@@ -222,41 +225,41 @@ export const MediaDetails: React.FC = () => {
             <Separator className="bg-white/10" />
 
             {(currentlyPlaying.summary || currentlyPlaying.description) && (
-              <div className="space-y-4 sm:space-y-6 animate-in slide-in-from-right duration-700 delay-150">
-                <h3 className="text-base sm:text-xl md:text-2xl font-headline font-bold flex items-center gap-2 sm:gap-3 text-accent/80 uppercase tracking-widest">
-                  <Info size={18} className="sm:size-28 text-accent" />
-                  Chronicle
+              <div className="space-y-3 sm:space-y-5 animate-in slide-in-from-right duration-700 delay-150">
+                <h3 className="text-xs sm:text-sm md:text-base font-headline font-bold flex items-center gap-2 text-accent/80 uppercase tracking-widest">
+                  <Info size={14} className="sm:size-16 text-accent" />
+                  The Narrative
                 </h3>
-                <p className="text-white/80 text-sm sm:text-lg md:text-2xl leading-relaxed font-light italic">
+                <p className="text-white/80 text-sm sm:text-lg lg:text-xl leading-relaxed font-light italic">
                   {currentlyPlaying.summary || currentlyPlaying.description}
                 </p>
               </div>
             )}
 
             {currentlyPlaying.moral && (
-              <div className="p-5 sm:p-8 md:p-12 rounded-[1.5rem] sm:rounded-[3rem] bg-primary/5 border border-primary/10 space-y-3 sm:space-y-6 relative overflow-hidden group animate-in slide-in-from-right duration-700 delay-300">
-                <div className="absolute top-0 right-0 p-4 sm:p-8 opacity-5 sm:opacity-10">
-                  <MessageSquare size={40} className="sm:size-120 text-primary" />
+              <div className="p-5 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] bg-primary/5 border border-primary/10 space-y-3 sm:space-y-4 relative overflow-hidden group animate-in slide-in-from-right duration-700 delay-300">
+                <div className="absolute top-0 right-0 p-4 sm:p-6 opacity-10">
+                  <MessageSquare size={32} className="sm:size-48 text-primary" />
                 </div>
-                <h3 className="text-xs sm:text-xl md:text-2xl font-headline font-bold flex items-center gap-2 text-primary relative z-10 uppercase tracking-widest">
-                  The Essence
+                <h3 className="text-[10px] sm:text-xs font-headline font-bold flex items-center gap-2 text-primary relative z-10 uppercase tracking-widest">
+                  Soul Essence
                 </h3>
-                <p className="text-white text-base sm:text-xl md:text-3xl font-medium leading-relaxed italic relative z-10 pl-3 sm:pl-6 border-l-2 sm:border-l-4 border-primary/40">
+                <p className="text-white text-base sm:text-xl lg:text-2xl font-medium leading-relaxed italic relative z-10 pl-3 sm:pl-4 border-l-2 border-primary/40">
                   "{currentlyPlaying.moral}"
                 </p>
               </div>
             )}
 
-            <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row gap-4 animate-in slide-in-from-bottom duration-700 delay-500 pb-10">
-              <Button onClick={handleOpenSource} variant="outline" className="h-12 sm:h-16 md:h-20 rounded-xl sm:rounded-[2rem] border-white/10 text-sm sm:text-lg md:text-xl font-bold flex-1 hover:bg-white/5 transition-all">
-                <ExternalLink className="mr-2 sm:mr-3" size={16} className="sm:size-24" /> Metadata Origin
+            <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 animate-in slide-in-from-bottom duration-700 delay-500">
+              <Button onClick={handleOpenSource} variant="outline" className="h-12 sm:h-14 lg:h-16 rounded-xl sm:rounded-2xl border-white/10 text-xs sm:text-sm lg:text-base font-bold flex-1 hover:bg-white/5 transition-all text-white">
+                <ExternalLink className="mr-2" size={14} /> Origin Metadata
               </Button>
               <Button 
                 variant="secondary"
-                className="h-12 sm:h-16 md:h-20 rounded-xl sm:rounded-[2rem] text-sm sm:text-lg md:text-xl font-black flex-1 active:scale-95 transition-all"
+                className="h-12 sm:h-14 lg:h-16 rounded-xl sm:rounded-2xl text-xs sm:text-sm lg:text-base font-black flex-1 active:scale-95 transition-all"
                 onClick={() => setCurrentlyPlaying(null)}
               >
-                Close Universe
+                Close Realm
               </Button>
             </div>
           </div>
