@@ -1,7 +1,7 @@
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
-import { X, Music, Info, ExternalLink, Play, Video, Headset } from 'lucide-react';
+import { X, Music, Info, ExternalLink, Play, Video, Headset, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState, useEffect } from 'react';
@@ -72,7 +72,7 @@ export const MediaDetails: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-[60] animate-in fade-in duration-500 overflow-hidden bg-background h-svh w-screen flex flex-col">
-      {/* Immersive Background Artwork - Enhanced for brightness and clarity */}
+      {/* Immersive Background Artwork */}
       <div className="absolute inset-0 z-0 h-full w-full overflow-hidden pointer-events-none">
         <Image 
           src={bgImage} 
@@ -132,10 +132,10 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Slow Pulsing Animation - Centered Perfectly */}
+                      {/* Heartbeat ECG Animation */}
                       <div className="relative z-30 flex flex-col items-center justify-center">
-                        <div className="w-28 h-28 sm:w-32 md:w-40 rounded-full bg-white/5 backdrop-blur-3xl flex items-center justify-center animate-pulse-fade border border-white/10 shadow-2xl relative z-10 overflow-hidden">
-                           <Music className="text-white/20 w-10 h-10 sm:w-14 md:w-16" />
+                        <div className="w-28 h-28 sm:w-32 md:w-40 rounded-full bg-white/5 backdrop-blur-3xl flex items-center justify-center animate-heartbeat border border-white/10 shadow-2xl relative z-10 overflow-hidden">
+                           <Activity className="text-accent w-10 h-10 sm:w-14 md:w-16 drop-shadow-[0_0_15px_rgba(var(--accent),0.6)]" />
                         </div>
                       </div>
 
@@ -171,7 +171,7 @@ export const MediaDetails: React.FC = () => {
               )}
             </div>
 
-            {/* Song Mode Toggles - Responsive positioning */}
+            {/* Song Mode Toggles */}
             {isSong && (
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 p-1.5 bg-black/80 backdrop-blur-3xl rounded-2xl border border-white/20 shadow-2xl z-30">
                 <Button 
@@ -194,7 +194,7 @@ export const MediaDetails: React.FC = () => {
             )}
           </div>
 
-          {/* Section 3: Bottom Narrative Info (Description Below) */}
+          {/* Section 3: Bottom Narrative Info */}
           <div className="max-w-3xl mx-auto w-full space-y-8 md:space-y-10 animate-in slide-in-from-bottom-8 duration-700 pb-20 z-20">
             {(currentlyPlaying.summary || currentlyPlaying.description) && (
               <div className="space-y-3 text-center px-4">
