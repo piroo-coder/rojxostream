@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -49,9 +50,9 @@ export default function HomePage() {
           >
             <CarouselContent className="h-full ml-0">
               {allAnime.map((item) => (
-                <CarouselItem key={item.id} className="h-full w-full pl-0 relative flex flex-col justify-end pb-20 md:pb-32 px-6 sm:px-12 md:px-20 overflow-hidden">
+                <CarouselItem key={item.id} className="h-full w-full pl-0 relative flex flex-col justify-end pb-12 sm:pb-20 md:pb-32 px-6 sm:px-12 md:px-20 lg:px-24 overflow-hidden">
                   {/* Immersive Background Image */}
-                  <div className="absolute inset-0 z-0">
+                  <div className="absolute inset-0 z-0 h-full w-full">
                     <Image 
                       src={item.thumbnailUrl} 
                       alt={item.title}
@@ -62,43 +63,43 @@ export default function HomePage() {
                       unoptimized
                     />
                     {/* Multi-layered Gradients for Visibility */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-transparent hidden md:block" />
                     <div className="absolute inset-0 bg-black/40 md:hidden" />
                   </div>
                   
                   {/* Slide Content Overlay */}
-                  <div className="relative z-10 max-w-5xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                  <div className="relative z-10 max-w-6xl w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 pt-24">
                     <div className="flex items-center gap-3 mb-3 md:mb-6">
                       <div className="bg-primary/20 backdrop-blur-xl px-3 py-1 md:px-4 md:py-1.5 rounded-full flex items-center gap-2 border border-primary/30 shadow-2xl">
-                        <Sparkles className="text-primary animate-pulse" size={12} />
-                        <span className="text-primary font-black tracking-[0.2em] uppercase text-[9px] md:text-xs">Featured Universe</span>
+                        <Sparkles className="text-primary animate-pulse" size={10} />
+                        <span className="text-primary font-black tracking-[0.2em] uppercase text-[8px] md:text-xs">Featured Universe</span>
                       </div>
                     </div>
                     
-                    <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-headline font-bold mb-4 md:mb-6 tracking-tighter leading-[0.9] text-white drop-shadow-2xl">
+                    <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-headline font-bold mb-4 md:mb-6 tracking-tighter leading-[0.9] text-white drop-shadow-2xl">
                       {item.title}
                     </h1>
                     
-                    <p className="text-base sm:text-lg md:text-2xl text-white/80 mb-6 md:mb-8 max-w-3xl font-light leading-relaxed line-clamp-3 md:line-clamp-none drop-shadow-lg italic">
+                    <p className="text-sm sm:text-base md:text-xl lg:text-2xl text-white/80 mb-6 md:mb-10 max-w-3xl font-light leading-relaxed line-clamp-3 md:line-clamp-none drop-shadow-lg italic">
                       {item.summary || "Experience the magic of cinema like never before. Immerse yourself in worlds beyond imagination."}
                     </p>
                     
                     <div className="flex flex-col sm:flex-row gap-3 md:gap-6">
                       <Button 
                         size="lg" 
-                        className="h-14 sm:h-16 md:h-20 px-8 sm:px-10 md:px-12 text-lg sm:text-xl font-bold rounded-2xl bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 transition-all hover:scale-105 active:scale-95 border-0"
+                        className="h-12 sm:h-16 md:h-20 px-6 sm:px-10 md:px-14 text-base sm:text-lg md:text-xl font-bold rounded-2xl bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 transition-all hover:scale-105 active:scale-95 border-0"
                         onClick={() => setCurrentlyPlaying(item)}
                       >
-                        <Play className="mr-2 sm:mr-3 fill-current" size={20} /> Stream Now
+                        <Play className="mr-2 sm:mr-3 fill-current" size={18} /> Stream Now
                       </Button>
                       <Button 
                         size="lg" 
                         variant="outline" 
-                        className="h-14 sm:h-16 md:h-20 px-8 sm:px-10 md:px-12 text-lg sm:text-xl font-bold rounded-2xl border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all active:scale-95 text-white"
+                        className="h-12 sm:h-16 md:h-20 px-6 sm:px-10 md:px-14 text-base sm:text-lg md:text-xl font-bold rounded-2xl border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all active:scale-95 text-white"
                         onClick={() => setCurrentlyPlaying(item)}
                       >
-                        <Info className="mr-2 sm:mr-3" size={20} /> Details
+                        <Info className="mr-2 sm:mr-3" size={18} /> Details
                       </Button>
                     </div>
                   </div>
