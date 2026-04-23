@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -58,14 +57,14 @@ export default function HomePage() {
                       alt={item.title}
                       fill
                       sizes="100vw"
-                      className="object-cover object-center transition-transform duration-[6000ms] ease-out scale-100"
+                      className="object-cover object-center transition-transform duration-[8000ms] ease-out hover:scale-105"
                       priority
                       unoptimized
                     />
                     {/* Multi-layered Gradients for Visibility */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent hidden md:block" />
-                    <div className="absolute inset-0 bg-black/40 md:hidden" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-transparent hidden md:block" />
+                    <div className="absolute inset-0 bg-black/50 md:hidden" />
                   </div>
                   
                   {/* Slide Content Overlay */}
