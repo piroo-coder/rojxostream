@@ -73,39 +73,39 @@ export const MediaDetails: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-[60] animate-in fade-in duration-500 overflow-hidden bg-background h-svh w-screen flex flex-col">
-      {/* Immersive Background Artwork */}
+      {/* Immersive Background Artwork - Fixed to be clearly visible */}
       <div className="absolute inset-0 z-0 h-full w-full overflow-hidden pointer-events-none">
         <Image 
           src={bgImage} 
           alt=""
           fill
           sizes="100vw"
-          className="object-cover object-center opacity-90 sm:opacity-100 transition-opacity duration-1000"
+          className="object-cover object-center opacity-80 transition-opacity duration-1000"
           priority
           unoptimized
         />
-        {/* Deep Cinema Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/40" />
+        {/* Cinematic Gradient Overlays for readability without heavy blur */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="absolute inset-0 bg-black/20" />
       </div>
 
       {/* Persistent Close Control */}
       <Button 
         variant="ghost" 
         size="icon" 
-        className="fixed top-4 right-4 md:top-8 md:right-8 text-white z-[80] bg-white/10 hover:bg-white/20 rounded-full backdrop-blur-3xl border border-white/10 w-10 h-10 sm:w-14 sm:h-14 shadow-2xl transition-all hover:scale-110 active:scale-90"
+        className="fixed top-4 right-4 md:top-8 md:right-8 text-white z-[80] bg-white/5 hover:bg-white/20 rounded-full backdrop-blur-xl border border-white/10 w-10 h-10 sm:w-14 sm:h-14 shadow-2xl transition-all hover:scale-110 active:scale-90"
         onClick={() => setCurrentlyPlaying(null)}
       >
         <X className="size-5 sm:size-7" />
       </Button>
 
       <ScrollArea className="flex-1 w-full h-full relative z-10">
-        <div className="container mx-auto max-w-5xl px-4 min-h-screen flex flex-col justify-between py-12 md:py-24">
+        <div className="container mx-auto max-w-5xl px-4 min-h-screen flex flex-col items-center justify-center py-16 md:py-24 space-y-12">
           
           {/* Section 1: Top Metadata */}
-          <div className="text-center space-y-4 animate-in slide-in-from-top-8 duration-700 pt-8 sm:pt-0">
+          <div className="text-center space-y-4 animate-in slide-in-from-top-8 duration-700 w-full">
             <div className="flex justify-center">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent bg-black/40 px-4 py-1.5 rounded-full border border-white/10 shadow-2xl backdrop-blur-3xl">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent bg-black/20 px-4 py-1.5 rounded-full border border-white/10 shadow-2xl backdrop-blur-md">
                 {currentlyPlaying.type}
               </span>
             </div>
@@ -116,8 +116,8 @@ export const MediaDetails: React.FC = () => {
           </div>
 
           {/* Section 2: Centered Media Player */}
-          <div className="relative group mx-auto w-full max-w-4xl flex-1 flex items-center justify-center py-8">
-            <div className="relative aspect-video w-full rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8)] border border-white/10 bg-black/60 max-h-[50vh] sm:max-h-[60vh]">
+          <div className="relative group w-full max-w-4xl flex items-center justify-center">
+            <div className="relative aspect-video w-full rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.6)] border border-white/10 bg-black/40">
               {isEmbeddable ? (
                 <>
                   {isSong && songMode === 'audio' && (
@@ -128,21 +128,20 @@ export const MediaDetails: React.FC = () => {
                           src={bgImage} 
                           alt=""
                           fill
-                          className="object-cover opacity-40"
+                          className="object-cover opacity-20"
                           unoptimized
                         />
-                        <div className="absolute inset-0 bg-black/40" />
                       </div>
                       
-                      {/* Minimalist Fading Animation (No Rotation) */}
+                      {/* Minimalist Fading Animation - Very Transparent */}
                       <div className="relative z-30 flex flex-col items-center gap-6">
                         <div className="relative group">
-                          {/* Gentle Ambient Glow */}
-                          <div className="absolute -inset-16 bg-primary/20 rounded-full blur-[80px] animate-pulse-slow opacity-40" />
+                          {/* Very Subtle Ambient Glow */}
+                          <div className="absolute -inset-16 bg-primary/5 rounded-full blur-[80px] animate-pulse-slow opacity-20" />
                           
-                          {/* Central Pulse Logo (Fade In/Out Only) */}
-                          <div className="w-32 h-32 sm:w-48 md:w-56 rounded-full bg-black/60 backdrop-blur-3xl flex items-center justify-center animate-pulse-slow border-2 border-white/10 shadow-2xl relative z-10 overflow-hidden ring-1 ring-white/5">
-                             <Music className="text-white/40 w-12 h-12 sm:w-16 md:w-20" />
+                          {/* Central Pulse Logo - Barely Visible and Transparent */}
+                          <div className="w-32 h-32 sm:w-48 md:w-56 rounded-full bg-white/5 backdrop-blur-sm flex items-center justify-center animate-pulse-slow border border-white/5 shadow-inner relative z-10 overflow-hidden">
+                             <Music className="text-white/10 w-12 h-12 sm:w-16 md:w-20" />
                           </div>
                         </div>
                       </div>
@@ -170,8 +169,8 @@ export const MediaDetails: React.FC = () => {
                   <ExternalLink size={48} className="text-primary" />
                   <div className="space-y-4">
                     <h3 className="text-2xl font-headline font-bold">External Universe</h3>
-                    <p className="text-white/60 text-sm sm:text-base max-w-md">This content is hosted beyond our dimension. Establish a direct connection to view.</p>
-                    <Button onClick={handleOpenSource} size="lg" className="rounded-xl bg-primary shadow-lg shadow-primary/30">
+                    <p className="text-white/60 text-sm sm:text-base max-w-md">This content is hosted beyond our dimension.</p>
+                    <Button onClick={handleOpenSource} size="lg" className="rounded-xl bg-primary">
                       <Play className="mr-2 fill-current" size={14} /> Connect
                     </Button>
                   </div>
@@ -179,13 +178,13 @@ export const MediaDetails: React.FC = () => {
               )}
             </div>
 
-            {/* Song Mode Toggles */}
+            {/* Song Mode Toggles - Centered at bottom of player */}
             {isSong && (
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 p-1 bg-black/80 backdrop-blur-3xl rounded-2xl border border-white/10 shadow-2xl z-30">
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 p-1 bg-black/60 backdrop-blur-2xl rounded-2xl border border-white/10 shadow-2xl z-30">
                 <Button 
                   size="sm"
                   variant={songMode === 'audio' ? 'default' : 'ghost'} 
-                  className={cn("rounded-xl h-10 px-6 gap-2 font-bold text-xs uppercase tracking-widest transition-all", songMode === 'audio' ? "bg-primary text-white shadow-lg" : "text-white/40 hover:text-white")}
+                  className={cn("rounded-xl h-10 px-6 gap-2 font-bold text-xs uppercase tracking-widest transition-all", songMode === 'audio' ? "bg-primary text-white" : "text-white/40 hover:text-white")}
                   onClick={() => handleModeChange('audio')}
                 >
                   <Headset size={14} /> Audio
@@ -193,7 +192,7 @@ export const MediaDetails: React.FC = () => {
                 <Button 
                   size="sm"
                   variant={songMode === 'video' ? 'default' : 'ghost'} 
-                  className={cn("rounded-xl h-10 px-6 gap-2 font-bold text-xs uppercase tracking-widest transition-all", songMode === 'video' ? "bg-primary text-white shadow-lg" : "text-white/40 hover:text-white")}
+                  className={cn("rounded-xl h-10 px-6 gap-2 font-bold text-xs uppercase tracking-widest transition-all", songMode === 'video' ? "bg-primary text-white" : "text-white/40 hover:text-white")}
                   onClick={() => handleModeChange('video')}
                 >
                   <Video size={14} /> Video
@@ -203,34 +202,34 @@ export const MediaDetails: React.FC = () => {
           </div>
 
           {/* Section 3: Bottom Narrative Info */}
-          <div className="max-w-3xl mx-auto w-full space-y-8 animate-in slide-in-from-bottom-8 duration-700 pb-12">
+          <div className="max-w-3xl mx-auto w-full space-y-10 animate-in slide-in-from-bottom-8 duration-700">
             {(currentlyPlaying.summary || currentlyPlaying.description) && (
               <div className="space-y-3 text-center">
-                <h3 className="text-[9px] font-headline font-bold flex items-center justify-center gap-2 text-white/30 uppercase tracking-[0.4em]">
+                <h3 className="text-[9px] font-headline font-bold flex items-center justify-center gap-2 text-white/20 uppercase tracking-[0.4em]">
                   <Info size={12} /> The Narrative
                 </h3>
-                <p className="text-white/80 text-sm sm:text-lg leading-relaxed font-light italic tracking-tight max-w-2xl mx-auto drop-shadow-xl">
+                <p className="text-white/80 text-sm sm:text-lg leading-relaxed font-light italic tracking-tight max-w-2xl mx-auto drop-shadow-lg">
                   {currentlyPlaying.summary || currentlyPlaying.description}
                 </p>
               </div>
             )}
 
             {currentlyPlaying.moral && (
-              <div className="p-6 sm:p-8 rounded-[2rem] bg-black/40 border border-white/10 backdrop-blur-3xl relative overflow-hidden text-center shadow-2xl">
-                <h3 className="text-[9px] font-headline font-bold text-accent/50 uppercase tracking-[0.4em] mb-3">Core Essence</h3>
+              <div className="p-6 sm:p-8 rounded-[2rem] bg-black/20 border border-white/5 backdrop-blur-md relative overflow-hidden text-center shadow-xl">
+                <h3 className="text-[9px] font-headline font-bold text-accent/30 uppercase tracking-[0.4em] mb-3">Core Essence</h3>
                 <p className="text-white text-base sm:text-xl font-medium leading-snug italic">
                   "{currentlyPlaying.moral}"
                 </p>
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button onClick={handleOpenSource} variant="outline" className="h-14 rounded-2xl border-white/10 flex-1 bg-white/5 hover:bg-white/10 font-bold text-sm backdrop-blur-xl">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Button onClick={handleOpenSource} variant="outline" className="h-14 rounded-2xl border-white/10 flex-1 bg-white/5 hover:bg-white/10 font-bold text-sm backdrop-blur-md">
                 <ExternalLink size={16} className="mr-2 text-accent" /> Source Portal
               </Button>
               <Button 
                 variant="secondary"
-                className="h-14 rounded-2xl flex-1 bg-white/10 hover:bg-white/20 font-bold text-sm backdrop-blur-xl border border-white/10"
+                className="h-14 rounded-2xl flex-1 bg-white/5 hover:bg-white/10 font-bold text-sm backdrop-blur-md border border-white/5"
                 onClick={() => setCurrentlyPlaying(null)}
               >
                 Close Connection
