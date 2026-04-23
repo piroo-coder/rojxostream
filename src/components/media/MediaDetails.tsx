@@ -23,7 +23,10 @@ export const MediaDetails: React.FC = () => {
   if (!currentlyPlaying) return null;
 
   const isSong = currentlyPlaying.type === 'song';
+  
   const isYoutube = currentlyPlaying.mediaUrl.includes('youtube.com') || currentlyPlaying.mediaUrl.includes('youtu.be');
+  const isDailymotion = currentlyPlaying.mediaUrl.includes('dailymotion.com') || currentlyPlaying.mediaUrl.includes('dai.ly');
+  const isVimeo = currentlyPlaying.mediaUrl.includes('vimeo.com');
   
   const getYoutubeEmbedUrl = (url: string) => {
     let id = '';
@@ -37,6 +40,18 @@ export const MediaDetails: React.FC = () => {
     return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&loop=1&playlist=${id}`;
   };
 
+  const getDailymotionEmbedUrl = (url: string) => {
+    const parts = url.split('/');
+    const id = parts[parts.length - 1].split('?')[0];
+    return `https://www.dailymotion.com/embed/video/${id}?autoplay=1&mute=0`;
+  };
+
+  const getVimeoEmbedUrl = (url: string) => {
+    const parts = url.split('/');
+    const id = parts[parts.length - 1].split('?')[0];
+    return `https://player.vimeo.com/video/${id}?autoplay=1&loop=1`;
+  };
+
   const handleOpenSource = () => window.open(currentlyPlaying.mediaUrl, '_blank');
 
   const handleModeChange = (mode: 'video' | 'audio') => {
@@ -48,8 +63,12 @@ export const MediaDetails: React.FC = () => {
 
   const getEmbedSource = () => {
     if (isYoutube) return getYoutubeEmbedUrl(currentlyPlaying.mediaUrl);
+    if (isDailymotion) return getDailymotionEmbedUrl(currentlyPlaying.mediaUrl);
+    if (isVimeo) return getVimeoEmbedUrl(currentlyPlaying.mediaUrl);
     return currentlyPlaying.mediaUrl;
   };
+
+  const isEmbeddable = isYoutube || isDailymotion || isVimeo;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center animate-in fade-in duration-500 overflow-hidden bg-background">
@@ -81,7 +100,7 @@ export const MediaDetails: React.FC = () => {
         {/* Left Section: Playback Player */}
         <div className="relative w-full lg:w-[60%] xl:w-[65%] h-[40vh] sm:h-[50vh] lg:h-full bg-black flex flex-col shadow-2xl">
           <div className="flex-1 relative overflow-hidden">
-            {isYoutube ? (
+            {isEmbeddable ? (
               <div className="w-full h-full relative">
                 {isSong && songMode === 'audio' && (
                   <div className="absolute inset-0 z-20 flex flex-col items-center justify-center animate-in zoom-in-95 duration-500 overflow-hidden">
@@ -98,7 +117,7 @@ export const MediaDetails: React.FC = () => {
                     
                     <div className="relative z-30 flex flex-col items-center gap-6 md:gap-10 text-center p-8 max-w-2xl">
                       <div className="w-40 h-40 md:w-64 md:h-64 rounded-full bg-primary/20 backdrop-blur-3xl flex items-center justify-center animate-pulse border-2 border-primary/30 shadow-[0_0_80px_rgba(var(--primary),0.2)]">
-                         <Music className="text-primary animate-bounce-slow w-16 h-16 md:w-24 md:h-24" />
+                         <Music className="text-primary animate-pulse w-16 h-16 md:w-24 md:h-24" />
                       </div>
                       <div className="space-y-4">
                         <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.6em] text-accent/80">Listening Mode Active</p>
