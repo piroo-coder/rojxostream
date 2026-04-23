@@ -102,7 +102,7 @@ const initialData: MediaItem[] = [
     type: 'movie',
     title: 'Half Girlfriend',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp8276890.jpg',
-    mediaUrl: 'https://www.bilibili.tv/en/video/4793502803038208',
+    mediaUrl: 'https://www.youtube.com/watch?v=AI9r3XjyOXs',
     creator: 'Mohit Suri',
     imdbRating: '4.5',
     summary: 'A young man from a rural area falls in love with a wealthy girl at college, leading to a complex relationship.',
