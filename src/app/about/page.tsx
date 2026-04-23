@@ -2,7 +2,7 @@
 "use client";
 
 import { Navbar } from '@/components/layout/Navbar';
-import { Heart, Music, Code, Gamepad2, Stars, Sparkles, MessageSquareHeart, Instagram, Youtube, Twitter, Music2 } from 'lucide-react';
+import { Heart, Music, Code, Gamepad2, Stars, Sparkles, Instagram, Youtube, Twitter, Facebook } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -39,10 +39,10 @@ export default function AboutPage() {
   ];
 
   const socialStats = [
-    { platform: 'Instagram', icon: Instagram, count: '1.2M', color: 'text-pink-400' },
-    { platform: 'YouTube', icon: Youtube, count: '450K', color: 'text-red-400' },
-    { platform: 'TikTok', icon: Music2, count: '2.8M', color: 'text-cyan-400' },
-    { platform: 'Twitter', icon: Twitter, count: '150K', color: 'text-blue-400' },
+    { platform: 'Instagram', icon: Instagram, count: '2.5k', color: 'text-pink-400' },
+    { platform: 'YouTube', icon: Youtube, count: '8', color: 'text-red-400' },
+    { platform: 'Facebook', icon: Facebook, count: '2.1k', color: 'text-blue-500' },
+    { platform: 'Twitter', icon: Twitter, count: '1k', color: 'text-blue-400' },
   ];
 
   return (
