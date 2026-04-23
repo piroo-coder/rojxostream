@@ -2,7 +2,7 @@
 "use client";
 
 import { Navbar } from '@/components/layout/Navbar';
-import { Heart, Music, Code, Gamepad2, Stars, Sparkles, MessageSquareHeart } from 'lucide-react';
+import { Heart, Music, Code, Gamepad2, Stars, Sparkles, MessageSquareHeart, Instagram, Youtube, Twitter, Music2 } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -36,6 +36,13 @@ export default function AboutPage() {
       color: 'text-purple-400',
       description: 'can sing quite well , i guess so , but shy '
     },
+  ];
+
+  const socialStats = [
+    { platform: 'Instagram', icon: Instagram, count: '1.2M', color: 'text-pink-400' },
+    { platform: 'YouTube', icon: Youtube, count: '450K', color: 'text-red-400' },
+    { platform: 'TikTok', icon: Music2, count: '2.8M', color: 'text-cyan-400' },
+    { platform: 'Twitter', icon: Twitter, count: '150K', color: 'text-blue-400' },
   ];
 
   return (
@@ -100,6 +107,26 @@ export default function AboutPage() {
             <p className="text-2xl font-light text-white/70 italic leading-relaxed">
               "just a little girl with big dreams and a heart full of stories."
             </p>
+          </div>
+
+          {/* Social Stats Section */}
+          <div className="flex flex-wrap justify-center gap-6 sm:gap-10 mt-8 w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+            {socialStats.map((stat) => (
+              <div key={stat.platform} className="flex flex-col items-center gap-3 group transition-all duration-300 hover:scale-110">
+                <div className="relative">
+                  <div className={`absolute -inset-2 bg-gradient-to-tr from-white/5 to-transparent rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity`} />
+                  <div className="relative w-16 h-16 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl flex items-center justify-center shadow-lg group-hover:border-white/20 transition-all">
+                    <stat.icon className={`${stat.color} drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]`} size={28} />
+                  </div>
+                </div>
+                <span className="text-xl font-headline font-black tracking-tight text-white/90">
+                  {stat.count}
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/30 group-hover:text-white/50 transition-colors">
+                  {stat.platform}
+                </span>
+              </div>
+            ))}
           </div>
 
           {/* Hobbies Grid */}
