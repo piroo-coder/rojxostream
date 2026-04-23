@@ -87,20 +87,31 @@
   100% { transform: translateY(-200px) translateX(-10px); opacity: 0; }
 }
 
-@keyframes pulse-ripple {
+@keyframes music-pulse {
   0% {
-    transform: scale(1);
-    opacity: 0.8;
+    height: 1px;
+    margin-top: 0;
+  }
+  10% {
+    height: 40px;
+    margin-top: -40px;
+  }
+  50% {
+    height: 20px;
+    margin-top: -20px;
+  }
+  60% {
+    height: 30px;
+    margin-top: -30px;
+  }
+  80% {
+    height: 60px;
+    margin-top: -60px;
   }
   100% {
-    transform: scale(4);
-    opacity: 0;
+    height: 1px;
+    margin-top: 0;
   }
-}
-
-@keyframes music-bar-bounce {
-  0% { transform: scaleY(1); }
-  100% { transform: scaleY(4); }
 }
 
 .animate-pulse-slow {
@@ -127,12 +138,8 @@
   animation: text-fly 2s ease-out forwards;
 }
 
-.animate-pulse-ripple {
-  animation: pulse-ripple 3s linear infinite;
-}
-
-.animate-music-bar {
-  animation: music-bar-bounce 0.8s ease-in-out infinite alternate;
+.animate-music-pulse {
+  animation: music-pulse 1s ease-in-out infinite;
 }
 
 /* Shorts Scrolling Behavior */

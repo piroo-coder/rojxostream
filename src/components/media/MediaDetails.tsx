@@ -70,6 +70,8 @@ export const MediaDetails: React.FC = () => {
 
   const isEmbeddable = isYoutube || isDailymotion || isVimeo || isVideas || isGenericEmbed;
 
+  const barDelays = [0.5, 0.2, 1.2, 0.9, 2.3, 1.3, 3.1, 1.9];
+
   return (
     <div className="fixed inset-0 z-[60] animate-in fade-in duration-500 overflow-hidden bg-background h-svh w-screen flex flex-col">
       {/* Immersive Background Artwork */}
@@ -128,18 +130,23 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Music Bars Visualizer */}
-                      <div className="relative z-30 flex items-end gap-2 h-20 px-8">
-                        {[...Array(5)].map((_, i) => (
-                          <div 
-                            key={i}
-                            className="w-2.5 sm:w-3 bg-accent rounded-full animate-music-bar origin-bottom shadow-[0_0_15px_rgba(var(--accent),0.5)]"
-                            style={{ 
-                              animationDelay: `${(i + 1) * 0.1}s`,
-                              height: '10px'
-                            }}
-                          />
-                        ))}
+                      {/* New Pulse Visualizer Container */}
+                      <div className="relative z-30 flex flex-col items-center gap-6">
+                        <div className="flex items-end gap-1.5 h-[60px]">
+                          {barDelays.map((delay, i) => (
+                            <div 
+                              key={i}
+                              className="w-2.5 rounded-full bg-gradient-to-t from-primary to-accent animate-music-pulse"
+                              style={{ 
+                                animationDelay: `${delay}s`,
+                                height: '1px'
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40 animate-pulse">
+                          Now Playing.
+                        </span>
                       </div>
 
                       {/* Background Audio Source */}
