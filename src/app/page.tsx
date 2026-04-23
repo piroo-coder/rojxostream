@@ -33,7 +33,7 @@ export default function HomePage() {
   const allAnime = library.filter(item => item.type === 'anime');
 
   return (
-    <main className="h-svh overflow-y-scroll snap-y snap-mandatory bg-background relative scroll-smooth scrollbar-hide">
+    <main id="home-main-container" className="h-svh overflow-y-scroll snap-y snap-mandatory bg-background relative scroll-smooth scrollbar-hide">
       <Navbar />
       
       {!searchTerm && allAnime.length > 0 && (

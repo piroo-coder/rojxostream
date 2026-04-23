@@ -51,13 +51,24 @@ export const Navbar: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const scrollToTop = () => {
+    const main = document.getElementById('home-main-container');
+    if (main) {
+      main.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
     setShowSuggestions(true);
     
-    // If user clears the search and is not on home page, return to home
-    if (value === "" && pathname !== '/') {
-      router.push('/');
+    // If user clears the search
+    if (value === "") {
+      if (pathname !== '/') {
+        router.push('/');
+      } else {
+        scrollToTop();
+      }
     }
   };
 
@@ -66,6 +77,8 @@ export const Navbar: React.FC = () => {
     setShowSuggestions(false);
     if (pathname !== '/') {
       router.push('/');
+    } else {
+      scrollToTop();
     }
   };
 
