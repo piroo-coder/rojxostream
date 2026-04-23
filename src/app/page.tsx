@@ -164,12 +164,15 @@ export default function HomePage() {
         )}
 
         {searchTerm && filteredLibrary.length === 0 && (
-          <div className="h-[60vh] flex flex-col items-center justify-center text-center px-4">
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-white/5 flex items-center justify-center mb-6 border border-white/10 shadow-inner">
-              <Search size={28} className="text-white/10" />
+          <div className="h-[60vh] flex flex-col items-center justify-center text-center px-4 animate-in fade-in zoom-in-95 duration-500">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/5 flex items-center justify-center mb-6 border border-white/10 shadow-2xl backdrop-blur-xl">
+              <Search size={32} className="text-white/20" />
             </div>
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-headline font-bold mb-2 md:mb-3 tracking-tight">No universes found</h3>
-            <p className="text-muted-foreground text-sm sm:text-base md:text-lg font-light max-w-md">Try searching for something else, like <span className="text-primary font-medium">Anime</span>, <span className="text-accent font-medium">Suzume</span>, or a specific director.</p>
+            <h3 className="text-2xl md:text-4xl font-headline font-bold mb-3 md:mb-4 tracking-tight text-white">Universe Not Found</h3>
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg font-light max-w-md leading-relaxed">
+              We couldn't find any worlds matching "<span className="text-primary font-bold">{searchTerm}</span>". 
+              Try searching for something else or explore our featured collections.
+            </p>
           </div>
         )}
       </div>
