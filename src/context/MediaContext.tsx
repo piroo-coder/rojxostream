@@ -41,7 +41,7 @@ const initialData: MediaItem[] = [
     id: 'a3',
     type: 'anime',
     title: 'The Garden of Words',
-    thumbnailUrl: 'https://wallpapercat.com/w/full/5/2/a/32983-1920x1080-desktop-full-hd-the-garden-of-words-wallpaper-photo.jpg',
+    thumbnailUrl: 'https://wallpaperaccess.com/full/970464.jpg',
     mediaUrl: 'https://vimeo.com/855974784?fl=pl&fe=sh',
     creator: 'Makoto Shinkai',
     imdbRating: '7.4',
