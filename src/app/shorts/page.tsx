@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
 import { MediaItem } from '@/app/types/media';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const ShortItem = ({ 
   short, 
@@ -39,10 +40,10 @@ const ShortItem = ({
       className="short-item relative flex items-center justify-center bg-black w-full h-[calc(100svh-64px)] md:h-[calc(100svh-80px)] overflow-hidden"
       data-short-id={short.id}
     >
-      {/* Immersive Ambient Glow (YouTube style) - Intensified */}
+      {/* Immersive Ambient Glow (YouTube style) - Dynamic & Intense */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        {/* The primary color spill - Increased opacity and scale */}
-        <div className="relative w-full h-full max-w-[600px] aspect-[9/16] opacity-80 blur-[150px] scale-[1.8] transition-all duration-1000">
+        {/* The primary color spill - Using thumbnail with massive blur for dynamic colors */}
+        <div className="absolute inset-0 opacity-90 blur-[180px] scale-150 transition-all duration-1000">
            <img 
               src={short.thumbnailUrl} 
               alt="" 
@@ -50,15 +51,15 @@ const ShortItem = ({
             />
         </div>
         
-        {/* Subtle Background Textures - Lightened to show more glow */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/60" />
+        {/* Subtle Darkening Overlay to ensure content pops */}
+        <div className="absolute inset-0 bg-black/40" />
         
-        {/* Floating Hearts/Sparkles - Dreamer Theme */}
-        <div className="absolute top-[20%] left-[10%] text-pink-500/10 animate-pulse">
-          <Heart size={40} fill="currentColor" />
+        {/* Floating Hearts/Sparkles - Dreamer Theme (Subtle) */}
+        <div className="absolute top-[20%] left-[10%] text-white/5 animate-pulse">
+          <Heart size={60} fill="currentColor" />
         </div>
-        <div className="absolute bottom-[30%] right-[15%] text-purple-500/10 animate-bounce">
-          <Sparkles size={30} />
+        <div className="absolute bottom-[30%] right-[15%] text-white/5 animate-bounce">
+          <Sparkles size={40} />
         </div>
       </div>
 
@@ -274,13 +275,13 @@ export default function ShortsPage() {
       
       {/* Global Background Decor */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[10%] left-[10%] text-pink-500/5 animate-pulse">
+        <div className="absolute top-[10%] left-[10%] text-white/5 animate-pulse">
           <Stars size={120} />
         </div>
-        <div className="absolute bottom-[10%] right-[5%] text-accent/5 animate-pulse delay-1000">
+        <div className="absolute bottom-[10%] right-[5%] text-white/5 animate-pulse delay-1000">
           <Sparkles size={100} />
         </div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80rem] h-[80rem] bg-pink-500/5 rounded-full blur-[200px] animate-pulse-slow" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80rem] h-[80rem] bg-white/5 rounded-full blur-[200px] animate-pulse-slow" />
       </div>
       
       <div 
