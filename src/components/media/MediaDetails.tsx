@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -84,8 +83,8 @@ export const MediaDetails: React.FC = () => {
           priority
           unoptimized
         />
-        {/* Lighter cinematic gradients to ensure background is bright and visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/10 to-transparent" />
+        {/* Lighter cinematic gradients for maximum visibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
         <div className="absolute inset-0 bg-black/10" />
       </div>
 
@@ -102,7 +101,7 @@ export const MediaDetails: React.FC = () => {
       <ScrollArea className="flex-1 w-full h-full relative z-10">
         <div className="container mx-auto max-w-5xl px-4 min-h-full flex flex-col items-center justify-center py-20 md:py-32 space-y-8 md:space-y-12">
           
-          {/* Section 1: Top Metadata (Centered) */}
+          {/* Section 1: Top Metadata (Title at Top) */}
           <div className="text-center space-y-2 md:space-y-4 animate-in slide-in-from-top-8 duration-700 w-full z-20">
             <div className="flex justify-center mb-2">
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent bg-black/40 px-4 py-1.5 rounded-full border border-white/10 shadow-2xl backdrop-blur-md">
@@ -115,9 +114,9 @@ export const MediaDetails: React.FC = () => {
             <p className="text-accent font-bold text-base sm:text-xl md:text-2xl drop-shadow-xl">{currentlyPlaying.creator}</p>
           </div>
 
-          {/* Section 2: Centered Media Player (Responsive Box) */}
+          {/* Section 2: Centered Media Player (Box Centered) */}
           <div className="relative group w-full max-w-4xl flex items-center justify-center animate-in zoom-in-95 duration-1000 z-20">
-            <div className="relative aspect-video w-full rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.8)] border border-white/20 bg-black/40">
+            <div className="relative aspect-video w-full rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.8)] border border-white/20 bg-black/40 flex items-center justify-center">
               {isEmbeddable ? (
                 <>
                   {isSong && songMode === 'audio' && (
@@ -133,16 +132,10 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* More significant pulsing animation for the music logo */}
-                      <div className="relative z-30 flex flex-col items-center justify-center w-full h-full">
-                        <div className="relative">
-                          {/* Ambient Pulsing Glow */}
-                          <div className="absolute -inset-20 bg-primary/20 rounded-full blur-[100px] animate-pulse opacity-30" />
-                          
-                          {/* Central Pulse Logo - Significant and visible animation */}
-                          <div className="w-24 h-24 sm:w-32 md:w-40 rounded-full bg-white/20 backdrop-blur-2xl flex items-center justify-center animate-pulse border-2 border-white/40 shadow-2xl relative z-10">
-                             <Music className="text-white/90 w-10 h-10 sm:w-14 md:w-16 drop-shadow-lg" />
-                          </div>
+                      {/* Slow Pulsing Animation - Centered Perfectly */}
+                      <div className="relative z-30 flex flex-col items-center justify-center">
+                        <div className="w-28 h-28 sm:w-32 md:w-40 rounded-full bg-white/5 backdrop-blur-3xl flex items-center justify-center animate-pulse-fade border border-white/10 shadow-2xl relative z-10 overflow-hidden">
+                           <Music className="text-white/20 w-10 h-10 sm:w-14 md:w-16" />
                         </div>
                       </div>
 
@@ -158,7 +151,7 @@ export const MediaDetails: React.FC = () => {
                   {(!isSong || songMode === 'video') && (
                     <iframe 
                       src={getEmbedSource()}
-                      className="w-full h-full border-0"
+                      className="w-full h-full border-0 absolute inset-0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
@@ -178,7 +171,7 @@ export const MediaDetails: React.FC = () => {
               )}
             </div>
 
-            {/* Song Mode Toggles - Centered at bottom of player */}
+            {/* Song Mode Toggles - Responsive positioning */}
             {isSong && (
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 p-1.5 bg-black/80 backdrop-blur-3xl rounded-2xl border border-white/20 shadow-2xl z-30">
                 <Button 
@@ -201,7 +194,7 @@ export const MediaDetails: React.FC = () => {
             )}
           </div>
 
-          {/* Section 3: Bottom Narrative Info (Centered and Spaced Properly) */}
+          {/* Section 3: Bottom Narrative Info (Description Below) */}
           <div className="max-w-3xl mx-auto w-full space-y-8 md:space-y-10 animate-in slide-in-from-bottom-8 duration-700 pb-20 z-20">
             {(currentlyPlaying.summary || currentlyPlaying.description) && (
               <div className="space-y-3 text-center px-4">
