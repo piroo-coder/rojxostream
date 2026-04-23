@@ -2,11 +2,12 @@
 "use client";
 
 import Link from 'next/link';
-import { Play, Home, Layers, Search, Heart, Menu, Sparkles } from 'lucide-react';
+import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { useMedia } from '@/context/MediaContext';
+import { useState } from 'react';
 import {
   Sheet,
   SheetContent,
@@ -19,6 +20,7 @@ import { Button } from '@/components/ui/button';
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const { searchTerm, setSearchTerm } = useMedia();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const navLinks = [
     { href: '/', icon: Home, label: 'Explore', activeColor: 'text-accent' },
@@ -33,8 +35,8 @@ export const Navbar: React.FC = () => {
       "hover:bg-background/60"
     )}>
       <div className="container mx-auto flex items-center justify-between gap-4">
-        {/* Logo */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Logo - Hidden on mobile if search is open */}
+        <div className={cn("flex items-center gap-2 flex-shrink-0 transition-all duration-300", isSearchOpen && "scale-0 w-0 opacity-0 overflow-hidden sm:scale-100 sm:w-auto sm:opacity-100")}>
           <Link href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
               <Play fill="currentColor" size={14} className="text-white ml-0.5" />
@@ -62,10 +64,11 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Search & Mobile Menu */}
-        <div className="flex items-center gap-2 md:gap-4">
-          <div className="relative group hidden sm:block">
-            <div className="absolute -inset-1 bg-gradient-to-r from-pink-500/10 via-primary/10 to-accent/10 rounded-full blur-md opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition duration-500" />
-            <div className="relative flex items-center">
+        <div className="flex items-center gap-2 md:gap-4 flex-1 justify-end">
+          {/* Mobile Search Toggle & Input */}
+          <div className="relative group flex items-center">
+            {/* Desktop Search */}
+            <div className="hidden sm:flex relative items-center">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400/40 group-focus-within:text-accent transition-colors duration-300" size={18} />
               <Input 
                 placeholder="Find universe..." 
@@ -85,10 +88,46 @@ export const Navbar: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Mobile Search Button (Icon Only) */}
+            <div className={cn("flex sm:hidden items-center transition-all duration-300 w-full", isSearchOpen ? "flex-1" : "w-10")}>
+              {isSearchOpen ? (
+                <div className="flex items-center w-full gap-2 animate-in slide-in-from-right-4 duration-300">
+                  <Input 
+                    autoFocus
+                    placeholder="Search universes..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="h-10 bg-white/5 border-white/10 rounded-full pl-10 pr-10 focus:bg-white/10"
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-accent" size={16} />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 rounded-full text-white/40" 
+                    onClick={() => {
+                      setIsSearchOpen(false);
+                      setSearchTerm("");
+                    }}
+                  >
+                    <X size={16} />
+                  </Button>
+                </div>
+              ) : (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-10 w-10 rounded-full bg-white/5 border border-white/10 text-white hover:text-accent"
+                  onClick={() => setIsSearchOpen(true)}
+                >
+                  <Search size={20} />
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Mobile Navigation Trigger */}
-          <div className="lg:hidden">
+          <div className="lg:hidden flex-shrink-0">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 h-10 w-10">
@@ -100,16 +139,6 @@ export const Navbar: React.FC = () => {
                   <SheetTitle className="text-2xl font-headline font-bold">Navigation</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6">
-                  {/* Search in mobile menu for very small screens */}
-                  <div className="sm:hidden relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" size={18} />
-                    <Input 
-                      placeholder="Search..." 
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-12 bg-white/5 border-white/10 rounded-xl h-12"
-                    />
-                  </div>
                   {navLinks.map((link) => (
                     <Link 
                       key={link.href}
