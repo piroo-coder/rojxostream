@@ -68,7 +68,7 @@ const HighlightText = ({ text, highlight }: { text: string; highlight: string })
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { library, searchTerm, setSearchTerm } = useMedia();
+  const { library, searchTerm, setSearchTerm, setCurrentlyPlaying } = useMedia();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [localInput, setLocalInput] = useState(searchTerm);
@@ -174,15 +174,20 @@ export const Navbar: React.FC = () => {
   };
 
   const handleSuggestionClick = (item: MediaItem) => {
-    setLocalInput(item.title);
-    setSearchTerm(item.title);
+    // Clear the search inputs immediately
+    setLocalInput("");
+    setSearchTerm("");
     setShowSuggestions(false);
     
     if (item.type === 'short') {
       if (pathname !== '/shorts') {
         router.push('/shorts');
       }
+      // For shorts, the ShortsPage will naturally show all but we've navigated
     } else {
+      // For non-shorts, directly open the player
+      setCurrentlyPlaying(item);
+      
       if (pathname !== '/') {
         router.push('/');
       } else {
