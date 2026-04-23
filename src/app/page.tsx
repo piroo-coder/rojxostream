@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -32,11 +33,11 @@ export default function HomePage() {
   const allAnime = library.filter(item => item.type === 'anime');
 
   return (
-    <main className="h-screen overflow-y-scroll snap-y snap-mandatory bg-background relative scroll-smooth scrollbar-hide">
+    <main className="h-svh overflow-y-scroll snap-y snap-mandatory bg-background relative scroll-smooth scrollbar-hide">
       <Navbar />
       
       {!searchTerm && allAnime.length > 0 && (
-        <section className="h-screen w-full snap-start relative overflow-hidden bg-black">
+        <section className="h-svh w-full snap-start relative overflow-hidden bg-black">
           <Carousel 
             opts={{ loop: true, align: 'start' }}
             plugins={[
@@ -50,7 +51,7 @@ export default function HomePage() {
             <CarouselContent className="h-full ml-0">
               {allAnime.map((item) => (
                 <CarouselItem key={item.id} className="h-full w-full pl-0 relative flex flex-col justify-end pb-12 sm:pb-20 md:pb-24 px-6 sm:px-12 md:px-20 lg:px-24 overflow-hidden">
-                  {/* Immersive Background Image */}
+                  {/* Immersive Background Image - Fully Responsive Fill */}
                   <div className="absolute inset-0 z-0 h-full w-full">
                     <Image 
                       src={item.thumbnailUrl} 
@@ -85,21 +86,18 @@ export default function HomePage() {
                     </p>
                     
                     <div className="flex flex-row gap-3 md:gap-4">
-                      <Button 
-                        size="lg" 
-                        className="h-10 sm:h-12 px-6 sm:px-8 text-sm font-bold rounded-xl bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 transition-all hover:scale-105 active:scale-95 border-0"
+                      <button 
+                        className="h-10 sm:h-12 px-6 sm:px-8 text-xs sm:text-sm font-bold rounded-xl bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 transition-all hover:scale-105 active:scale-95 flex items-center gap-2 text-white"
                         onClick={() => setCurrentlyPlaying(item)}
                       >
-                        <Play className="mr-2 fill-current" size={14} /> Stream
-                      </Button>
-                      <Button 
-                        size="lg" 
-                        variant="outline" 
-                        className="h-10 sm:h-12 px-6 sm:px-8 text-sm font-bold rounded-xl border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all active:scale-95 text-white"
+                        <Play className="fill-current" size={14} /> Stream
+                      </button>
+                      <button 
+                        className="h-10 sm:h-12 px-6 sm:px-8 text-xs sm:text-sm font-bold rounded-xl border border-white/20 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-all active:scale-95 text-white flex items-center gap-2"
                         onClick={() => setCurrentlyPlaying(item)}
                       >
-                        <Info className="mr-2" size={14} /> Details
-                      </Button>
+                        <Info size={14} /> Details
+                      </button>
                     </div>
                   </div>
                 </CarouselItem>
@@ -118,10 +116,10 @@ export default function HomePage() {
       <div className={cn("px-4 sm:px-8 md:px-16", searchTerm ? "pt-24 md:pt-32" : "")}>
         
         {anime.length > 0 && (
-          <section className="min-h-screen w-full snap-start py-12 md:py-20 flex flex-col justify-center">
+          <section className="min-h-svh w-full snap-start py-12 md:py-20 flex flex-col justify-center">
             <div className="mb-8 md:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-5xl font-headline font-bold mb-3 md:mb-4 tracking-tight">World of <span className="text-accent">Anime</span></h2>
-              <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl font-light leading-relaxed">Breathtaking visuals and emotional storytelling from the heart of Japan's most legendary studios.</p>
+              <h2 className="text-xl sm:text-2xl md:text-4xl font-headline font-bold mb-2 md:mb-3 tracking-tight">World of <span className="text-accent">Anime</span></h2>
+              <p className="text-muted-foreground text-xs sm:text-sm md:text-base max-w-2xl font-light leading-relaxed">Breathtaking visuals and emotional storytelling from the heart of Japan's most legendary studios.</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
               {anime.map((item, idx) => (
@@ -134,10 +132,10 @@ export default function HomePage() {
         )}
 
         {movies.length > 0 && (
-          <section className="min-h-screen w-full snap-start py-12 md:py-20 flex flex-col justify-center">
+          <section className="min-h-svh w-full snap-start py-12 md:py-20 flex flex-col justify-center">
             <div className="mb-8 md:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-5xl font-headline font-bold mb-3 md:mb-4 tracking-tight">The <span className="text-primary">Cinema</span> Gallery</h2>
-              <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl font-light leading-relaxed">From spine-chilling horror to heartwarming drama, experience every spectrum of human emotion on the silver screen.</p>
+              <h2 className="text-xl sm:text-2xl md:text-4xl font-headline font-bold mb-2 md:mb-3 tracking-tight">The <span className="text-primary">Cinema</span> Gallery</h2>
+              <p className="text-muted-foreground text-xs sm:text-sm md:text-base max-w-2xl font-light leading-relaxed">From spine-chilling horror to heartwarming drama, experience every spectrum of human emotion on the silver screen.</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
               {movies.map((item, idx) => (
@@ -150,10 +148,10 @@ export default function HomePage() {
         )}
 
         {songs.length > 0 && (
-          <section className="min-h-screen w-full snap-start py-12 md:py-20 flex flex-col justify-center">
+          <section className="min-h-svh w-full snap-start py-12 md:py-20 flex flex-col justify-center">
             <div className="mb-8 md:mb-12">
-              <h2 className="text-2xl sm:text-3xl md:text-5xl font-headline font-bold mb-3 md:mb-4 tracking-tight">Sonic <span className="text-accent">Vibrations</span></h2>
-              <p className="text-muted-foreground text-sm sm:text-base md:text-lg max-w-2xl font-light leading-relaxed">Immerse yourself in the soundtracks that define your favorite cinematic moments and memories.</p>
+              <h2 className="text-xl sm:text-2xl md:text-4xl font-headline font-bold mb-2 md:mb-3 tracking-tight">Sonic <span className="text-accent">Vibrations</span></h2>
+              <p className="text-muted-foreground text-xs sm:text-sm md:text-base max-w-2xl font-light leading-relaxed">Immerse yourself in the soundtracks that define your favorite cinematic moments and memories.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
               {songs.map((item, idx) => (

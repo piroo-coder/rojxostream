@@ -102,10 +102,10 @@ export const MediaDetails: React.FC = () => {
       <ScrollArea className="flex-1 w-full h-full relative z-10">
         <div className="container mx-auto max-w-5xl px-4 min-h-screen flex flex-col items-center justify-center py-16 md:py-24 space-y-12">
           
-          {/* Section 1: Top Metadata */}
+          {/* Section 1: Top Metadata (Centered) */}
           <div className="text-center space-y-4 animate-in slide-in-from-top-8 duration-700 w-full">
             <div className="flex justify-center">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent bg-black/20 px-4 py-1.5 rounded-full border border-white/10 shadow-2xl backdrop-blur-md">
+              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent bg-black/40 px-4 py-1.5 rounded-full border border-white/10 shadow-2xl backdrop-blur-md">
                 {currentlyPlaying.type}
               </span>
             </div>
@@ -115,9 +115,9 @@ export const MediaDetails: React.FC = () => {
             <p className="text-accent font-bold text-lg sm:text-2xl drop-shadow-xl">{currentlyPlaying.creator}</p>
           </div>
 
-          {/* Section 2: Centered Media Player */}
+          {/* Section 2: Centered Media Player (Stretched for visibility) */}
           <div className="relative group w-full max-w-4xl flex items-center justify-center">
-            <div className="relative aspect-video w-full rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.6)] border border-white/10 bg-black/40">
+            <div className="relative aspect-video w-full h-[30vh] sm:h-[40vh] md:h-[50vh] min-h-[250px] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.6)] border border-white/10 bg-black/40">
               {isEmbeddable ? (
                 <>
                   {isSong && songMode === 'audio' && (
@@ -140,8 +140,8 @@ export const MediaDetails: React.FC = () => {
                           <div className="absolute -inset-16 bg-primary/5 rounded-full blur-[80px] animate-pulse-slow opacity-20" />
                           
                           {/* Central Pulse Logo - Barely Visible and Transparent */}
-                          <div className="w-32 h-32 sm:w-48 md:w-56 rounded-full bg-white/5 backdrop-blur-sm flex items-center justify-center animate-pulse-slow border border-white/5 shadow-inner relative z-10 overflow-hidden">
-                             <Music className="text-white/10 w-12 h-12 sm:w-16 md:w-20" />
+                          <div className="w-24 h-24 sm:w-32 md:w-40 rounded-full bg-white/5 backdrop-blur-sm flex items-center justify-center animate-pulse-slow border border-white/5 shadow-inner relative z-10 overflow-hidden">
+                             <Music className="text-white/5 w-10 h-10 sm:w-14 md:w-16" />
                           </div>
                         </div>
                       </div>
@@ -201,8 +201,8 @@ export const MediaDetails: React.FC = () => {
             )}
           </div>
 
-          {/* Section 3: Bottom Narrative Info */}
-          <div className="max-w-3xl mx-auto w-full space-y-10 animate-in slide-in-from-bottom-8 duration-700">
+          {/* Section 3: Bottom Narrative Info (Stretched properly) */}
+          <div className="max-w-3xl mx-auto w-full space-y-10 animate-in slide-in-from-bottom-8 duration-700 pb-12">
             {(currentlyPlaying.summary || currentlyPlaying.description) && (
               <div className="space-y-3 text-center">
                 <h3 className="text-[9px] font-headline font-bold flex items-center justify-center gap-2 text-white/20 uppercase tracking-[0.4em]">
