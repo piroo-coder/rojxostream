@@ -91,8 +91,13 @@ export const Navbar: React.FC = () => {
     
     const query = localInput.toLowerCase();
     
+    // Filter library based on page context: In Shorts section, only search for shorts
+    const searchableLibrary = pathname === '/shorts' 
+      ? library.filter(item => item.type === 'short')
+      : library;
+    
     // 1. Direct matches (includes)
-    const directMatches = library.filter(item => 
+    const directMatches = searchableLibrary.filter(item => 
       item.title.toLowerCase().includes(query) ||
       item.type.toLowerCase().includes(query)
     );
@@ -100,7 +105,7 @@ export const Navbar: React.FC = () => {
     if (directMatches.length > 0) return directMatches.slice(0, 6);
 
     // 2. Fuzzy matches (typo tolerance)
-    const fuzzyMatches = library.filter(item => {
+    const fuzzyMatches = searchableLibrary.filter(item => {
       const title = item.title.toLowerCase();
       // Allow typos based on query length (up to 3 for longer queries)
       const maxDistance = query.length < 4 ? 1 : query.length < 7 ? 2 : 3;
@@ -148,9 +153,9 @@ export const Navbar: React.FC = () => {
     setSearchTerm("");
     setShowSuggestions(false);
     
-    if (pathname !== '/') {
+    if (pathname !== '/shorts' && pathname !== '/') {
       router.push('/');
-    } else {
+    } else if (pathname === '/') {
       requestAnimationFrame(() => {
         scrollToTop();
       });
@@ -162,7 +167,7 @@ export const Navbar: React.FC = () => {
       setSearchTerm(localInput);
       setShowSuggestions(false);
       // Default to Home if we are not already on Home/Shorts properly
-      if (pathname !== '/') {
+      if (pathname !== '/' && pathname !== '/shorts') {
         router.push('/');
       }
     }
@@ -230,7 +235,7 @@ export const Navbar: React.FC = () => {
             <div className="hidden sm:flex relative items-center w-full">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400/40 group-focus-within:text-accent transition-colors duration-300" size={18} />
               <Input 
-                placeholder="Find universe..." 
+                placeholder={pathname === '/shorts' ? "Find shorts..." : "Find universe..."}
                 value={localInput}
                 onFocus={() => setShowSuggestions(true)}
                 onChange={(e) => handleSearchChange(e.target.value)}
@@ -285,7 +290,7 @@ export const Navbar: React.FC = () => {
                     ) : (
                       <div className="px-6 py-8 text-center space-y-2">
                         <FileQuestion className="mx-auto text-white/10" size={32} />
-                        <p className="text-sm font-bold text-white/40 uppercase tracking-widest">No universes found</p>
+                        <p className="text-sm font-bold text-white/40 uppercase tracking-widest">No results found</p>
                       </div>
                     )}
                   </div>
