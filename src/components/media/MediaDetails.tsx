@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -72,8 +71,14 @@ export const MediaDetails: React.FC = () => {
     }
     const parts = url.split('/');
     const id = parts[parts.length - 1].split('?')[0];
+    
     if (url.includes('bilibili.tv')) {
-      return `https://www.bilibili.tv/en/video/${id}`;
+      // For bilibili.tv (Global), if it's a numeric ID, we attempt to use the Mainland player mirror
+      // which is more reliable for clear video embeds without the full site UI.
+      if (/^\d+$/.test(id)) {
+        return `https://player.bilibili.com/player.html?aid=${id}&autoplay=1`;
+      }
+      return url;
     }
     return url;
   };
@@ -98,8 +103,6 @@ export const MediaDetails: React.FC = () => {
   };
 
   const isEmbeddable = isYoutube || isDailymotion || isVimeo || isFacebook || isDropbox || isVideas || isGenericEmbed || isBilibili;
-
-  const barDelays = [0.5, 0.2, 1.2, 0.9, 2.3, 1.3, 3.1, 1.9];
 
   return (
     <div className="fixed inset-0 z-[60] animate-in fade-in duration-500 overflow-hidden bg-background h-svh w-screen flex flex-col">
@@ -159,19 +162,17 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Pulse Visualizer Container */}
-                      <div className="relative z-30 flex flex-col items-center gap-6">
-                        <div className="flex items-end gap-1.5 h-[60px]">
-                          {barDelays.map((delay, i) => (
-                            <div 
-                              key={i}
-                              className="w-2.5 rounded-full border border-accent/40 bg-transparent animate-music-pulse"
-                              style={{ 
-                                animationDelay: `${delay}s`,
-                                height: '1px'
-                              }}
-                            />
-                          ))}
+                      {/* Pulse Visualizer Container - Perfect Circle with subtle background */}
+                      <div className="relative z-30 flex items-center justify-center w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-white/[0.03] backdrop-blur-3xl border border-white/5 shadow-[0_0_100px_rgba(var(--accent),0.1)]">
+                        <div className="flex items-end gap-1 px-4">
+                          <div className="now-playing-bar n1"></div>
+                          <div className="now-playing-bar n2"></div>
+                          <div className="now-playing-bar n3"></div>
+                          <div className="now-playing-bar n4"></div>
+                          <div className="now-playing-bar n5"></div>
+                          <div className="now-playing-bar n6"></div>
+                          <div className="now-playing-bar n7"></div>
+                          <div className="now-playing-bar n8"></div>
                         </div>
                       </div>
 

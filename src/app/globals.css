@@ -142,6 +142,31 @@
   animation: music-pulse 1s ease-in-out infinite;
 }
 
+/* Music Bar Styling: Blue border, transparent fill, staggered delays */
+.now-playing-bar {
+  display: inline-block;
+  position: relative;
+  margin-right: 2px;
+  width: 10px;
+  height: 1px;
+  overflow: hidden;
+  background: transparent;
+  border: 1.5px solid hsl(var(--accent) / 0.6);
+  border-radius: 4px;
+  animation-name: music-pulse;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+.n1 { animation-delay: 0.5s; }
+.n2 { animation-delay: 0.2s; }
+.n3 { animation-delay: 1.2s; }
+.n4 { animation-delay: 0.9s; }
+.n5 { animation-delay: 2.3s; }
+.n6 { animation-delay: 1.3s; }
+.n7 { animation-delay: 3.1s; }
+.n8 { animation-delay: 1.9s; }
+
 /* Shorts Scrolling Behavior */
 .shorts-container {
   scroll-snap-type: y mandatory;
