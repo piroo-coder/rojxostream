@@ -39,10 +39,10 @@ const ShortItem = ({
       className="short-item relative flex items-center justify-center bg-black w-full h-[calc(100svh-64px)] md:h-[calc(100svh-80px)] overflow-hidden"
       data-short-id={short.id}
     >
-      {/* Immersive Ambient Glow (YouTube style) */}
+      {/* Immersive Ambient Glow (YouTube style) - Intensified */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        {/* The primary color spill */}
-        <div className="relative w-full h-full max-w-[600px] aspect-[9/16] opacity-40 blur-[120px] scale-150 transition-all duration-1000">
+        {/* The primary color spill - Increased opacity and scale */}
+        <div className="relative w-full h-full max-w-[600px] aspect-[9/16] opacity-80 blur-[150px] scale-[1.8] transition-all duration-1000">
            <img 
               src={short.thumbnailUrl} 
               alt="" 
@@ -50,22 +50,22 @@ const ShortItem = ({
             />
         </div>
         
-        {/* Subtle Background Textures */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background/80" />
+        {/* Subtle Background Textures - Lightened to show more glow */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/60" />
         
         {/* Floating Hearts/Sparkles - Dreamer Theme */}
-        <div className="absolute top-[20%] left-[10%] text-pink-500/5 animate-pulse">
+        <div className="absolute top-[20%] left-[10%] text-pink-500/10 animate-pulse">
           <Heart size={40} fill="currentColor" />
         </div>
-        <div className="absolute bottom-[30%] right-[15%] text-purple-500/5 animate-bounce">
+        <div className="absolute bottom-[30%] right-[15%] text-purple-500/10 animate-bounce">
           <Sparkles size={30} />
         </div>
       </div>
 
       {/* Main Video Container (Slim mobile-first proportion) */}
       <div className={cn(
-        "relative z-10 w-full h-full max-w-[360px] aspect-[9/16] bg-black shadow-[0_0_120px_rgba(0,0,0,0.8)]",
-        "flex items-center justify-center sm:rounded-[2.5rem] overflow-hidden border border-white/10 group transition-all duration-500"
+        "relative z-10 w-full h-full max-w-[360px] aspect-[9/16] bg-black shadow-[0_0_120px_rgba(0,0,0,0.9)]",
+        "flex items-center justify-center sm:rounded-[2.5rem] overflow-hidden border border-white/20 group transition-all duration-500"
       )}>
         
         {isActive ? (
@@ -73,7 +73,7 @@ const ShortItem = ({
             {isYoutube ? (
               <iframe
                 src={getYoutubeEmbedUrl(short.mediaUrl, isActive, isMuted)}
-                className="w-full h-full scale-[1.02]"
+                className="w-full h-full scale-[1.05]"
                 title={short.title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -95,7 +95,7 @@ const ShortItem = ({
             <img 
               src={short.thumbnailUrl} 
               alt={short.title} 
-              className="w-full h-full object-cover opacity-50"
+              className="w-full h-full object-cover opacity-60"
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-3xl flex items-center justify-center border border-white/20">
@@ -107,7 +107,7 @@ const ShortItem = ({
 
         {/* Audio Toggle (Top Right) */}
         <button 
-          className="absolute top-6 right-6 z-30 p-2.5 rounded-full bg-black/40 backdrop-blur-2xl border border-white/10 text-white hover:bg-white/20 transition-all shadow-xl"
+          className="absolute top-6 right-6 z-30 p-2.5 rounded-full bg-black/50 backdrop-blur-2xl border border-white/20 text-white hover:bg-white/30 transition-all shadow-xl"
           onClick={onToggleMute}
         >
           {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
@@ -139,7 +139,7 @@ const ShortItem = ({
               
               <div className="space-y-2">
                 <p className="text-sm font-medium leading-snug line-clamp-2 text-white/95 max-w-[90%]">{short.title}</p>
-                <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5 w-fit">
+                <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 w-fit">
                   <Music size={10} className="animate-pulse text-pink-400" />
                   <span className="text-[10px] font-bold tracking-tight truncate max-w-[140px]">Original Sound • {short.title}</span>
                 </div>
@@ -152,7 +152,7 @@ const ShortItem = ({
                 <Button 
                   size="icon" 
                   variant="ghost" 
-                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-pink-500/80 transition-all w-12 h-12 border border-white/10 group active:scale-90"
+                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-pink-500/80 transition-all w-12 h-12 border border-white/10 group active:scale-90 shadow-lg"
                 >
                   <Heart size={24} className="text-white group-hover:scale-110 transition-transform" />
                 </Button>
@@ -163,7 +163,7 @@ const ShortItem = ({
                 <Button 
                   size="icon" 
                   variant="ghost" 
-                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group active:scale-90"
+                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group active:scale-90 shadow-lg"
                 >
                   <MessageCircle size={24} className="text-white" />
                 </Button>
@@ -174,7 +174,7 @@ const ShortItem = ({
                 <Button 
                   size="icon" 
                   variant="ghost" 
-                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group active:scale-90"
+                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group active:scale-90 shadow-lg"
                 >
                   <Share2 size={22} className="text-white" />
                 </Button>
@@ -182,7 +182,7 @@ const ShortItem = ({
               </div>
               
               <div className="relative mt-2">
-                <div className="absolute -inset-1 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-full blur-md opacity-40 animate-pulse" />
+                <div className="absolute -inset-1 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-full blur-md opacity-60 animate-pulse" />
                 <div className="relative w-10 h-10 rounded-full border-2 border-white/40 overflow-hidden animate-[spin_10s_linear_infinite]">
                   <img src={short.thumbnailUrl} className="w-full h-full object-cover" alt="" />
                 </div>
@@ -192,8 +192,8 @@ const ShortItem = ({
         </div>
 
         {/* Gradients for UI Visibility */}
-        <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-10" />
-        <div className="absolute inset-x-0 top-0 h-[20%] bg-gradient-to-b from-black/60 via-transparent to-transparent pointer-events-none z-10" />
+        <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10" />
+        <div className="absolute inset-x-0 top-0 h-[20%] bg-gradient-to-b from-black/70 via-transparent to-transparent pointer-events-none z-10" />
       </div>
     </div>
   );
