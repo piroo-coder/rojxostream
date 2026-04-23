@@ -1,7 +1,7 @@
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
-import { X, Music, Info, ExternalLink, Play, Video, Headset, Activity } from 'lucide-react';
+import { X, Music, Info, ExternalLink, Play, Video, Headset } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState, useEffect } from 'react';
@@ -132,10 +132,10 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Heartbeat ECG Animation */}
+                      {/* Slow Fading Pulse Animation */}
                       <div className="relative z-30 flex flex-col items-center justify-center">
-                        <div className="w-28 h-28 sm:w-32 md:w-40 rounded-full bg-white/5 backdrop-blur-3xl flex items-center justify-center animate-heartbeat border border-white/10 shadow-2xl relative z-10 overflow-hidden">
-                           <Activity className="text-accent w-10 h-10 sm:w-14 md:w-16 drop-shadow-[0_0_15px_rgba(var(--accent),0.6)]" />
+                        <div className="w-28 h-28 sm:w-32 md:w-40 rounded-full bg-white/5 backdrop-blur-3xl flex items-center justify-center animate-pulse-slow border border-white/10 shadow-2xl relative z-10 overflow-hidden">
+                           <Music className="text-accent w-10 h-10 sm:w-14 md:w-16 drop-shadow-[0_0_15px_rgba(var(--accent),0.6)]" />
                         </div>
                       </div>
 
