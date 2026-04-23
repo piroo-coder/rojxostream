@@ -40,30 +40,44 @@ const ShortItem = ({
       className="short-item relative flex items-center justify-center bg-black w-full h-[calc(100svh-64px)] md:h-[calc(100svh-80px)] overflow-hidden"
       data-short-id={short.id}
     >
-      {/* Immersive Ambient Glow (YouTube style) - Intense & Color-Accurate */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        {/* The primary color spill - Using thumbnail with high saturation and massive blur */}
-        <div className="absolute inset-0 opacity-80 blur-[120px] scale-[2] saturate-[250%] transition-all duration-1000">
-           <img 
-              src={short.thumbnailUrl} 
-              alt="" 
-              className="w-full h-full object-cover"
-            />
+      {/* PROFOUND AMBIENT GLOW SYSTEM */}
+      <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
+        {/* The Dynamic Ambient Layer: Plays the same content blurred in the background */}
+        <div className="absolute inset-0 opacity-60 blur-[120px] scale-[2.5] saturate-[300%] transition-all duration-1000">
+           {isActive && (
+             <div className="w-full h-full">
+               {isYoutube ? (
+                 <iframe
+                   src={getYoutubeEmbedUrl(short.mediaUrl, true, true)} // Always muted in background
+                   className="w-full h-full pointer-events-none"
+                   title="ambient-bg"
+                   frameBorder="0"
+                 />
+               ) : (
+                 <video 
+                   src={short.mediaUrl} 
+                   className="w-full h-full object-cover"
+                   loop
+                   autoPlay
+                   muted
+                   playsInline
+                 />
+               )}
+             </div>
+           )}
+           {!isActive && (
+             <img 
+               src={short.thumbnailUrl} 
+               alt="" 
+               className="w-full h-full object-cover"
+             />
+           )}
         </div>
         
-        {/* Layered Color Spill for Depth */}
-        <div className="absolute inset-0 opacity-40 blur-[200px] scale-[1.5] saturate-[300%] transition-all duration-1000">
-           <img 
-              src={short.thumbnailUrl} 
-              alt="" 
-              className="w-full h-full object-cover"
-            />
-        </div>
+        {/* Subtle Darkening Overlay to preserve contrast */}
+        <div className="absolute inset-0 bg-black/40" />
         
-        {/* Subtle Darkening Overlay - Less intense to let colors shine */}
-        <div className="absolute inset-0 bg-black/30" />
-        
-        {/* Floating Decor */}
+        {/* Dreamer Floating Decor */}
         <div className="absolute top-[20%] left-[10%] text-white/5 animate-pulse">
           <Heart size={60} fill="currentColor" />
         </div>
