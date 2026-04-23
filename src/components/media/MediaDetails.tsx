@@ -73,12 +73,8 @@ export const MediaDetails: React.FC = () => {
     const id = parts[parts.length - 1].split('?')[0];
     
     if (url.includes('bilibili.tv')) {
-      // For bilibili.tv (Global), if it's a numeric ID, we attempt to use the Mainland player mirror
-      // which is more reliable for clear video embeds without the full site UI.
-      if (/^\d+$/.test(id)) {
-        return `https://player.bilibili.com/player.html?aid=${id}&autoplay=1`;
-      }
-      return url;
+      // Use the explicit Bilibili Global embed path for cleaner UI and correct routing
+      return `https://www.bilibili.tv/en/video/embed/${id}`;
     }
     return url;
   };
@@ -162,7 +158,7 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Pulse Visualizer Container - Perfect Circle with subtle background */}
+                      {/* Pulse Visualizer Container */}
                       <div className="relative z-30 flex items-center justify-center w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-white/[0.03] backdrop-blur-3xl border border-white/5 shadow-[0_0_100px_rgba(var(--accent),0.1)]">
                         <div className="flex items-end gap-1 px-4">
                           <div className="now-playing-bar n1"></div>
