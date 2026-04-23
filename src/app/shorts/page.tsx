@@ -1,14 +1,15 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
 import { Navbar } from '@/components/layout/Navbar';
-import { Heart, MessageCircle, Share2, User, Volume2, VolumeX, Sparkles, Stars, Music, Plus } from 'lucide-react';
+import { Heart, MessageCircle, Share2, User, Volume2, VolumeX, Sparkles, Stars, Music, Plus, Send, Copy, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
 import { MediaItem } from '@/app/types/media';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { toast } from '@/hooks/use-toast';
 
 const ShortItem = ({ 
   short, 
@@ -21,6 +22,15 @@ const ShortItem = ({
   isMuted: boolean;
   onToggleMute: () => void;
 }) => {
+  const [isLiked, setIsLiked] = useState(false);
+  const [showHeartPop, setShowHeartPop] = useState(false);
+  const [flyingHearts, setFlyingHearts] = useState<{ id: number }[]>([]);
+  const [isCommenting, setIsCommenting] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [flyingComments, setFlyingComments] = useState<{ id: number; text: string }[]>([]);
+  const [showShare, setShowShare] = useState(false);
+  const [copied, setCopied] = useState(false);
+
   const isYoutube = short.mediaUrl.includes('youtube.com');
   
   const getYoutubeEmbedUrl = (url: string, active: boolean, muted: boolean) => {
@@ -35,6 +45,40 @@ const ShortItem = ({
     return `https://www.youtube.com/embed/${id}?autoplay=${active ? 1 : 0}&mute=${muteParam}&controls=0&rel=0&modestbranding=1&enablejsapi=1&loop=1&playlist=${id}`;
   };
 
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+    if (!isLiked) {
+      setShowHeartPop(true);
+      const newHeart = { id: Date.now() };
+      setFlyingHearts(prev => [...prev, newHeart]);
+      setTimeout(() => setShowHeartPop(false), 800);
+      setTimeout(() => {
+        setFlyingHearts(prev => prev.filter(h => h.id !== newHeart.id));
+      }, 1000);
+    }
+  };
+
+  const handleSendComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+
+    const newComment = { id: Date.now(), text: commentText };
+    setFlyingComments(prev => [...prev, newComment]);
+    setCommentText("");
+    setIsCommenting(false);
+
+    setTimeout(() => {
+      setFlyingComments(prev => prev.filter(c => c.id !== newComment.id));
+    }, 2000);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(short.mediaUrl);
+    setCopied(true);
+    toast({ title: "Portal Linked", description: "The link has been copied to your clipboard." });
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div 
       className="short-item relative flex items-center justify-center bg-black w-full h-[calc(100svh-64px)] md:h-[calc(100svh-80px)] overflow-hidden"
@@ -42,13 +86,12 @@ const ShortItem = ({
     >
       {/* PROFOUND AMBIENT GLOW SYSTEM */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
-        {/* The Dynamic Ambient Layer: Plays the same content blurred in the background */}
         <div className="absolute inset-0 opacity-60 blur-[120px] scale-[2.5] saturate-[300%] transition-all duration-1000">
            {isActive && (
              <div className="w-full h-full">
                {isYoutube ? (
                  <iframe
-                   src={getYoutubeEmbedUrl(short.mediaUrl, true, true)} // Always muted in background
+                   src={getYoutubeEmbedUrl(short.mediaUrl, true, true)} 
                    className="w-full h-full pointer-events-none"
                    title="ambient-bg"
                    frameBorder="0"
@@ -73,24 +116,33 @@ const ShortItem = ({
              />
            )}
         </div>
-        
-        {/* Subtle Darkening Overlay to preserve contrast */}
         <div className="absolute inset-0 bg-black/40" />
-        
-        {/* Dreamer Floating Decor */}
-        <div className="absolute top-[20%] left-[10%] text-white/5 animate-pulse">
-          <Heart size={60} fill="currentColor" />
-        </div>
-        <div className="absolute bottom-[30%] right-[15%] text-white/5 animate-bounce">
-          <Sparkles size={40} />
-        </div>
       </div>
 
-      {/* Main Video Container (Slim mobile-first proportion) */}
+      {/* Main Video Container */}
       <div className={cn(
         "relative z-10 w-full h-full max-w-[360px] aspect-[9/16] bg-black shadow-[0_0_150px_rgba(0,0,0,1)]",
         "flex items-center justify-center sm:rounded-[2.5rem] overflow-hidden border border-white/20 group transition-all duration-500"
       )}>
+        
+        {/* Like Pop Animation Overlay */}
+        {showHeartPop && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
+            <Heart size={100} fill="currentColor" className="text-pink-500 animate-heart-pop" />
+          </div>
+        )}
+
+        {/* Flying Comments Overlay */}
+        <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden">
+          {flyingComments.map(comment => (
+            <div 
+              key={comment.id} 
+              className="absolute left-1/2 bottom-20 -translate-x-1/2 bg-white/10 backdrop-blur-xl border border-white/20 px-4 py-2 rounded-2xl text-white text-sm font-medium animate-text-fly"
+            >
+              {comment.text}
+            </div>
+          ))}
+        </div>
         
         {isActive ? (
           <div className="w-full h-full">
@@ -121,15 +173,9 @@ const ShortItem = ({
               alt={short.title} 
               className="w-full h-full object-cover opacity-60"
             />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-3xl flex items-center justify-center border border-white/20">
-                <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[14px] border-l-white/80 border-b-[8px] border-b-transparent ml-1.5" />
-              </div>
-            </div>
           </div>
         )}
 
-        {/* Audio Toggle (Top Right) */}
         <button 
           className="absolute top-6 right-6 z-30 p-2.5 rounded-full bg-black/50 backdrop-blur-2xl border border-white/20 text-white hover:bg-white/30 transition-all shadow-xl"
           onClick={onToggleMute}
@@ -141,26 +187,13 @@ const ShortItem = ({
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-end p-6 z-20">
           <div className="flex items-end justify-between w-full">
             
-            {/* Creator Info (Bottom Left) */}
             <div className="flex-1 pointer-events-auto text-white space-y-3 mb-2 drop-shadow-2xl">
               <div className="flex items-center gap-3">
-                <div className="relative group/avatar cursor-pointer">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full blur-sm opacity-50 group-hover/avatar:opacity-100 transition-opacity" />
-                  <div className="relative w-10 h-10 rounded-full bg-neutral-800 border-2 border-white/40 overflow-hidden">
-                    <User size={20} className="m-auto mt-2" />
-                  </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 bg-pink-500 rounded-full p-0.5 border border-black">
-                    <Plus size={8} className="text-white" />
-                  </div>
+                <div className="relative w-10 h-10 rounded-full bg-neutral-800 border-2 border-white/40 overflow-hidden">
+                  <User size={20} className="m-auto mt-2" />
                 </div>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <span className="font-headline font-bold text-sm tracking-tight">@{short.creator || 'Creator'}</span>
-                    <button className="bg-white text-black text-[9px] font-black px-3 py-1 rounded-full hover:bg-pink-500 hover:text-white transition-all uppercase tracking-widest">Follow</button>
-                  </div>
-                </div>
+                <span className="font-headline font-bold text-sm tracking-tight">@{short.creator || 'Creator'}</span>
               </div>
-              
               <div className="space-y-2">
                 <p className="text-sm font-medium leading-snug line-clamp-2 text-white/95 max-w-[90%]">{short.title}</p>
                 <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 w-fit">
@@ -170,15 +203,26 @@ const ShortItem = ({
               </div>
             </div>
 
-            {/* Action Bar (Right Stack) */}
-            <div className="flex flex-col gap-5 pointer-events-auto mb-2 items-center pl-2">
+            {/* Action Bar */}
+            <div className="flex flex-col gap-5 pointer-events-auto mb-2 items-center pl-2 relative">
+              {/* Flying Hearts */}
+              {flyingHearts.map(heart => (
+                <div key={heart.id} className="absolute -top-10 text-pink-500 animate-float-up pointer-events-none">
+                  <Heart size={20} fill="currentColor" />
+                </div>
+              ))}
+
               <div className="flex flex-col items-center gap-1">
                 <Button 
                   size="icon" 
                   variant="ghost" 
-                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-pink-500/80 transition-all w-12 h-12 border border-white/10 group active:scale-90 shadow-lg"
+                  onClick={handleLike}
+                  className={cn(
+                    "rounded-full backdrop-blur-3xl transition-all w-12 h-12 border border-white/10 group active:scale-90 shadow-lg",
+                    isLiked ? "bg-pink-500 border-pink-500" : "bg-white/10 hover:bg-white/20"
+                  )}
                 >
-                  <Heart size={24} className="text-white group-hover:scale-110 transition-transform" />
+                  <Heart size={24} className={cn("text-white transition-transform", isLiked && "fill-current scale-110")} />
                 </Button>
                 <span className="text-[10px] font-black text-white drop-shadow-md">24.5K</span>
               </div>
@@ -187,7 +231,11 @@ const ShortItem = ({
                 <Button 
                   size="icon" 
                   variant="ghost" 
-                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group active:scale-90 shadow-lg"
+                  onClick={() => setIsCommenting(!isCommenting)}
+                  className={cn(
+                    "rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group active:scale-90 shadow-lg",
+                    isCommenting && "bg-accent border-accent"
+                  )}
                 >
                   <MessageCircle size={24} className="text-white" />
                 </Button>
@@ -198,27 +246,68 @@ const ShortItem = ({
                 <Button 
                   size="icon" 
                   variant="ghost" 
+                  onClick={() => setShowShare(true)}
                   className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group active:scale-90 shadow-lg"
                 >
                   <Share2 size={22} className="text-white" />
                 </Button>
                 <span className="text-[10px] font-black text-white drop-shadow-md">Share</span>
               </div>
-              
-              <div className="relative mt-2">
-                <div className="absolute -inset-1 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-full blur-md opacity-60 animate-pulse" />
-                <div className="relative w-10 h-10 rounded-full border-2 border-white/40 overflow-hidden animate-[spin_10s_linear_infinite]">
-                  <img src={short.thumbnailUrl} className="w-full h-full object-cover" alt="" />
-                </div>
-              </div>
             </div>
           </div>
+          
+          {/* Inline Comment Input */}
+          {isCommenting && (
+            <form onSubmit={handleSendComment} className="mt-4 flex items-center gap-2 pointer-events-auto animate-in slide-in-from-bottom-2 duration-300">
+              <Input 
+                autoFocus
+                placeholder="Share your soul..."
+                value={commentText}
+                onChange={e => setCommentText(e.target.value)}
+                className="h-10 bg-black/60 border-white/20 rounded-xl text-xs placeholder:text-white/30 backdrop-blur-2xl"
+              />
+              <Button type="submit" size="icon" className="h-10 w-10 rounded-xl bg-accent hover:bg-accent/80 flex-shrink-0">
+                <Send size={16} />
+              </Button>
+            </form>
+          )}
         </div>
 
-        {/* Gradients for UI Visibility */}
         <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10" />
-        <div className="absolute inset-x-0 top-0 h-[20%] bg-gradient-to-b from-black/70 via-transparent to-transparent pointer-events-none z-10" />
       </div>
+
+      {/* Share Dialog */}
+      <Dialog open={showShare} onOpenChange={setShowShare}>
+        <DialogContent className="bg-background/80 backdrop-blur-3xl border-white/10 text-white rounded-[2rem] max-w-[90vw] sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-headline font-bold text-xl text-center">Share this Universe</DialogTitle>
+          </DialogHeader>
+          <div className="p-4 space-y-6">
+            <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-3 rounded-2xl">
+              <div className="flex-1 truncate text-xs font-medium text-white/60">
+                {short.mediaUrl}
+              </div>
+              <Button 
+                size="icon" 
+                variant="ghost" 
+                onClick={handleCopyLink}
+                className={cn("h-10 w-10 rounded-xl transition-all", copied ? "text-green-400 bg-green-400/10" : "text-white/40 hover:text-white")}
+              >
+                {copied ? <Check size={18} /> : <Copy size={18} />}
+              </Button>
+            </div>
+            <div className="grid grid-cols-4 gap-4">
+              {['Twitter', 'FB', 'WA', 'IG'].map(platform => (
+                <div key={platform} className="flex flex-col items-center gap-2">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-black hover:bg-white/10 cursor-pointer transition-all">
+                    {platform}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
@@ -239,32 +328,6 @@ export default function ShortsPage() {
     if (shorts.length > 0 && !activeId) {
       setActiveId(shorts[0].id);
     }
-  }, [shorts, activeId]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-        e.preventDefault();
-        const currentIndex = shorts.findIndex(s => s.id === activeId);
-        if (currentIndex === -1) return;
-
-        let targetIndex = currentIndex;
-        if (e.key === 'ArrowDown') {
-          targetIndex = Math.min(shorts.length - 1, currentIndex + 1);
-        } else {
-          targetIndex = Math.max(0, currentIndex - 1);
-        }
-
-        if (targetIndex !== currentIndex) {
-          const targetId = shorts[targetIndex].id;
-          const targetElement = document.querySelector(`[data-short-id="${targetId}"]`);
-          targetElement?.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [shorts, activeId]);
 
   useEffect(() => {
@@ -296,7 +359,6 @@ export default function ShortsPage() {
     <main className="h-svh bg-black overflow-hidden relative">
       <Navbar />
       
-      {/* Global Background Decor */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[10%] left-[10%] text-white/5 animate-pulse">
           <Stars size={120} />
