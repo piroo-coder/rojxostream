@@ -83,7 +83,6 @@ export const MediaDetails: React.FC = () => {
           priority
           unoptimized
         />
-        {/* Lighter cinematic gradients for maximum visibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
         <div className="absolute inset-0 bg-black/10" />
       </div>
@@ -101,7 +100,6 @@ export const MediaDetails: React.FC = () => {
       <ScrollArea className="flex-1 w-full h-full relative z-10">
         <div className="container mx-auto max-w-5xl px-4 min-h-full flex flex-col items-center justify-center py-20 md:py-32 space-y-8 md:space-y-12">
           
-          {/* Section 1: Top Metadata (Title at Top) */}
           <div className="text-center space-y-2 md:space-y-4 animate-in slide-in-from-top-8 duration-700 w-full z-20">
             <div className="flex justify-center mb-2">
               <span className="text-[10px] font-black uppercase tracking-[0.3em] text-accent bg-black/40 px-4 py-1.5 rounded-full border border-white/10 shadow-2xl backdrop-blur-md">
@@ -114,14 +112,12 @@ export const MediaDetails: React.FC = () => {
             <p className="text-accent font-bold text-base sm:text-xl md:text-2xl drop-shadow-xl">{currentlyPlaying.creator}</p>
           </div>
 
-          {/* Section 2: Centered Media Player (Box Centered) */}
           <div className="relative group w-full max-w-4xl flex items-center justify-center animate-in zoom-in-95 duration-1000 z-20">
             <div className="relative aspect-video w-full rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.8)] border border-white/20 bg-black/40 flex items-center justify-center">
               {isEmbeddable ? (
                 <>
                   {isSong && songMode === 'audio' && (
                     <div className="absolute inset-0 z-20 flex flex-col items-center justify-center overflow-hidden">
-                      {/* Subdued Interior Background for depth */}
                       <div className="absolute inset-0">
                         <Image 
                           src={bgImage} 
@@ -132,15 +128,18 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Ripple Pulse Animation - Inspired by CodePen */}
-                      <div className="relative z-30 flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40">
-                        {/* Ripple Rings */}
-                        <div className="absolute inset-0 rounded-full bg-accent/20 animate-pulse-ripple" />
-                        <div className="absolute inset-0 rounded-full bg-accent/20 animate-pulse-ripple [animation-delay:1s]" />
-                        <div className="absolute inset-0 rounded-full bg-accent/20 animate-pulse-ripple [animation-delay:2s]" />
-                        
-                        {/* Center Point */}
-                        <div className="relative z-10 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-accent shadow-[0_0_40px_rgba(var(--accent),0.8)]" />
+                      {/* Music Bars Visualizer */}
+                      <div className="relative z-30 flex items-end gap-2 h-20 px-8">
+                        {[...Array(5)].map((_, i) => (
+                          <div 
+                            key={i}
+                            className="w-2.5 sm:w-3 bg-accent rounded-full animate-music-bar origin-bottom shadow-[0_0_15px_rgba(var(--accent),0.5)]"
+                            style={{ 
+                              animationDelay: `${(i + 1) * 0.1}s`,
+                              height: '10px'
+                            }}
+                          />
+                        ))}
                       </div>
 
                       {/* Background Audio Source */}
@@ -175,7 +174,6 @@ export const MediaDetails: React.FC = () => {
               )}
             </div>
 
-            {/* Song Mode Toggles */}
             {isSong && (
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 p-1.5 bg-black/80 backdrop-blur-3xl rounded-2xl border border-white/20 shadow-2xl z-30">
                 <Button 
@@ -198,7 +196,6 @@ export const MediaDetails: React.FC = () => {
             )}
           </div>
 
-          {/* Section 3: Bottom Narrative Info */}
           <div className="max-w-3xl mx-auto w-full space-y-8 md:space-y-10 animate-in slide-in-from-bottom-8 duration-700 pb-20 z-20">
             {(currentlyPlaying.summary || currentlyPlaying.description) && (
               <div className="space-y-3 text-center px-4">

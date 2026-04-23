@@ -98,6 +98,11 @@
   }
 }
 
+@keyframes music-bar-bounce {
+  0% { transform: scaleY(1); }
+  100% { transform: scaleY(4); }
+}
+
 .animate-pulse-slow {
   animation: pulse-slow 5s infinite ease-in-out;
 }
@@ -124,6 +129,10 @@
 
 .animate-pulse-ripple {
   animation: pulse-ripple 3s linear infinite;
+}
+
+.animate-music-bar {
+  animation: music-bar-bounce 0.8s ease-in-out infinite alternate;
 }
 
 /* Shorts Scrolling Behavior */
