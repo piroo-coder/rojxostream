@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -133,11 +132,15 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Slow Fading Pulse Animation - Invisible container for high-end feel */}
-                      <div className="relative z-30 flex flex-col items-center justify-center rounded-full w-32 h-32 sm:w-40 sm:h-40 bg-white/[0.001] backdrop-blur-3xl">
-                        <div className="w-28 h-28 sm:w-32 md:w-40 rounded-full bg-transparent flex items-center justify-center animate-pulse-slow border border-transparent relative z-10 overflow-hidden">
-                           <Music className="text-accent/[0.005] w-10 h-10 sm:w-14 md:w-16" />
-                        </div>
+                      {/* Ripple Pulse Animation - Inspired by CodePen */}
+                      <div className="relative z-30 flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40">
+                        {/* Ripple Rings */}
+                        <div className="absolute inset-0 rounded-full bg-accent/20 animate-pulse-ripple" />
+                        <div className="absolute inset-0 rounded-full bg-accent/20 animate-pulse-ripple [animation-delay:1s]" />
+                        <div className="absolute inset-0 rounded-full bg-accent/20 animate-pulse-ripple [animation-delay:2s]" />
+                        
+                        {/* Center Point */}
+                        <div className="relative z-10 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-accent shadow-[0_0_40px_rgba(var(--accent),0.8)]" />
                       </div>
 
                       {/* Background Audio Source */}
