@@ -40,10 +40,10 @@ const ShortItem = ({
       className="short-item relative flex items-center justify-center bg-black w-full h-[calc(100svh-64px)] md:h-[calc(100svh-80px)] overflow-hidden"
       data-short-id={short.id}
     >
-      {/* Immersive Ambient Glow (YouTube style) - Dynamic & Intense */}
+      {/* Immersive Ambient Glow (YouTube style) - Intense & Color-Accurate */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden">
-        {/* The primary color spill - Using thumbnail with massive blur for dynamic colors */}
-        <div className="absolute inset-0 opacity-90 blur-[180px] scale-150 transition-all duration-1000">
+        {/* The primary color spill - Using thumbnail with high saturation and massive blur */}
+        <div className="absolute inset-0 opacity-80 blur-[120px] scale-[2] saturate-[250%] transition-all duration-1000">
            <img 
               src={short.thumbnailUrl} 
               alt="" 
@@ -51,10 +51,19 @@ const ShortItem = ({
             />
         </div>
         
-        {/* Subtle Darkening Overlay to ensure content pops */}
-        <div className="absolute inset-0 bg-black/40" />
+        {/* Layered Color Spill for Depth */}
+        <div className="absolute inset-0 opacity-40 blur-[200px] scale-[1.5] saturate-[300%] transition-all duration-1000">
+           <img 
+              src={short.thumbnailUrl} 
+              alt="" 
+              className="w-full h-full object-cover"
+            />
+        </div>
         
-        {/* Floating Hearts/Sparkles - Dreamer Theme (Subtle) */}
+        {/* Subtle Darkening Overlay - Less intense to let colors shine */}
+        <div className="absolute inset-0 bg-black/30" />
+        
+        {/* Floating Decor */}
         <div className="absolute top-[20%] left-[10%] text-white/5 animate-pulse">
           <Heart size={60} fill="currentColor" />
         </div>
@@ -65,7 +74,7 @@ const ShortItem = ({
 
       {/* Main Video Container (Slim mobile-first proportion) */}
       <div className={cn(
-        "relative z-10 w-full h-full max-w-[360px] aspect-[9/16] bg-black shadow-[0_0_120px_rgba(0,0,0,0.9)]",
+        "relative z-10 w-full h-full max-w-[360px] aspect-[9/16] bg-black shadow-[0_0_150px_rgba(0,0,0,1)]",
         "flex items-center justify-center sm:rounded-[2.5rem] overflow-hidden border border-white/20 group transition-all duration-500"
       )}>
         
