@@ -2,7 +2,26 @@
 
 import { useMedia } from '@/context/MediaContext';
 import { Navbar } from '@/components/layout/Navbar';
-import { Heart, MessageCircle, Share2, User, Volume2, VolumeX, Sparkles, Stars, Music, Plus, Send, Copy, Check, X } from 'lucide-react';
+import { 
+  Heart, 
+  MessageCircle, 
+  Share2, 
+  User, 
+  Volume2, 
+  VolumeX, 
+  Sparkles, 
+  Stars, 
+  Music, 
+  Plus, 
+  Send, 
+  Copy, 
+  Check, 
+  X,
+  Instagram,
+  Youtube,
+  Twitter,
+  Facebook
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
 import { MediaItem } from '@/app/types/media';
@@ -79,6 +98,13 @@ const ShortItem = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const sharePlatforms = [
+    { icon: Instagram, color: 'hover:text-pink-400' },
+    { icon: Youtube, color: 'hover:text-red-500' },
+    { icon: Twitter, color: 'hover:text-blue-400' },
+    { icon: Facebook, color: 'hover:text-blue-600' },
+  ];
+
   return (
     <div 
       className="short-item relative flex items-center justify-center bg-black w-full h-[calc(100svh-64px)] md:h-[calc(100svh-80px)] overflow-hidden"
@@ -86,7 +112,7 @@ const ShortItem = ({
     >
       {/* PROFOUND AMBIENT GLOW SYSTEM */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
-        <div className="absolute inset-0 opacity-60 blur-[120px] scale-[2.5] saturate-[300%] transition-all duration-1000">
+        <div className="absolute inset-0 opacity-80 blur-[120px] scale-[1.8] saturate-[250%] transition-all duration-1000">
            {isActive && (
              <div className="w-full h-full">
                {isYoutube ? (
@@ -116,7 +142,7 @@ const ShortItem = ({
              />
            )}
         </div>
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Main Video Container */}
@@ -276,32 +302,44 @@ const ShortItem = ({
         <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10" />
       </div>
 
-      {/* Share Dialog */}
+      {/* Share Dialog - Enhanced Cuteness & Style */}
       <Dialog open={showShare} onOpenChange={setShowShare}>
-        <DialogContent className="bg-background/80 backdrop-blur-3xl border-white/10 text-white rounded-[2rem] max-w-[90vw] sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-headline font-bold text-xl text-center">Share this Universe</DialogTitle>
+        <DialogContent className="bg-background/90 backdrop-blur-3xl border-white/10 text-white rounded-[2.5rem] max-w-[90vw] sm:max-w-md p-8 shadow-2xl">
+          <DialogHeader className="mb-6">
+            <DialogTitle className="font-headline font-bold text-2xl text-center tracking-tight">
+              Share the Magic ✨
+            </DialogTitle>
           </DialogHeader>
-          <div className="p-4 space-y-6">
-            <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-3 rounded-2xl">
-              <div className="flex-1 truncate text-xs font-medium text-white/60">
+          <div className="space-y-8">
+            <div className="flex items-center gap-4 bg-white/5 border border-white/10 p-4 rounded-3xl group hover:border-accent/40 transition-all duration-300">
+              <div className="flex-1 truncate font-code text-xs font-medium text-white/50 group-hover:text-white/80 transition-colors">
                 {short.mediaUrl}
               </div>
               <Button 
                 size="icon" 
                 variant="ghost" 
                 onClick={handleCopyLink}
-                className={cn("h-10 w-10 rounded-xl transition-all", copied ? "text-green-400 bg-green-400/10" : "text-white/40 hover:text-white")}
+                className={cn(
+                  "h-12 w-12 rounded-2xl transition-all duration-500 shadow-xl",
+                  copied 
+                    ? "bg-green-500/20 text-green-400 border border-green-500/30 scale-110" 
+                    : "bg-white/10 text-white/40 hover:text-white hover:bg-white/20 border border-white/5"
+                )}
               >
-                {copied ? <Check size={18} /> : <Copy size={18} />}
+                {copied ? <Check size={20} /> : <Copy size={20} />}
               </Button>
             </div>
-            <div className="grid grid-cols-4 gap-4">
-              {['Twitter', 'FB', 'WA', 'IG'].map(platform => (
-                <div key={platform} className="flex flex-col items-center gap-2">
-                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-black hover:bg-white/10 cursor-pointer transition-all">
-                    {platform}
-                  </div>
+            
+            <div className="grid grid-cols-4 gap-4 px-2">
+              {sharePlatforms.map((platform, idx) => (
+                <div key={idx} className="flex flex-col items-center group">
+                  <button className={cn(
+                    "w-14 h-14 rounded-[1.25rem] bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-500",
+                    "hover:bg-white/10 hover:scale-110 hover:-translate-y-1 active:scale-95 shadow-lg",
+                    platform.color
+                  )}>
+                    <platform.icon size={24} strokeWidth={1.5} />
+                  </button>
                 </div>
               ))}
             </div>
