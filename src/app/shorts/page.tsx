@@ -39,25 +39,36 @@ const ShortItem = ({
       className="short-item relative flex items-center justify-center bg-black w-full h-svh overflow-hidden"
       data-short-id={short.id}
     >
-      {/* Immersive Background Blur (Atmosphere) */}
+      {/* Immersive Background Decor */}
       <div className="absolute inset-0 z-0">
         <img 
           src={short.thumbnailUrl} 
           alt="" 
           className="w-full h-full object-cover opacity-20 blur-[120px] scale-150"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background/80" />
+        
+        {/* Floating Hearts/Sparkles for "Cute" feel */}
+        <div className="absolute top-[20%] left-[10%] text-pink-500/10 animate-pulse">
+          <Heart size={40} fill="currentColor" />
+        </div>
+        <div className="absolute bottom-[30%] right-[15%] text-purple-500/10 animate-bounce">
+          <Sparkles size={30} />
+        </div>
       </div>
 
-      {/* Main Video Container (Aligned to YouTube Shorts Proportions) */}
-      <div className="relative w-full h-full max-w-[500px] md:max-h-[90vh] md:aspect-[9/16] bg-black shadow-[0_0_100px_rgba(0,0,0,0.8)] flex items-center justify-center z-10 md:rounded-[3rem] overflow-hidden border-x border-white/5 md:border border-white/10 group">
+      {/* Main Video Container (YouTube Proportions) */}
+      <div className={cn(
+        "relative z-10 w-full h-full max-w-[450px] md:h-[92vh] aspect-[9/16] bg-black shadow-[0_0_100px_rgba(0,0,0,0.6)]",
+        "flex items-center justify-center md:rounded-[2.5rem] overflow-hidden border border-white/10 group transition-all duration-500"
+      )}>
         
         {isActive ? (
           <div className="w-full h-full">
             {isYoutube ? (
               <iframe
                 src={getYoutubeEmbedUrl(short.mediaUrl, isActive, isMuted)}
-                className="w-full h-full scale-[1.05]"
+                className="w-full h-full scale-[1.02]"
                 title={short.title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -79,35 +90,35 @@ const ShortItem = ({
             <img 
               src={short.thumbnailUrl} 
               alt={short.title} 
-              className="w-full h-full object-cover opacity-50 grayscale-[0.5]"
+              className="w-full h-full object-cover opacity-50"
             />
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-3xl flex items-center justify-center border border-white/20">
-                <div className="w-0 h-0 border-t-[12px] border-t-transparent border-l-[20px] border-l-white/80 border-b-[12px] border-b-transparent ml-2" />
+              <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-3xl flex items-center justify-center border border-white/20">
+                <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-white/80 border-b-[10px] border-b-transparent ml-2" />
               </div>
             </div>
           </div>
         )}
 
-        {/* Mute/Audio Overlay - Subtle and Top-Right */}
+        {/* Audio Toggle (Top Right) */}
         <button 
-          className="absolute top-6 right-6 z-30 p-3 rounded-full bg-black/30 backdrop-blur-xl border border-white/10 text-white/90 hover:bg-white/20 transition-all active:scale-90"
+          className="absolute top-6 right-6 z-30 p-2.5 rounded-full bg-black/20 backdrop-blur-2xl border border-white/10 text-white hover:bg-white/20 transition-all"
           onClick={onToggleMute}
         >
-          {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+          {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
         </button>
 
-        {/* Interaction Overlays - Placed INSIDE the video frame for YouTube feel */}
-        <div className="absolute inset-0 pointer-events-none flex flex-col justify-end p-4 md:p-6 z-20">
-          <div className="flex items-end justify-between gap-4 w-full">
+        {/* Interaction Overlays (Aligned with YouTube Layout) */}
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-end p-6 z-20">
+          <div className="flex items-end justify-between w-full">
             
-            {/* Info Section (Bottom Left) */}
-            <div className="flex-1 pointer-events-auto text-white space-y-4 mb-4 drop-shadow-2xl max-w-[80%]">
+            {/* Creator Info (Bottom Left) */}
+            <div className="flex-1 pointer-events-auto text-white space-y-3 mb-2 drop-shadow-2xl">
               <div className="flex items-center gap-3">
                 <div className="relative group/avatar cursor-pointer">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full blur-sm opacity-60 group-hover/avatar:opacity-100 transition-opacity" />
-                  <div className="relative w-11 h-11 rounded-full bg-neutral-800 flex items-center justify-center border-2 border-white/50 overflow-hidden shadow-xl">
-                    <User size={22} className="text-white" />
+                  <div className="absolute -inset-1 bg-gradient-to-r from-pink-400 to-purple-500 rounded-full blur-sm opacity-50 group-hover/avatar:opacity-100 transition-opacity" />
+                  <div className="relative w-10 h-10 rounded-full bg-neutral-800 border-2 border-white/40 overflow-hidden">
+                    <User size={20} className="m-auto mt-2" />
                   </div>
                   <div className="absolute -bottom-1 -right-1 bg-pink-500 rounded-full p-0.5 border-2 border-black">
                     <Plus size={10} className="text-white" />
@@ -115,62 +126,62 @@ const ShortItem = ({
                 </div>
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2">
-                    <span className="font-headline font-bold text-base leading-none tracking-tight">@{short.creator || 'Creator'}</span>
-                    <button className="bg-white text-black text-[10px] font-black px-3 py-1 rounded-full hover:bg-neutral-200 transition-colors uppercase tracking-widest">Follow</button>
+                    <span className="font-headline font-bold text-sm tracking-tight">@{short.creator || 'Creator'}</span>
+                    <button className="bg-pink-500 text-white text-[9px] font-black px-3 py-1 rounded-full hover:bg-pink-600 transition-colors uppercase tracking-widest">Follow</button>
                   </div>
                 </div>
               </div>
               
-              <div className="space-y-2">
-                <p className="text-sm font-medium leading-tight line-clamp-2 text-white/95">{short.title}</p>
+              <div className="space-y-1.5">
+                <p className="text-sm font-medium leading-tight line-clamp-2 text-white/95 max-w-[90%]">{short.title}</p>
                 {short.description && (
-                  <p className="text-[11px] text-white/70 line-clamp-1 font-light">{short.description}</p>
+                  <p className="text-[11px] text-white/60 line-clamp-1 font-light">{short.description}</p>
                 )}
-                <div className="flex items-center gap-2 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5 w-fit">
-                  <Music size={12} className="animate-pulse text-pink-400" />
-                  <span className="text-[10px] font-bold tracking-tight truncate max-w-[120px]">Original Sound • {short.title}</span>
+                <div className="flex items-center gap-2 bg-black/30 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5 w-fit mt-2">
+                  <Music size={10} className="animate-pulse text-pink-400" />
+                  <span className="text-[10px] font-bold tracking-tight truncate max-w-[150px]">Original Sound • {short.title}</span>
                 </div>
               </div>
             </div>
 
-            {/* Action Bar (Vertical Right) */}
-            <div className="flex flex-col gap-6 pointer-events-auto mb-6 items-center">
-              <div className="flex flex-col items-center gap-1 group cursor-pointer">
+            {/* Action Bar (Right Stack) */}
+            <div className="flex flex-col gap-5 pointer-events-auto mb-4 items-center pl-4">
+              <div className="flex flex-col items-center gap-1">
                 <Button 
                   size="icon" 
                   variant="ghost" 
-                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-pink-500/80 transition-all w-12 h-12 border border-white/10 group-active:scale-90"
+                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-pink-500/80 transition-all w-12 h-12 border border-white/10 group active:scale-90"
                 >
-                  <Heart size={26} className="fill-current text-white group-hover:text-white transition-colors" />
+                  <Heart size={24} className="text-white group-hover:scale-110 transition-transform" />
                 </Button>
-                <span className="text-[10px] font-black text-white/90 drop-shadow-md">24.5K</span>
+                <span className="text-[10px] font-black text-white drop-shadow-md">24K</span>
               </div>
 
-              <div className="flex flex-col items-center gap-1 group cursor-pointer">
+              <div className="flex flex-col items-center gap-1">
                 <Button 
                   size="icon" 
                   variant="ghost" 
-                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group-active:scale-90"
+                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group active:scale-90"
                 >
-                  <MessageCircle size={26} className="fill-current text-white" />
+                  <MessageCircle size={24} className="text-white" />
                 </Button>
-                <span className="text-[10px] font-black text-white/90 drop-shadow-md">1.8K</span>
+                <span className="text-[10px] font-black text-white drop-shadow-md">1.2K</span>
               </div>
 
-              <div className="flex flex-col items-center gap-1 group cursor-pointer">
+              <div className="flex flex-col items-center gap-1">
                 <Button 
                   size="icon" 
                   variant="ghost" 
-                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group-active:scale-90"
+                  className="rounded-full bg-white/10 backdrop-blur-3xl hover:bg-white/20 transition-all w-12 h-12 border border-white/10 group active:scale-90"
                 >
-                  <Share2 size={24} className="text-white" />
+                  <Share2 size={22} className="text-white" />
                 </Button>
-                <span className="text-[10px] font-black text-white/90 drop-shadow-md">Share</span>
+                <span className="text-[10px] font-black text-white drop-shadow-md">Share</span>
               </div>
               
               <div className="relative mt-2">
-                <div className="absolute -inset-1.5 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-full blur-md opacity-40 animate-pulse" />
-                <div className="relative w-10 h-10 rounded-full border-2 border-white/40 overflow-hidden animate-[spin_12s_linear_infinite] shadow-2xl">
+                <div className="absolute -inset-1 bg-gradient-to-tr from-pink-500 to-purple-600 rounded-full blur-md opacity-40 animate-pulse" />
+                <div className="relative w-9 h-9 rounded-full border-2 border-white/40 overflow-hidden animate-[spin_10s_linear_infinite]">
                   <img src={short.thumbnailUrl} className="w-full h-full object-cover" alt="" />
                 </div>
               </div>
@@ -178,8 +189,9 @@ const ShortItem = ({
           </div>
         </div>
 
-        {/* Darkening bottom gradient for readability */}
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none z-10" />
+        {/* Visibility Gradients */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none z-10" />
+        <div className="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-black/40 via-transparent to-transparent pointer-events-none z-10" />
       </div>
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 pointer-events-none z-10" />
@@ -262,13 +274,13 @@ export default function ShortsPage() {
       
       {/* Background Decor */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[10%] left-[10%] text-pink-500/10 animate-pulse">
-          <Stars size={100} />
+        <div className="absolute top-[10%] left-[10%] text-pink-500/5 animate-pulse">
+          <Stars size={120} />
         </div>
-        <div className="absolute bottom-[10%] right-[5%] text-accent/10 animate-pulse delay-1000">
-          <Sparkles size={80} />
+        <div className="absolute bottom-[10%] right-[5%] text-accent/5 animate-pulse delay-1000">
+          <Sparkles size={100} />
         </div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70rem] h-[70rem] bg-pink-500/5 rounded-full blur-[180px] animate-pulse-slow" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80rem] h-[80rem] bg-pink-500/5 rounded-full blur-[200px] animate-pulse-slow" />
       </div>
       
       <div ref={containerRef} className="shorts-container h-full snap-y snap-mandatory scroll-smooth relative z-10 scrollbar-hide">
@@ -288,11 +300,11 @@ export default function ShortsPage() {
           ))
         ) : (
           <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8 text-center pt-32">
-            <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-8 border border-white/10 shadow-inner">
+            <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-8 border border-white/10">
               <Sparkles size={48} className="text-white/10" />
             </div>
-            <h3 className="text-3xl font-headline font-bold mb-3 text-white">Quiet in the Multiverse</h3>
-            <p className="text-base max-w-xs font-light">No short universes were discovered with those coordinates. Try another search!</p>
+            <h3 className="text-2xl font-headline font-bold mb-2 text-white">No Shorts Found</h3>
+            <p className="text-sm max-w-xs font-light">The multiverse is quiet. Try another search!</p>
           </div>
         )}
       </div>
