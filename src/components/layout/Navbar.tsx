@@ -18,6 +18,52 @@ import {
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 
+// Simple Levenshtein distance for fuzzy matching
+const getLevenshteinDistance = (a: string, b: string): number => {
+  const matrix = Array.from({ length: a.length + 1 }, () =>
+    Array.from({ length: b.length + 1 }, () => 0)
+  );
+
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      if (a[i - 1] === b[j - 1]) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+  return matrix[a.length][b.length];
+};
+
+const HighlightText = ({ text, highlight }: { text: string; highlight: string }) => {
+  if (!highlight.trim()) return <span>{text}</span>;
+  
+  const regex = new RegExp(`(${highlight.split('').join('|')})`, 'gi');
+  const parts = text.split(regex);
+  
+  return (
+    <span>
+      {parts.map((part, i) => 
+        regex.test(part) ? (
+          <span key={i} className="text-accent font-black drop-shadow-[0_0_8px_rgba(var(--accent),0.5)]">
+            {part}
+          </span>
+        ) : (
+          <span key={i}>{part}</span>
+        )
+      )}
+    </span>
+  );
+};
+
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -32,14 +78,35 @@ export const Navbar: React.FC = () => {
     { href: '/about', icon: Heart, label: 'About', activeColor: 'text-pink-400' },
   ];
 
-  // Filter suggestions based on search term
-  const suggestions = library
-    .filter(item => 
-      searchTerm.length > 0 && 
-      (item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       item.type.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
-    .slice(0, 6);
+  // Advanced Filtering with Fuzzy Matching
+  const getSuggestions = () => {
+    if (searchTerm.length === 0) return [];
+    
+    const query = searchTerm.toLowerCase();
+    
+    // 1. Direct matches (includes)
+    const directMatches = library.filter(item => 
+      item.title.toLowerCase().includes(query) ||
+      item.type.toLowerCase().includes(query)
+    );
+
+    if (directMatches.length > 0) return directMatches.slice(0, 6);
+
+    // 2. Fuzzy matches (typo tolerance)
+    const fuzzyMatches = library.filter(item => {
+      const title = item.title.toLowerCase();
+      // Allow typos based on query length (up to 3 for longer queries)
+      const maxDistance = query.length < 4 ? 1 : query.length < 7 ? 2 : 3;
+      
+      // Check distance for any part of the title
+      const titleWords = title.split(' ');
+      return titleWords.some(word => getLevenshteinDistance(query, word.substring(0, query.length)) <= maxDistance);
+    });
+
+    return fuzzyMatches.slice(0, 6);
+  };
+
+  const suggestions = getSuggestions();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -64,7 +131,6 @@ export const Navbar: React.FC = () => {
     setSearchTerm(value);
     setShowSuggestions(true);
     
-    // If user clears the search
     if (value === "") {
       handleClearSearch();
     }
@@ -77,8 +143,6 @@ export const Navbar: React.FC = () => {
     if (pathname !== '/') {
       router.push('/');
     } else {
-      // Use requestAnimationFrame to ensure the hero section renders 
-      // before attempting to scroll to the top of the container
       requestAnimationFrame(() => {
         scrollToTop();
       });
@@ -178,7 +242,9 @@ export const Navbar: React.FC = () => {
                             />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-white truncate">{item.title}</p>
+                            <p className="text-sm font-bold text-white truncate">
+                              <HighlightText text={item.title} highlight={searchTerm} />
+                            </p>
                             <p className="text-[10px] text-white/40 uppercase tracking-widest font-black">{item.type}</p>
                           </div>
                           <ChevronRight size={14} className="text-white/10 group-hover/item:text-accent transition-colors" />
@@ -237,7 +303,9 @@ export const Navbar: React.FC = () => {
                               <Image src={item.thumbnailUrl} alt="" width={40} height={40} className="w-full h-full object-cover" unoptimized />
                             </div>
                             <div className="flex-1 min-w-0 text-left">
-                              <p className="text-xs font-bold text-white truncate">{item.title}</p>
+                              <p className="text-xs font-bold text-white truncate">
+                                <HighlightText text={item.title} highlight={searchTerm} />
+                              </p>
                               <p className="text-[8px] text-white/40 uppercase font-black">{item.type}</p>
                             </div>
                           </button>
