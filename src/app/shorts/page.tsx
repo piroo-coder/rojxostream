@@ -31,7 +31,8 @@ const ShortItem = ({
     
     const muteParam = muted ? 1 : 0;
     // Autoplay is only 1 when isActive is true.
-    return `https://www.youtube.com/embed/${id}?autoplay=${active ? 1 : 0}&mute=${muteParam}&controls=1&rel=0&modestbranding=1&enablejsapi=1`;
+    // To enable looping in YouTube embed, 'loop=1' and 'playlist=ID' are required.
+    return `https://www.youtube.com/embed/${id}?autoplay=${active ? 1 : 0}&mute=${muteParam}&controls=1&rel=0&modestbranding=1&enablejsapi=1&loop=1&playlist=${id}`;
   };
 
   return (
