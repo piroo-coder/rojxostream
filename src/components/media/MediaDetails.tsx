@@ -60,7 +60,6 @@ export const MediaDetails: React.FC = () => {
   };
 
   const getDropboxEmbedUrl = (url: string) => {
-    // Convert to a direct download/stream link
     return url.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('dl=0', 'raw=1');
   };
 
@@ -70,11 +69,9 @@ export const MediaDetails: React.FC = () => {
       if (bvidMatch) return `https://player.bilibili.com/player.html?bvid=${bvidMatch[0]}&autoplay=1`;
     }
     const parts = url.split('/');
-    // Get the last part of the URL which should be the ID
     const id = parts[parts.length - 1].split('?')[0];
     
     if (url.includes('bilibili.tv')) {
-      // Use the explicit Bilibili Global embed path
       return `https://www.bilibili.tv/en/video/embed/${id}`;
     }
     return url;
@@ -159,8 +156,8 @@ export const MediaDetails: React.FC = () => {
                         />
                       </div>
                       
-                      {/* Pulse Visualizer Container */}
-                      <div className="relative z-30 flex items-center justify-center w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-white/[0.03] backdrop-blur-3xl border border-white/5 shadow-[0_0_100px_rgba(var(--accent),0.1)]">
+                      {/* Pulse Visualizer Container - Now Completely Transparent */}
+                      <div className="relative z-30 flex items-center justify-center w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-transparent">
                         <div className="flex items-end gap-1 px-4">
                           <div className="now-playing-bar n1"></div>
                           <div className="now-playing-bar n2"></div>
