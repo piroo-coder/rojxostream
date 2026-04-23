@@ -70,10 +70,11 @@ export const MediaDetails: React.FC = () => {
       if (bvidMatch) return `https://player.bilibili.com/player.html?bvid=${bvidMatch[0]}&autoplay=1`;
     }
     const parts = url.split('/');
+    // Get the last part of the URL which should be the ID
     const id = parts[parts.length - 1].split('?')[0];
     
     if (url.includes('bilibili.tv')) {
-      // Use the explicit Bilibili Global embed path for cleaner UI and correct routing
+      // Use the explicit Bilibili Global embed path
       return `https://www.bilibili.tv/en/video/embed/${id}`;
     }
     return url;
