@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { MediaItem } from '@/app/types/media';
 
 // Simple Levenshtein distance for fuzzy matching
 const getLevenshteinDistance = (a: string, b: string): number => {
@@ -149,11 +150,22 @@ export const Navbar: React.FC = () => {
     }
   };
 
-  const handleSuggestionClick = (title: string) => {
-    setSearchTerm(title);
+  const handleSuggestionClick = (item: MediaItem) => {
+    setSearchTerm(item.title);
     setShowSuggestions(false);
-    if (pathname !== '/') {
-      router.push('/');
+    
+    if (item.type === 'short') {
+      if (pathname !== '/shorts') {
+        router.push('/shorts');
+      }
+    } else {
+      if (pathname !== '/') {
+        router.push('/');
+      } else {
+        requestAnimationFrame(() => {
+          scrollToTop();
+        });
+      }
     }
   };
 
@@ -228,7 +240,7 @@ export const Navbar: React.FC = () => {
                       suggestions.map((item) => (
                         <button
                           key={item.id}
-                          onClick={() => handleSuggestionClick(item.title)}
+                          onClick={() => handleSuggestionClick(item)}
                           className="w-full flex items-center gap-4 px-4 py-3 hover:bg-white/5 transition-colors text-left group/item"
                         >
                           <div className="w-12 h-12 rounded-xl overflow-hidden bg-muted flex-shrink-0 border border-white/5">
@@ -294,7 +306,7 @@ export const Navbar: React.FC = () => {
                           <button
                             key={item.id}
                             onClick={() => {
-                              handleSuggestionClick(item.title);
+                              handleSuggestionClick(item);
                               setIsSearchOpen(false);
                             }}
                             className="w-full flex items-center gap-3 px-3 py-3 border-b border-white/5 last:border-0"
