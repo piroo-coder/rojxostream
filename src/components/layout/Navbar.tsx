@@ -55,6 +55,8 @@ export const Navbar: React.FC = () => {
     const main = document.getElementById('home-main-container');
     if (main) {
       main.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -64,21 +66,22 @@ export const Navbar: React.FC = () => {
     
     // If user clears the search
     if (value === "") {
-      if (pathname !== '/') {
-        router.push('/');
-      } else {
-        scrollToTop();
-      }
+      handleClearSearch();
     }
   };
 
   const handleClearSearch = () => {
     setSearchTerm("");
     setShowSuggestions(false);
+    
     if (pathname !== '/') {
       router.push('/');
     } else {
-      scrollToTop();
+      // Use requestAnimationFrame to ensure the hero section renders 
+      // before attempting to scroll to the top of the container
+      requestAnimationFrame(() => {
+        scrollToTop();
+      });
     }
   };
 
@@ -184,7 +187,7 @@ export const Navbar: React.FC = () => {
                     ) : (
                       <div className="px-6 py-8 text-center space-y-2">
                         <FileQuestion className="mx-auto text-white/10" size={32} />
-                        <p className="text-sm font-bold text-white/40 uppercase tracking-widest">No results found</p>
+                        <p className="text-sm font-bold text-white/40 uppercase tracking-widest">No universes found</p>
                       </div>
                     )}
                   </div>
