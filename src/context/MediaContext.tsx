@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
@@ -39,7 +40,20 @@ const initialData: MediaItem[] = [
         name: "Souta Munakata",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkJb7HiZNRg5og-WOFj1kdoacn2WZuN9Z3qseWZxbuyjVpbhrLIjSPSOi2eZWn7sLb2jck7L4dwLTC-1BOz73C_1CIOOzYah-rbnomjLigUg&s=10"
       }
-    ]
+    ],
+    criticalAnalysis: {
+      characterMotivations: [
+        { topic: "Suzume's Drive", explanation: "Her obsession with the 'doors' is a subconscious attempt to process the unresolved grief of losing her mother in a childhood natural disaster." },
+        { topic: "Souta's Duty", explanation: "As a 'Closer', Souta views his role not just as a job, but as a spiritual stewardship of the land's forgotten history." }
+      ],
+      narrativeEvents: [
+        { event: "The Worm and the Doors", explanation: "Disasters manifest in abandoned ruins where the 'weight' of human emotion and memory has faded, leaving a void." },
+        { event: "Daijin the Cat", explanation: "Acts as a chaotic catalyst, forcing Suzume out of her stagnant life and into a journey of active recovery." }
+      ],
+      writersMessage: "Shinkai suggests that we cannot simply abandon the places of our past; we must acknowledge their history and 'close the doors' with gratitude to move forward.",
+      realLifeRelation: "The film is a direct dialogue with the 2011 Great East Japan Earthquake, reflecting the collective trauma and ongoing healing of the nation.",
+      importanceToUs: "It teaches us that resilience isn't about forgetting, but about the courage to face our deepest fears and find beauty in the wreckage."
+    }
   },
   {
     id: 'a2',
@@ -67,7 +81,20 @@ const initialData: MediaItem[] = [
         name: "Sakura Yamauchi",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIgIc88ZiIvCSPRK2Y__7CRgve5MQXLoqhJpJSuuzINoPax28tF6xohYYqxTVSTbmZf9R_-cXEQCgicaRBCzsOUAL5AIQX3Py-kKenxQL&s=10"
       }
-    ]
+    ],
+    criticalAnalysis: {
+      characterMotivations: [
+        { topic: "Sakura's Choice", explanation: "She chooses Haruki precisely because he doesn't pity her; he provides the 'normality' she craves in her final days." },
+        { topic: "Haruki's Distance", explanation: "His stoicism is a defense mechanism to avoid the vulnerability of loss, which Sakura eventually shatters." }
+      ],
+      narrativeEvents: [
+        { event: "The Library Scenes", explanation: "Represent the preservation of stories and the slow building of an emotional archive between two isolated souls." },
+        { event: "The Sudden Ending", explanation: "A brutal reminder that death is often unexpected and doesn't wait for the 'natural' end of an illness." }
+      ],
+      writersMessage: "Life isn't measured by the time we have, but by the connections we make. To 'live' is to acknowledge and be acknowledged by others.",
+      realLifeRelation: "Speaks to the universal struggle of finding meaning when faced with the inevitable finitude of human life.",
+      importanceToUs: "It serves as a profound call to action to express our love and appreciation for others while we still have the chance."
+    }
   },
   {
     id: 'a3',
@@ -95,7 +122,20 @@ const initialData: MediaItem[] = [
         name: "Yukari Yukino",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIbS1zOmnpnPkUJlslhgA1KogTnAADPCkNfw&s"
       }
-    ]
+    ],
+    criticalAnalysis: {
+      characterMotivations: [
+        { topic: "Takao's Shoes", explanation: "Shoemaking is a metaphor for his desire to stand on his own feet and 'walk' into a meaningful adult future." },
+        { topic: "Yukari's Stagnation", explanation: "Paralyzed by professional bullying and trauma, the garden represents a sanctuary where she doesn't have to 'walk'." }
+      ],
+      narrativeEvents: [
+        { event: "The Rainy Season", explanation: "The rain acts as a physical and emotional boundary that separates the two from the harsh expectations of society." },
+        { event: "The Final Confrontation", explanation: "An explosive release of repressed loneliness, forcing both characters to finally step out of the shadows." }
+      ],
+      writersMessage: "Even unconventional and brief relationships can provide the essential emotional 'footing' needed to overcome major life hurdles.",
+      realLifeRelation: "Relates to urban loneliness and the difficulty of finding mentors or emotional support in rigid social structures.",
+      importanceToUs: "It validates the small, quiet connections that save us when the world feels too overwhelming to navigate."
+    }
   },
   {
     id: 'a4',
@@ -123,7 +163,20 @@ const initialData: MediaItem[] = [
         name: "Shoko Nishimiya",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTduf3cc61Q1zWeRhXeUVnxa4zU2sTpLegMvXxoIPUYTrzieoSdiZEEQUQdlkovNJTElGQXkd_hIXxGCVsKf_NgliRTOsaQbfhZEVSeVq9y&s=10"
       }
-    ]
+    ],
+    criticalAnalysis: {
+      characterMotivations: [
+        { topic: "Shoya's Guilt", explanation: "His self-isolation is a form of self-punishment; he believes he has lost the right to hear or see others' hearts." },
+        { topic: "Shoko's Self-Blame", explanation: "As a victim, she internalizes the trouble her disability causes, leading to a tragic belief that she shouldn't exist." }
+      ],
+      narrativeEvents: [
+        { event: "The 'X' on Faces", explanation: "A powerful visual metaphor for social anxiety and the protagonist's refusal to truly 'see' the humanity in others." },
+        { event: "The Bridge Scene", explanation: "The focal point of the story where communication fails and then finally, painfully, begins to succeed." }
+      ],
+      writersMessage: "True listening goes beyond sound. Redemption is a long, active process that requires the courage to face one's past honestly.",
+      realLifeRelation: "A searingly accurate portrayal of the long-term psychological impact of bullying and the struggle of living with a disability.",
+      importanceToUs: "Reminds us that everyone has a voice worth hearing, and that even the most broken people can find a way to connect."
+    }
   },
   {
     id: 'a5',
@@ -151,7 +204,20 @@ const initialData: MediaItem[] = [
         name: "Mitsuha Miyamizu",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4CkuUsXgYLlB420EJvf8b9pZSE-fbob-2kjRSO97t17M8LvlqBYfZPJWR-Ig1_o0yNqlSNDb3iQIcY9BXGO-KyoL7DjfT7pdu8u_kCOCl&s=10"
       }
-    ]
+    ],
+    criticalAnalysis: {
+      characterMotivations: [
+        { topic: "Empathy via Swapping", explanation: "Literally living each other's lives forces an absolute level of empathy that transcends typical romantic attraction." },
+        { topic: "The Search", explanation: "Driven by a fading memory of the heart that refuses to be ignored, representing our innate search for 'something' missing." }
+      ],
+      narrativeEvents: [
+        { event: "The Comet Tiamat", explanation: "Symbolizes both the beauty and the terrifying unpredictability of fate and natural disaster." },
+        { event: "Musubi", explanation: "The central philosophy of 'twisting and tangling' threads representing time, relationships, and the flow of energy." }
+      ],
+      writersMessage: "True connection is a force of nature that can bridge even the widest gaps of time and space, provided we fight to remember it.",
+      realLifeRelation: "Speaks to the modern feeling of loss—loss of traditions, loss of places, and the lingering sense of searching for a lost connection.",
+      importanceToUs: "It gives hope that the people we are 'meant' to find are searching for us too, across whatever distance exists."
+    }
   },
   {
     id: 'a6',
@@ -179,7 +245,20 @@ const initialData: MediaItem[] = [
         name: "Hina Amano",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS67Vz5hpqaOf-r51CBaKFkX-PxGrUZ49VfUTBFrk631sMAPbCTXwWw6_nm34gSnH3I0vlcRsEYE3QqfGQ7941LZBQaw6nXo7WJEeiMkL5ouQ&s=10"
       }
-    ]
+    ],
+    criticalAnalysis: {
+      characterMotivations: [
+        { topic: "Hodaka's Rebellion", explanation: "He runs away to find agency in a world where adults and societal expectations feel suffocating and rigid." },
+        { topic: "Hina's Sacrifice", explanation: "She initially accepts her fate as the 'Sunshine Girl' because it gives her a sense of purpose and the ability to provide for her brother." }
+      ],
+      narrativeEvents: [
+        { event: "The Gun", explanation: "Symbolizes the dangerous and messy power of youthful desperation in a world that doesn't listen." },
+        { event: "The Submerged Tokyo", explanation: "A radical narrative choice that validates individual happiness over the status quo of the world's 'balance'." }
+      ],
+      writersMessage: "We should not sacrifice the happiness of individuals to fix a world that was already broken by previous generations.",
+      realLifeRelation: "A poignant commentary on climate change anxiety and the unfair weight placed on young people to save society.",
+      importanceToUs: "It's a defiant reminder that choosing love and personal joy in a darkening world is a valid and powerful act of rebellion."
+    }
   },
   {
     id: 'm1',

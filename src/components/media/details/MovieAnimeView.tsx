@@ -1,15 +1,14 @@
+
 "use client";
 
 import { MediaItem } from '@/app/types/media';
-import { X, Info, Play, Film, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Loader2 } from 'lucide-react';
+import { X, Info, Play, Film, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { generateCriticalAnalysis } from '@/ai/flows/generate-critical-analysis';
-import { toast } from '@/hooks/use-toast';
 
 interface MovieAnimeViewProps {
   item: MediaItem;
@@ -18,8 +17,6 @@ interface MovieAnimeViewProps {
 
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
   const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis'>('discovery');
-  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
-  const [analysis, setAnalysis] = useState(item.criticalAnalysis);
 
   const isYoutube = item.mediaUrl.includes('youtube.com') || item.mediaUrl.includes('youtu.be');
   
@@ -33,28 +30,9 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
     return item.mediaUrl;
   };
 
-  const handleFetchAnalysis = async () => {
-    if (analysis) {
+  const handleShowAnalysis = () => {
+    if (item.criticalAnalysis) {
       setMode('analysis');
-      return;
-    }
-
-    setLoadingAnalysis(true);
-    try {
-      const result = await generateCriticalAnalysis({
-        title: item.title,
-        plot: item.fullPlot || item.summary || item.description || ''
-      });
-      setAnalysis(result);
-      setMode('analysis');
-    } catch (error) {
-      toast({
-        title: "Insight Disrupted",
-        description: "The multiverse archive is currently unstable. Please try again later.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoadingAnalysis(false);
     }
   };
 
@@ -140,15 +118,14 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       </div>
                     </div>
 
-                    {item.type === 'anime' && (
+                    {item.type === 'anime' && item.criticalAnalysis && (
                       <div className="space-y-4 pt-4">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 border-b border-white/5 pb-2">Intellectual Archive</h4>
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 border-b border-white/5 pb-2">Archive Insights</h4>
                         <Button 
-                          onClick={handleFetchAnalysis} 
-                          disabled={loadingAnalysis}
+                          onClick={handleShowAnalysis} 
                           className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(var(--primary),0.4)] transition-all font-bold text-xs gap-2"
                         >
-                          {loadingAnalysis ? <Loader2 className="animate-spin" size={16} /> : <BrainCircuit size={16} />}
+                          <BrainCircuit size={16} />
                           CRITICAL ANALYSIS
                         </Button>
                       </div>
@@ -222,7 +199,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                 </Button>
               </div>
             </div>
-          ) : mode === 'analysis' && analysis ? (
+          ) : mode === 'analysis' && item.criticalAnalysis ? (
             <div className="w-full max-w-4xl space-y-16 animate-in fade-in zoom-in-95 duration-700">
                <header className="text-center space-y-4">
                  <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/30 px-4 py-1.5 rounded-full backdrop-blur-3xl">
@@ -246,7 +223,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       <div className="h-px w-12 bg-primary/30" /> Character Psychology
                     </h3>
                     <div className="grid gap-4">
-                      {analysis.characterMotivations.map((m, i) => (
+                      {item.criticalAnalysis.characterMotivations.map((m, i) => (
                         <div key={i} className="p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-primary/20 transition-all space-y-2">
                           <p className="text-sm font-black text-primary uppercase tracking-widest">{m.topic}</p>
                           <p className="text-white/70 leading-relaxed italic">{m.explanation}</p>
@@ -261,7 +238,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       <div className="h-px w-12 bg-accent/30" /> Narrative Significance
                     </h3>
                     <div className="grid gap-4">
-                      {analysis.narrativeEvents.map((e, i) => (
+                      {item.criticalAnalysis.narrativeEvents.map((e, i) => (
                         <div key={i} className="p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-accent/20 transition-all space-y-2">
                           <p className="text-sm font-black text-accent uppercase tracking-widest">{e.event}</p>
                           <p className="text-white/70 leading-relaxed italic">{e.explanation}</p>
@@ -275,7 +252,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     <Quote className="absolute -top-4 -left-4 text-white/5" size={160} />
                     <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.5em] mb-6 relative z-10">The Writer's Conveyance</h3>
                     <p className="text-2xl md:text-3xl font-headline font-bold text-white leading-tight relative z-10">
-                      {analysis.writersMessage}
+                      {item.criticalAnalysis.writersMessage}
                     </p>
                  </section>
 
@@ -286,7 +263,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                         <Heart size={14} /> Real World Resonance
                       </h3>
                       <p className="text-sm text-white/60 leading-relaxed">
-                        {analysis.realLifeRelation}
+                        {item.criticalAnalysis.realLifeRelation}
                       </p>
                     </section>
                     <section className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 space-y-4">
@@ -294,7 +271,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                         <Sparkles size={14} /> Human Importance
                       </h3>
                       <p className="text-sm text-white/60 leading-relaxed">
-                        {analysis.importanceToUs}
+                        {item.criticalAnalysis.importanceToUs}
                       </p>
                     </section>
                  </div>
