@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -23,12 +24,13 @@ import {
   Facebook
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { MediaItem } from '@/app/types/media';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
+import { useSearchParams } from 'next/navigation';
 
 const ShortItem = ({ 
   short, 
@@ -302,10 +304,9 @@ const ShortItem = ({
         <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10" />
       </div>
 
-      {/* Share Dialog - Enhanced Romantic & Professional Aesthetic */}
+      {/* Share Dialog */}
       <Dialog open={showShare} onOpenChange={setShowShare}>
         <DialogContent className="bg-gradient-to-br from-background via-background/95 to-pink-500/10 backdrop-blur-3xl border-white/10 text-white rounded-[2rem] sm:rounded-[3rem] w-[92vw] max-w-md p-6 sm:p-10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] border overflow-hidden">
-          {/* Decorative Elements */}
           <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
             <Sparkles size={120} className="text-pink-500 animate-pulse" />
           </div>
@@ -322,7 +323,6 @@ const ShortItem = ({
           </DialogHeader>
 
           <div className="space-y-8 relative z-10">
-            {/* Link Container - More responsive and elegant */}
             <div className="flex flex-col sm:flex-row items-center gap-3 bg-white/5 border border-white/10 p-3 sm:p-4 rounded-[1.5rem] sm:rounded-[2rem] group hover:border-pink-500/30 transition-all duration-500 backdrop-blur-md">
               <div className="flex-1 w-full truncate font-code text-[11px] sm:text-xs font-medium text-white/50 group-hover:text-white/80 transition-colors px-2">
                 {short.mediaUrl}
@@ -342,7 +342,6 @@ const ShortItem = ({
               </Button>
             </div>
             
-            {/* Social Grid - Optimized for all screens */}
             <div className="grid grid-cols-4 gap-3 sm:gap-6 px-1">
               {sharePlatforms.map((platform, idx) => (
                 <div key={idx} className="flex flex-col items-center gap-2 group">
@@ -372,8 +371,10 @@ const ShortItem = ({
   );
 };
 
-export default function ShortsPage() {
+function ShortsPageContent() {
   const { library, searchTerm } = useMedia();
+  const searchParams = useSearchParams();
+  const targetId = searchParams.get('id');
   const [isMuted, setIsMuted] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -384,11 +385,24 @@ export default function ShortsPage() {
      item.creator?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  // Handle initial active ID and target ID scrolling
   useEffect(() => {
-    if (shorts.length > 0 && !activeId) {
-      setActiveId(shorts[0].id);
+    if (shorts.length > 0) {
+      if (targetId) {
+        // Use a small timeout to ensure the DOM is ready for scrolling
+        const timer = setTimeout(() => {
+          const element = document.querySelector(`[data-short-id="${targetId}"]`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'instant', block: 'start' });
+            setActiveId(targetId);
+          }
+        }, 50);
+        return () => clearTimeout(timer);
+      } else if (!activeId) {
+        setActiveId(shorts[0].id);
+      }
     }
-  }, [shorts, activeId]);
+  }, [shorts.length, targetId]);
 
   useEffect(() => {
     const observerOptions = {
@@ -462,5 +476,13 @@ export default function ShortsPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function ShortsPage() {
+  return (
+    <Suspense fallback={<div className="h-svh bg-black flex items-center justify-center text-white/20 font-headline font-bold uppercase tracking-[0.5em]">Loading Multiverse...</div>}>
+      <ShortsPageContent />
+    </Suspense>
   );
 }

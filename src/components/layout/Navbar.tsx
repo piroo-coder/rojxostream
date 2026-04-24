@@ -180,12 +180,10 @@ export const Navbar: React.FC = () => {
     setShowSuggestions(false);
     
     if (item.type === 'short') {
-      if (pathname !== '/shorts') {
-        router.push('/shorts');
-      }
-      // For shorts, the ShortsPage will naturally show all but we've navigated
+      // Navigate to shorts page with a specific target ID
+      router.push(`/shorts?id=${item.id}`);
     } else {
-      // For non-shorts, directly open the player
+      // For non-shorts, directly open the player modal
       setCurrentlyPlaying(item);
       
       if (pathname !== '/') {
