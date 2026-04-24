@@ -1,9 +1,0 @@
-{
-    "$schema": "node_modules/wrangler/config-schema.json",
-    "name": "rojxostream",
-    "compatibility_date": "2024-04-24",
-    "compatibility_flags": [
-      "nodejs_compat"
-    ],
-    "pages_build_output_dir": ".next"
-  }
