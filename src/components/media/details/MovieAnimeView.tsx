@@ -1,13 +1,23 @@
 "use client";
 
 import { MediaItem } from '@/app/types/media';
-import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages } from 'lucide-react';
+import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface MovieAnimeViewProps {
   item: MediaItem;
@@ -16,8 +26,10 @@ interface MovieAnimeViewProps {
 
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
   const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis' | 'hindi-explanation' | 'wikipedia'>('discovery');
+  const [showMangaConfirm, setShowMangaConfirm] = useState(false);
 
   const getEmbedSource = (url: string) => {
+    if (!url) return '';
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
       let id = '';
       if (url.includes('watch?v=')) id = url.split('v=')[1].split('&')[0];
@@ -40,7 +52,14 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
     return url;
   };
 
-  const isDirectVideo = (url: string) => url.includes('dropbox.com') || url.endsWith('.mp4');
+  const isDirectVideo = (url: string) => url?.includes('dropbox.com') || url?.endsWith('.mp4');
+
+  const handleOpenManga = () => {
+    if (item.mangaUrl) {
+      window.open(item.mangaUrl, '_blank');
+      setShowMangaConfirm(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[60] bg-background animate-in fade-in duration-500 overflow-hidden h-svh w-screen flex flex-col">
@@ -111,7 +130,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                           </Button>
                         )}
                         {item.type === 'anime' && item.mangaUrl && (
-                          <Button onClick={() => window.open(item.mangaUrl, '_blank')} variant="outline" className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-accent/50 transition-all group">
+                          <Button onClick={() => setShowMangaConfirm(true)} variant="outline" className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-accent/50 transition-all group">
                             <BookOpen size={16} className="text-accent group-hover:animate-pulse" />
                             <span className="text-[10px] font-black uppercase tracking-widest">Read Manga</span>
                           </Button>
@@ -366,6 +385,32 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
           )}
         </div>
       </ScrollArea>
+
+      {/* Manga Permission Alert Dialog */}
+      <AlertDialog open={showMangaConfirm} onOpenChange={setShowMangaConfirm}>
+        <AlertDialogContent className="bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2rem]">
+          <AlertDialogHeader>
+            <div className="mx-auto w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center mb-4 border border-accent/30">
+              <ShieldAlert className="text-accent" size={24} />
+            </div>
+            <AlertDialogTitle className="text-center font-headline text-2xl">Permission Required</AlertDialogTitle>
+            <AlertDialogDescription className="text-center text-white/60">
+              You are about to teleport to an external library to read the manga for <strong>{item.title}</strong>. This content will open in a new tab. Do you wish to proceed?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="sm:justify-center gap-4 mt-6">
+            <AlertDialogCancel className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white min-w-[100px]">
+              Stay Here
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleOpenManga}
+              className="rounded-xl bg-accent hover:bg-accent/90 text-background font-bold min-w-[100px]"
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
