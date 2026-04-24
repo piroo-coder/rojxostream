@@ -1,10 +1,10 @@
+
 "use client";
 
 import { MediaItem, MediaCharacter } from '@/app/types/media';
 import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages, ShieldAlert, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -31,6 +31,14 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
   const [mode, setMode] = useState<ViewMode>('discovery');
   const [showMangaConfirm, setShowMangaConfirm] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<MediaCharacter | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Automatically scroll to top when changing modes or characters
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [mode, selectedCharacter]);
 
   const getEmbedSource = (url: string) => {
     if (!url) return '';
@@ -94,7 +102,8 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
         <X size={24} />
       </Button>
 
-      <ScrollArea className="flex-1 w-full relative z-10">
+      {/* Using a standard div with ref for reliable scroll control */}
+      <div ref={scrollRef} className="flex-1 w-full relative z-10 overflow-y-auto scroll-smooth scrollbar-hide">
         <div className="container mx-auto max-w-6xl px-4 py-20 md:py-32 flex flex-col items-center">
           
           {mode === 'discovery' ? (
@@ -133,7 +142,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 border-b border-white/5 pb-2">Resource Portals</h4>
                       <div className="flex flex-col gap-3">
                         {item.wikipediaUrl && (
-                          <Button onClick={() => setMode('wikipedia')} variant="outline" className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-primary/50 transition-all group">
+                          <Button onClick={() => setMode('wikipedia')} variant="outline" className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-primary/50 transition-all group text-white">
                             <Info size={16} className="text-primary group-hover:animate-pulse" />
                             <span className="text-[10px] font-black uppercase tracking-widest">Wikipedia</span>
                           </Button>
@@ -142,7 +151,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                           <Button 
                             onClick={() => setShowMangaConfirm(true)} 
                             variant="outline" 
-                            className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-accent/50 transition-all group"
+                            className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-accent/50 transition-all group text-white"
                           >
                             <BookOpen size={16} className="text-accent group-hover:animate-pulse" />
                             <span className="text-[10px] font-black uppercase tracking-widest">Read Manga</span>
@@ -158,7 +167,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                           {item.criticalAnalysis && (
                             <Button 
                               onClick={() => setMode('analysis')} 
-                              className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(var(--primary),0.4)] transition-all font-bold text-xs gap-2"
+                              className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(var(--primary),0.4)] transition-all font-bold text-xs gap-2 text-white"
                             >
                               <BrainCircuit size={16} />
                               CRITICAL ANALYSIS
@@ -167,7 +176,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                           {item.hindiExplanationUrl && (
                             <Button 
                               onClick={() => setMode('hindi-explanation')} 
-                              className="w-full h-14 rounded-2xl bg-gradient-to-r from-accent to-blue-600 hover:shadow-[0_0_20px_rgba(var(--accent),0.4)] transition-all font-bold text-xs gap-2"
+                              className="w-full h-14 rounded-2xl bg-gradient-to-r from-accent to-blue-600 hover:shadow-[0_0_20px_rgba(var(--accent),0.4)] transition-all font-bold text-xs gap-2 text-white"
                             >
                               <Languages size={16} />
                               HINDI EXPLANATION
@@ -381,7 +390,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                         <Sparkles size={14} /> Human Importance
                       </h3>
                       <p className="text-sm text-white/60 leading-relaxed">
-                        {item.criticalAnalysis.realLifeRelation}
+                        {item.criticalAnalysis.importanceToUs}
                       </p>
                     </section>
                  </div>
@@ -469,7 +478,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Manga Permission Alert Dialog */}
       <AlertDialog open={showMangaConfirm} onOpenChange={setShowMangaConfirm}>
