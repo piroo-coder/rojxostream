@@ -8,6 +8,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -380,7 +381,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                         <Sparkles size={14} /> Human Importance
                       </h3>
                       <p className="text-sm text-white/60 leading-relaxed">
-                        {item.criticalAnalysis.importanceToUs}
+                        {item.criticalAnalysis.realLifeRelation}
                       </p>
                     </section>
                  </div>
