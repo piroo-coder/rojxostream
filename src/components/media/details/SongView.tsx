@@ -69,13 +69,13 @@ export const SongView: React.FC<SongViewProps> = ({ item, onClose }) => {
                 />
               </div>
 
-              {/* Central Disk visualizer */}
-              <div className="relative z-10 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-card/80 border-2 border-primary/30 flex items-center justify-center overflow-hidden shadow-[0_0_80px_rgba(var(--primary),0.3)]">
+              {/* Central Disk visualizer - Transparency Reduced (More Solid) */}
+              <div className="relative z-10 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-card border-2 border-primary/30 flex items-center justify-center overflow-hidden shadow-[0_0_80px_rgba(var(--primary),0.3)]">
                 <Image 
                   src={item.thumbnailUrl} 
                   alt="" 
                   fill 
-                  className="object-cover opacity-80 animate-[spin_10s_linear_infinite]" 
+                  className="object-cover opacity-100 animate-[spin_10s_linear_infinite]" 
                   unoptimized
                 />
                 <div className="relative z-10 flex items-end gap-1.5 h-12">
