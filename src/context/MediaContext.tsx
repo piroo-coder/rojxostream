@@ -28,7 +28,7 @@ const initialData: MediaItem[] = [
     mangaUrl: 'https://mangamirai.com/product_collections/a573a65b-6a2a-468e-8783-3bf3fa6e395f',
     imdbRating: '7.7',
     summary: 'A 17-year-old girl named Suzume helps a mysterious young man close doors from the other side that are releasing disasters all over Japan.',
-    fullPlot: 'Suzume Iwato is a 17-year-old high school girl who lives with her aunt in a quiet town in Kyushu. One day, she meets a mysterious young man named Sota who is looking for a door. Suzume follows him into the mountains and finds an old, weathered door standing alone in the middle of some ruins.',
+    fullPlot: 'Suzume Iwato is a 17-year-old high school girl who lives with her aunt in a quiet town in Kyushu. One day, she meets a mysterious young man named Sota who is looking for a door.',
     moral: 'Coming to terms with past trauma is essential for moving forward.',
     genre: ['Adventure', 'Fantasy'],
     characters: [
@@ -43,16 +43,16 @@ const initialData: MediaItem[] = [
     ],
     criticalAnalysis: {
       characterMotivations: [
-        { topic: "Suzume's Drive", explanation: "Her obsession with the 'doors' is a subconscious attempt to process the unresolved grief of losing her mother in a childhood natural disaster." },
-        { topic: "Souta's Duty", explanation: "As a 'Closer', Souta views his role not just as a job, but as a spiritual stewardship of the land's forgotten history." }
+        { topic: "Suzume's Drive", explanation: "Her obsession with the 'doors' is a subconscious attempt to process the unresolved grief of losing her mother." },
+        { topic: "Souta's Duty", explanation: "As a 'Closer', Souta views his role as a spiritual stewardship of the land's forgotten history." }
       ],
       narrativeEvents: [
-        { event: "The Worm and the Doors", explanation: "Disasters manifest in abandoned ruins where the 'weight' of human emotion and memory has faded, leaving a void." },
-        { event: "Closing the Past", explanation: "Each door closed represents Suzume acknowledging a piece of history that was abandoned, mirroring her own emotional recovery." }
+        { event: "The Worm and the Doors", explanation: "Disasters manifest in abandoned ruins where the 'weight' of human emotion and memory has faded." },
+        { event: "Closing the Past", explanation: "Each door closed represents Suzume acknowledging a piece of history that was abandoned." }
       ],
-      writersMessage: "Shinkai suggests that we cannot simply abandon the places of our past; we must acknowledge their history and 'close the doors' with gratitude to move forward.",
-      realLifeRelation: "The film is a direct dialogue with the 2011 Great East Japan Earthquake, reflecting the collective trauma and ongoing healing of the nation.",
-      importanceToUs: "It teaches us that resilience isn't about forgetting, but about the courage to face our deepest fears and find beauty in the wreckage."
+      writersMessage: "Shinkai suggests that we cannot simply abandon the places of our past; we must acknowledge their history with gratitude to move forward.",
+      realLifeRelation: "The film is a direct dialogue with the 2011 Great East Japan Earthquake, reflecting collective trauma and healing.",
+      importanceToUs: "It teaches us that resilience isn't about forgetting, but about the courage to face our deepest fears."
     }
   },
   {
@@ -83,16 +83,16 @@ const initialData: MediaItem[] = [
     ],
     criticalAnalysis: {
       characterMotivations: [
-        { topic: "Sakura's Choice", explanation: "She chooses Haruki precisely because he doesn't pity her; he provides the 'normality' she craves in her final days." },
-        { topic: "Haruki's Distance", explanation: "His stoicism is a defense mechanism to avoid the vulnerability of loss, which Sakura eventually shatters." }
+        { topic: "Sakura's Choice", explanation: "She chooses Haruki precisely because he doesn't pity her; he provides the 'normality' she craves." },
+        { topic: "Haruki's Distance", explanation: "His stoicism is a defense mechanism to avoid the vulnerability of loss." }
       ],
       narrativeEvents: [
-        { event: "The Library Scenes", explanation: "Represent the preservation of stories and the slow building of an emotional archive between two isolated souls." },
-        { event: "The Sudden Ending", explanation: "A brutal reminder that death is often unexpected and doesn't wait for the 'natural' end of an illness." }
+        { event: "The Library Scenes", explanation: "Represent the preservation of stories and the building of an emotional archive." },
+        { event: "The Sudden Ending", explanation: "A brutal reminder that death is often unexpected and doesn't wait for a 'natural' end." }
       ],
-      writersMessage: "Life isn't measured by the time we have, but by the connections we make. To 'live' is to acknowledge and be acknowledged by others.",
-      realLifeRelation: "Speaks to the universal struggle of finding meaning when faced with the inevitable finitude of human life.",
-      importanceToUs: "It serves as a profound call to action to express our love and appreciation for others while we still have the chance."
+      writersMessage: "Life isn't measured by time, but by the connections we make. To 'live' is to be acknowledged by others.",
+      realLifeRelation: "Speaks to the universal struggle of finding meaning when faced with the finitude of life.",
+      importanceToUs: "It serves as a profound call to express love for others while we still have the chance."
     }
   },
   {
@@ -108,7 +108,7 @@ const initialData: MediaItem[] = [
     wikipediaUrl: 'https://en.wikipedia.org/wiki/The_Garden_of_Words',
     mangaUrl: 'https://mangamirai.com/product_collections/0b42561f-0f02-4606-9f49-f15c2f58d3f9',
     imdbRating: '7.4',
-    summary: 'A 15-year-old boy training to be a shoemaker skips school on rainy days to sketch shoes in a Japanese garden and meets a mysterious older woman.',
+    summary: 'A 15-year-old boy training to be a shoemaker skips school on rainy days and meets a mysterious older woman in a Japanese garden.',
     moral: 'Sometimes, a brief connection can give us the strength to keep walking.',
     genre: ['Drama', 'Romance'],
     characters: [
@@ -123,16 +123,16 @@ const initialData: MediaItem[] = [
     ],
     criticalAnalysis: {
       characterMotivations: [
-        { topic: "Takao's Shoes", explanation: "Shoemaking is a metaphor for his desire to stand on his own feet and 'walk' into a meaningful adult future." },
-        { topic: "Yukari's Stagnation", explanation: "Paralyzed by professional bullying and trauma, the garden represents a sanctuary where she doesn't have to 'walk' according to society's rules." }
+        { topic: "Takao's Shoes", explanation: "Shoemaking is a metaphor for his desire to stand on his own feet and walk into a meaningful future." },
+        { topic: "Yukari's Stagnation", explanation: "Paralyzed by professional bullying, the garden is a sanctuary where she doesn't have to follow society's rules." }
       ],
       narrativeEvents: [
-        { event: "The Rainy Season", explanation: "The rain acts as a physical and emotional boundary that separates the two from the harsh expectations of society." },
-        { event: "The Final Confrontation", explanation: "An explosive release of repressed loneliness, forcing both characters to finally step out of the shadows." }
+        { event: "The Rainy Season", explanation: "The rain acts as a physical and emotional boundary that separates them from harsh expectations." },
+        { event: "The Final Confrontation", explanation: "An explosive release of repressed loneliness, forcing them to finally step out of the shadows." }
       ],
-      writersMessage: "Even unconventional and brief relationships can provide the essential emotional 'footing' needed to overcome major life hurdles.",
-      realLifeRelation: "Relates to urban loneliness and the difficulty of finding mentors or emotional support in rigid social structures.",
-      importanceToUs: "It validates the small, quiet connections that save us when the world feels too overwhelming to navigate."
+      writersMessage: "Even unconventional and brief relationships can provide the essential emotional footing needed to overcome major hurdles.",
+      realLifeRelation: "Relates to urban loneliness and the difficulty of finding emotional support in rigid social structures.",
+      importanceToUs: "It validates the small, quiet connections that save us when the world feels overwhelming."
     }
   },
   {
@@ -148,7 +148,7 @@ const initialData: MediaItem[] = [
     wikipediaUrl: 'https://en.wikipedia.org/wiki/A_Silent_Voice_(film)',
     mangaUrl: 'https://globalcomix.com/c/a-silent-voice/chapters/en/1/',
     imdbRating: '8.1',
-    summary: 'A young man who bullied a deaf classmate in elementary school tries to make amends years later after meeting her again.',
+    summary: 'A young man who bullied a deaf classmate tries to make amends years later after meeting her again.',
     moral: 'Forgiveness, both for others and oneself, is the path to redemption.',
     genre: ['Drama', 'Romance'],
     characters: [
@@ -163,16 +163,16 @@ const initialData: MediaItem[] = [
     ],
     criticalAnalysis: {
       characterMotivations: [
-        { topic: "Shoya's Guilt", explanation: "His self-isolation is a form of self-punishment; he believes he has lost the right to hear or see others' hearts." },
-        { topic: "Shoko's Self-Blame", explanation: "As a victim, she internalizes the trouble her disability causes, leading to a tragic belief that she shouldn't exist." }
+        { topic: "Shoya's Guilt", explanation: "His self-isolation is self-punishment; he believes he has lost the right to connect with others." },
+        { topic: "Shoko's Self-Blame", explanation: "She internalizes the trouble her disability causes, leading to a belief that she shouldn't exist." }
       ],
       narrativeEvents: [
-        { event: "The 'X' on Faces", explanation: "A powerful visual metaphor for social anxiety and the protagonist's refusal to truly 'see' the humanity in others." },
-        { event: "The Bridge Scene", explanation: "The focal point where communication fails and then finally, painfully, begins to succeed, showing that hearing is not listening." }
+        { event: "The 'X' on Faces", explanation: "A powerful visual metaphor for social anxiety and Shoya's refusal to see the humanity in others." },
+        { event: "The Bridge Scene", explanation: "The focal point where communication fails and then finally, painfully, begins to succeed." }
       ],
-      writersMessage: "True listening goes beyond sound. Redemption is a long, active process that requires the courage to face one's past honestly.",
-      realLifeRelation: "A searingly accurate portrayal of the long-term psychological impact of bullying and the struggle of living with a disability.",
-      importanceToUs: "Reminds us that everyone has a voice worth hearing, and that even the most broken people can find a way to connect."
+      writersMessage: "True listening goes beyond sound. Redemption requires the courage to face one's past honestly.",
+      realLifeRelation: "A searingly accurate portrayal of the long-term impact of bullying and living with a disability.",
+      importanceToUs: "Reminds us that everyone has a voice worth hearing, and connection is always possible."
     }
   },
   {
@@ -203,16 +203,16 @@ const initialData: MediaItem[] = [
     ],
     criticalAnalysis: {
       characterMotivations: [
-        { topic: "Empathy via Swapping", explanation: "Literally living each other's lives forces an absolute level of empathy that transcends typical romantic attraction." },
-        { topic: "The Search", explanation: "Driven by a fading memory of the heart that refuses to be ignored, representing our innate search for 'something' missing." }
+        { topic: "Empathy via Swapping", explanation: "Living each other's lives forces an absolute level of empathy that transcends typical romance." },
+        { topic: "The Search", explanation: "Driven by a fading memory of the heart that refuses to be ignored." }
       ],
       narrativeEvents: [
-        { event: "The Comet Tiamat", explanation: "Symbolizes both the beauty and the terrifying unpredictability of fate and natural disaster." },
-        { event: "Musubi", explanation: "The central philosophy of 'twisting and tangling' threads representing time, relationships, and the flow of energy." }
+        { event: "The Comet Tiamat", explanation: "Symbolizes both the beauty and the terrifying unpredictability of fate." },
+        { event: "Musubi", explanation: "The philosophy of 'twisting and tangling' threads representing time and relationships." }
       ],
-      writersMessage: "True connection is a force of nature that can bridge even the widest gaps of time and space, provided we fight to remember it.",
-      realLifeRelation: "Speaks to the modern feeling of loss— tradiciones, places, and the lingering sense of searching for a lost connection.",
-      importanceToUs: "It gives hope that the people we are 'meant' to find are searching for us too, across whatever distance exists."
+      writersMessage: "True connection can bridge even the widest gaps of time and space if we fight to remember it.",
+      realLifeRelation: "Speaks to the modern feeling of loss—traditions, places, and lost connections.",
+      importanceToUs: "It gives hope that the people we are meant to find are searching for us too."
     }
   },
   {
@@ -243,16 +243,16 @@ const initialData: MediaItem[] = [
     ],
     criticalAnalysis: {
       characterMotivations: [
-        { topic: "Hodaka's Rebellion", explanation: "He runs away to find agency in a world where adults and societal expectations feel suffocating and rigid." },
-        { topic: "Hina's Sacrifice", explanation: "She initially accepts her fate as the 'Sunshine Girl' because it gives her a sense of purpose and the ability to provide for her brother." }
+        { topic: "Hodaka's Rebellion", explanation: "He runs away to find agency in a world where adults feel suffocating and rigid." },
+        { topic: "Hina's Sacrifice", explanation: "She accepts her fate as the 'Sunshine Girl' because it gives her purpose and supports her brother." }
       ],
       narrativeEvents: [
         { event: "The Gun", explanation: "Symbolizes the dangerous and messy power of youthful desperation in a world that doesn't listen." },
-        { event: "The Submerged Tokyo", explanation: "A radical narrative choice that validates individual happiness over the status quo of the world's 'balance'." }
+        { event: "The Submerged Tokyo", explanation: "A radical choice that validates individual happiness over the status quo." }
       ],
-      writersMessage: "We should not sacrifice the happiness of individuals to fix a world that was already broken by previous generations.",
-      realLifeRelation: "A poignant commentary on climate change anxiety and the unfair weight placed on young people to save society.",
-      importanceToUs: "It's a defiant reminder that choosing love and personal joy in a darkening world is a valid and powerful act of rebellion."
+      writersMessage: "We should not sacrifice the happiness of individuals to fix a world broken by previous generations.",
+      realLifeRelation: "A poignant commentary on climate change anxiety and the weight placed on young people.",
+      importanceToUs: "Choosing love and joy in a darkening world is a valid and powerful act of rebellion."
     }
   },
   {
@@ -348,6 +348,102 @@ const initialData: MediaItem[] = [
     thumbnailUrl: 'https://picsum.photos/seed/perspective/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/wXpvE2QLgio',
     creator: 'DailyInsights'
+  },
+  {
+    id: 'sh3',
+    type: 'short',
+    title: 'Multiverse Explorer 01',
+    thumbnailUrl: 'https://picsum.photos/seed/sh3/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/_wHs0P8Pk04',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh4',
+    type: 'short',
+    title: 'Multiverse Explorer 02',
+    thumbnailUrl: 'https://picsum.photos/seed/sh4/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/0Ra8W_ppRhA',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh5',
+    type: 'short',
+    title: 'Multiverse Explorer 03',
+    thumbnailUrl: 'https://picsum.photos/seed/sh5/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/UoeLg6pzgEw',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh6',
+    type: 'short',
+    title: 'Multiverse Explorer 04',
+    thumbnailUrl: 'https://picsum.photos/seed/sh6/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/EdhaSFvY42s',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh7',
+    type: 'short',
+    title: 'Multiverse Explorer 05',
+    thumbnailUrl: 'https://picsum.photos/seed/sh7/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/DDswrlId7_I',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh8',
+    type: 'short',
+    title: 'Multiverse Explorer 06',
+    thumbnailUrl: 'https://picsum.photos/seed/sh8/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/XbXRxPulY5o',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh9',
+    type: 'short',
+    title: 'Multiverse Explorer 07',
+    thumbnailUrl: 'https://picsum.photos/seed/sh9/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/PlpSDr_5Roc',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh10',
+    type: 'short',
+    title: 'Multiverse Explorer 08',
+    thumbnailUrl: 'https://picsum.photos/seed/sh10/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/CdyaALQHMj8',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh11',
+    type: 'short',
+    title: 'Multiverse Explorer 09',
+    thumbnailUrl: 'https://picsum.photos/seed/sh11/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/WZiw_ICBf7c',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh12',
+    type: 'short',
+    title: 'Multiverse Explorer 10',
+    thumbnailUrl: 'https://picsum.photos/seed/sh12/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/5F3aj-m-OVQ',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh13',
+    type: 'short',
+    title: 'Multiverse Explorer 11',
+    thumbnailUrl: 'https://picsum.photos/seed/sh13/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/bPyKxKlmYpk',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh14',
+    type: 'short',
+    title: 'Multiverse Explorer 12',
+    thumbnailUrl: 'https://picsum.photos/seed/sh14/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/lbvv1sVBHJw',
+    creator: 'RojXO Creator'
   }
 ];
 
