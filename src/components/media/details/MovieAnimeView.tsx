@@ -15,7 +15,7 @@ interface MovieAnimeViewProps {
 }
 
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
-  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis' | 'hindi-explanation'>('discovery');
+  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis' | 'hindi-explanation' | 'wikipedia'>('discovery');
 
   const getEmbedSource = (url: string) => {
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
@@ -105,7 +105,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 border-b border-white/5 pb-2">Resource Portals</h4>
                       <div className="flex flex-col gap-3">
                         {item.wikipediaUrl && (
-                          <Button onClick={() => window.open(item.wikipediaUrl, '_blank')} variant="outline" className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-primary/50 transition-all group">
+                          <Button onClick={() => setMode('wikipedia')} variant="outline" className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-primary/50 transition-all group">
                             <Info size={16} className="text-primary group-hover:animate-pulse" />
                             <span className="text-[10px] font-black uppercase tracking-widest">Wikipedia</span>
                           </Button>
@@ -313,6 +313,27 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     className="w-full h-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                  />
+               </div>
+            </div>
+          ) : mode === 'wikipedia' && item.wikipediaUrl ? (
+            <div className="w-full flex flex-col items-center gap-12 animate-in zoom-in-95 duration-1000">
+               <div className="text-center space-y-4">
+                 <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-1.5 rounded-full backdrop-blur-3xl">
+                    <Info size={14} className="text-primary" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white">Wikipedia Archive</span>
+                 </div>
+                 <h2 className="text-3xl md:text-5xl font-headline font-bold text-white drop-shadow-2xl">{item.title}</h2>
+                 <Button variant="ghost" onClick={() => setMode('discovery')} className="text-white/40 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+                    <ArrowLeft size={14} /> Back to Discovery
+                 </Button>
+               </div>
+               
+               <div className="w-full max-w-6xl h-[70vh] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-white">
+                 <iframe 
+                    src={item.wikipediaUrl}
+                    className="w-full h-full border-0"
+                    title="Wikipedia"
                   />
                </div>
             </div>
