@@ -1,3 +1,4 @@
+
 "use client";
 
 import { MediaItem } from '@/app/types/media';
@@ -25,7 +26,7 @@ interface MovieAnimeViewProps {
 }
 
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
-  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis' | 'hindi-explanation' | 'wikipedia'>('discovery');
+  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis' | 'hindi-explanation' | 'wikipedia' | 'manga'>('discovery');
   const [showMangaConfirm, setShowMangaConfirm] = useState(false);
 
   const getEmbedSource = (url: string) => {
@@ -54,10 +55,9 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
 
   const isDirectVideo = (url: string) => url?.includes('dropbox.com') || url?.endsWith('.mp4');
 
-  const handleOpenManga = () => {
-    if (item.mangaUrl) {
-      window.open(item.mangaUrl, '_blank', 'noopener,noreferrer');
-    }
+  const handleOpenMangaPortal = () => {
+    setMode('manga');
+    setShowMangaConfirm(false);
   };
 
   return (
@@ -129,7 +129,14 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                           </Button>
                         )}
                         {item.type === 'anime' && item.mangaUrl && (
-                          <Button onClick={() => setShowMangaConfirm(true)} variant="outline" className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-accent/50 transition-all group">
+                          <Button 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setShowMangaConfirm(true);
+                            }} 
+                            variant="outline" 
+                            className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-accent/50 transition-all group"
+                          >
                             <BookOpen size={16} className="text-accent group-hover:animate-pulse" />
                             <span className="text-[10px] font-black uppercase tracking-widest">Read Manga</span>
                           </Button>
@@ -345,12 +352,32 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                </div>
                
                <div className="w-full max-w-6xl h-[70vh] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-black relative">
-                 <div className="absolute inset-0 z-0 bg-black pointer-events-none" />
                  <iframe 
                     src={`${item.wikipediaUrl}${item.wikipediaUrl?.includes('?') ? '&' : '?'}useskin=vector-2022&vector-skin-theme=dark`}
                     className="w-full h-full border-0 relative z-10"
                     title="Wikipedia"
                     style={{ filter: 'invert(0.9) hue-rotate(180deg) brightness(1.1)' }}
+                  />
+               </div>
+            </div>
+          ) : mode === 'manga' && item.mangaUrl ? (
+            <div className="w-full flex flex-col items-center gap-12 animate-in zoom-in-95 duration-1000">
+               <div className="text-center space-y-4">
+                 <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/30 px-4 py-1.5 rounded-full backdrop-blur-3xl">
+                    <BookOpen size={14} className="text-accent" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-accent">Manga Archive</span>
+                 </div>
+                 <h2 className="text-3xl md:text-5xl font-headline font-bold text-white drop-shadow-2xl">{item.title}</h2>
+                 <button onClick={() => setMode('discovery')} className="text-white/40 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-transparent border-0 mx-auto">
+                    <ArrowLeft size={14} /> Back to Discovery
+                 </button>
+               </div>
+               
+               <div className="w-full max-w-6xl h-[70vh] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-black relative">
+                 <iframe 
+                    src={item.mangaUrl}
+                    className="w-full h-full border-0 relative z-10"
+                    title="Manga Reader"
                   />
                </div>
             </div>
@@ -398,11 +425,20 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="sm:justify-center gap-4 mt-6">
-            <AlertDialogCancel className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white min-w-[120px]">
+            <AlertDialogCancel 
+              onClick={(e) => {
+                e.preventDefault();
+                setShowMangaConfirm(false);
+              }} 
+              className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white min-w-[120px]"
+            >
               No dont
             </AlertDialogCancel>
             <AlertDialogAction 
-              onClick={handleOpenManga}
+              onClick={(e) => {
+                e.preventDefault();
+                handleOpenMangaPortal();
+              }}
               className="rounded-xl bg-accent hover:bg-accent/90 text-background font-bold min-w-[120px]"
             >
               Yes open
