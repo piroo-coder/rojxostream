@@ -194,21 +194,19 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
               </div>
 
               <div className="flex flex-col items-center gap-8 pt-12">
-                <Button 
-                  size="lg" 
+                <button 
+                  className="h-24 px-16 rounded-[2.5rem] bg-primary hover:bg-primary/90 text-2xl font-black shadow-[0_20px_60px_-15px_rgba(var(--primary),0.5)] transition-all hover:scale-105 active:scale-95 group flex items-center justify-center text-white"
                   onClick={() => setMode('playing')}
-                  className="h-24 px-16 rounded-[2.5rem] bg-primary hover:bg-primary/90 text-2xl font-black shadow-[0_20px_60px_-15px_rgba(var(--primary),0.5)] transition-all hover:scale-105 active:scale-95 group"
                 >
                   <Play size={28} fill="currentColor" className="mr-4 group-hover:animate-pulse" />
                   Enter Universe
-                </Button>
-                <Button 
+                </button>
+                <button 
                   onClick={onClose}
-                  variant="ghost" 
-                  className="text-white/30 hover:text-white uppercase tracking-[0.4em] font-black text-[10px]"
+                  className="text-white/30 hover:text-white uppercase tracking-[0.4em] font-black text-[10px] bg-transparent border-0 cursor-pointer"
                 >
                   Exit to Explore
-                </Button>
+                </button>
               </div>
             </div>
           ) : mode === 'analysis' && item.criticalAnalysis ? (
@@ -219,13 +217,12 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     <span className="text-[10px] font-black uppercase tracking-widest text-purple-200">Critical Analysis</span>
                  </div>
                  <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">{item.title}</h2>
-                 <Button 
-                  variant="ghost" 
+                 <button 
                   onClick={() => setMode('discovery')} 
-                  className="text-white/40 hover:text-white gap-2 uppercase tracking-widest text-[10px] font-black"
+                  className="text-white/40 hover:text-white gap-2 uppercase tracking-widest text-[10px] font-black bg-transparent border-0 flex items-center mx-auto"
                 >
                    <ArrowLeft size={14} /> Return to Discovery
-                 </Button>
+                 </button>
                </header>
 
                <div className="space-y-12">
@@ -286,12 +283,12 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                </div>
 
                <div className="flex justify-center pt-8">
-                  <Button 
+                  <button 
                     onClick={() => setMode('playing')}
-                    className="h-16 px-12 rounded-2xl bg-primary hover:bg-primary/90 font-black text-lg shadow-2xl"
+                    className="h-16 px-12 rounded-2xl bg-primary hover:bg-primary/90 font-black text-lg shadow-2xl text-white"
                   >
                     Watch Now
-                  </Button>
+                  </button>
                </div>
             </div>
           ) : mode === 'hindi-explanation' && item.hindiExplanationUrl ? (
@@ -302,9 +299,9 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     <span className="text-[10px] font-black uppercase tracking-widest text-accent">Hindi Narrative Summary</span>
                  </div>
                  <h2 className="text-3xl md:text-5xl font-headline font-bold text-white drop-shadow-2xl">{item.title}</h2>
-                 <Button variant="ghost" onClick={() => setMode('discovery')} className="text-white/40 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+                 <button onClick={() => setMode('discovery')} className="text-white/40 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-transparent border-0 mx-auto">
                     <ArrowLeft size={14} /> Back to Discovery
-                 </Button>
+                 </button>
                </div>
                
                <div className="w-full max-w-5xl aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-black">
@@ -324,16 +321,18 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     <span className="text-[10px] font-black uppercase tracking-widest text-white">Wikipedia Archive</span>
                  </div>
                  <h2 className="text-3xl md:text-5xl font-headline font-bold text-white drop-shadow-2xl">{item.title}</h2>
-                 <Button variant="ghost" onClick={() => setMode('discovery')} className="text-white/40 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+                 <button onClick={() => setMode('discovery')} className="text-white/40 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-transparent border-0 mx-auto">
                     <ArrowLeft size={14} /> Back to Discovery
-                 </Button>
+                 </button>
                </div>
                
-               <div className="w-full max-w-6xl h-[70vh] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-white">
+               <div className="w-full max-w-6xl h-[70vh] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-black relative">
+                 <div className="absolute inset-0 z-0 bg-black pointer-events-none" />
                  <iframe 
-                    src={item.wikipediaUrl}
-                    className="w-full h-full border-0"
+                    src={`${item.wikipediaUrl}${item.wikipediaUrl?.includes('?') ? '&' : '?'}useskin=vector-2022&vector-skin-theme=dark`}
+                    className="w-full h-full border-0 relative z-10"
                     title="Wikipedia"
+                    style={{ filter: 'invert(0.9) hue-rotate(180deg) brightness(1.1)' }}
                   />
                </div>
             </div>
@@ -341,9 +340,9 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
             <div className="w-full flex flex-col items-center gap-12 animate-in zoom-in-95 duration-1000">
                <div className="text-center space-y-4">
                  <h2 className="text-3xl md:text-5xl font-headline font-bold text-white drop-shadow-2xl">{item.title}</h2>
-                 <Button variant="ghost" onClick={() => setMode('discovery')} className="text-accent hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+                 <button onClick={() => setMode('discovery')} className="text-accent hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-transparent border-0 mx-auto">
                     <Info size={14} /> Back to Discovery
-                 </Button>
+                 </button>
                </div>
                
                <div className="w-full max-w-5xl aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-black">
