@@ -173,6 +173,23 @@ const initialData: MediaItem[] = [
     genre: ['Comedy', 'Fantasy']
   },
   {
+    id: 'm4',
+    type: 'movie',
+    title: '3 Idiots',
+    thumbnailUrl: 'https://i.ytimg.com/vi/K0eL6ZGeu_M/maxresdefault.jpg',
+    mediaUrl: 'https://www.youtube.com/watch?v=K0eL6ZGeu_M',
+    creator: 'Rajkumar Hirani',
+    writers: 'Abhijat Joshi, Rajkumar Hirani',
+    producers: 'Vidhu Vinod Chopra',
+    theme: 'Education, Friendship, Success',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/3_Idiots',
+    imdbRating: '8.4',
+    summary: 'Two friends are searching for their long lost companion. They revisit their college days and recall the memories of their friend who inspired them to think differently.',
+    fullPlot: 'Farhan and Raju are two friends looking for their college roommate, Rancho, who disappeared after graduation. Along the way, they recall their time at one of India\'s top engineering colleges, where Rancho challenged the mechanical teaching methods of the director, Viru Sahastrabuddhe (Virus). The film is a powerful commentary on the Indian education system and the pressure to conform.',
+    moral: 'Chase excellence, and success will follow.',
+    genre: ['Comedy', 'Drama']
+  },
+  {
     id: 's1',
     type: 'song',
     title: 'Suzume Theme Song',
