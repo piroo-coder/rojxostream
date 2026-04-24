@@ -26,7 +26,7 @@ interface MovieAnimeViewProps {
 }
 
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
-  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis' | 'hindi-explanation' | 'wikipedia' | 'manga'>('discovery');
+  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis' | 'hindi-explanation' | 'wikipedia'>('discovery');
   const [showMangaConfirm, setShowMangaConfirm] = useState(false);
 
   const getEmbedSource = (url: string) => {
@@ -56,7 +56,9 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
   const isDirectVideo = (url: string) => url?.includes('dropbox.com') || url?.endsWith('.mp4');
 
   const handleOpenMangaPortal = () => {
-    setMode('manga');
+    if (item.mangaUrl) {
+      window.open(item.mangaUrl, '_blank', 'noopener,noreferrer');
+    }
     setShowMangaConfirm(false);
   };
 
@@ -357,27 +359,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     className="w-full h-full border-0 relative z-10"
                     title="Wikipedia"
                     style={{ filter: 'invert(0.9) hue-rotate(180deg) brightness(1.1)' }}
-                  />
-               </div>
-            </div>
-          ) : mode === 'manga' && item.mangaUrl ? (
-            <div className="w-full flex flex-col items-center gap-12 animate-in zoom-in-95 duration-1000">
-               <div className="text-center space-y-4">
-                 <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/30 px-4 py-1.5 rounded-full backdrop-blur-3xl">
-                    <BookOpen size={14} className="text-accent" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-accent">Manga Archive</span>
-                 </div>
-                 <h2 className="text-3xl md:text-5xl font-headline font-bold text-white drop-shadow-2xl">{item.title}</h2>
-                 <button onClick={() => setMode('discovery')} className="text-white/40 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest bg-transparent border-0 mx-auto">
-                    <ArrowLeft size={14} /> Back to Discovery
-                 </button>
-               </div>
-               
-               <div className="w-full max-w-6xl h-[70vh] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-black relative">
-                 <iframe 
-                    src={item.mangaUrl}
-                    className="w-full h-full border-0 relative z-10"
-                    title="Manga Reader"
                   />
                </div>
             </div>
