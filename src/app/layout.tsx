@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   title: 'RojXOStream - Immersive Media Experience',
   description: 'Your premium destination for Anime, Movies, Songs, and Shorts.',
   icons: {
-    icon: 'https://64.media.tumblr.com/bc10579e276096a58ff8f89e2948029d/9a9930ae0933e909-8c/s250x400/6ad418dba6305ec88c6fb4f4002274e1ef3d0de3.jpg',
-    shortcut: 'https://64.media.tumblr.com/bc10579e276096a58ff8f89e2948029d/9a9930ae0933e909-8c/s250x400/6ad418dba6305ec88c6fb4f4002274e1ef3d0de3.jpg',
-    apple: 'https://64.media.tumblr.com/bc10579e276096a58ff8f89e2948029d/9a9930ae0933e909-8c/s250x400/6ad418dba6305ec88c6fb4f4002274e1ef3d0de3.jpg',
+    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s',
+    shortcut: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s',
+    apple: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s',
   },
   openGraph: {
     title: 'RojXOStream',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     siteName: 'RojXOStream',
     images: [
       {
-        url: 'https://64.media.tumblr.com/bc10579e276096a58ff8f89e2948029d/9a9930ae0933e909-8c/s250x400/6ad418dba6305ec88c6fb4f4002274e1ef3d0de3.jpg',
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s',
         width: 800,
         height: 600,
       },
