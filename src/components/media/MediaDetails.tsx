@@ -184,7 +184,7 @@ export const MediaDetails: React.FC = () => {
                                <span className="text-xs font-bold uppercase tracking-widest">Wikipedia</span>
                              </Button>
                            )}
-                           {currentlyPlaying.type === 'anime' && (
+                           {currentlyPlaying.type === 'anime' && currentlyPlaying.mangaUrl && (
                              <Button onClick={handleOpenManga} variant="ghost" className="justify-start gap-3 h-12 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-transparent hover:border-white/10">
                                <BookOpen size={16} className="text-pink-400" />
                                <span className="text-xs font-bold uppercase tracking-widest">Read Manga</span>
