@@ -1,3 +1,4 @@
+
 "use client";
 
 import { MediaItem } from '@/app/types/media';
@@ -7,10 +8,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
-interface SongViewProps {
-  item: MediaItem;
-  onClose: () => void;
-}
+interface SongViewProps { item: MediaItem; onClose: () => void; }
 
 export const SongView: React.FC<SongViewProps> = ({ item, onClose }) => {
   const [songMode, setSongMode] = useState<'video' | 'audio'>('audio');
@@ -27,16 +25,16 @@ export const SongView: React.FC<SongViewProps> = ({ item, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[60] bg-background animate-in fade-in duration-500 overflow-hidden flex flex-col items-center justify-center p-4">
-      {/* PROFESSIONAL SIMPLIFIED MUSIC BACKGROUND */}
+      {/* PROFESSIONAL MUSIC BACKGROUND - Visibility Increased */}
       <div className="absolute inset-0 z-0">
         <Image 
           src={item.audioBackgroundUrl || item.thumbnailUrl} 
           alt=""
           fill
-          className="object-cover opacity-20 blur-3xl scale-125"
+          className="object-cover opacity-50 blur-2xl scale-110"
           unoptimized
         />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
       <Button 
@@ -57,16 +55,27 @@ export const SongView: React.FC<SongViewProps> = ({ item, onClose }) => {
         </div>
 
         {/* CENTRAL MUSIC DISK / PLAYER */}
-        <div className="relative w-full aspect-video md:aspect-[21/9] rounded-[3rem] overflow-hidden border border-white/10 bg-black/80 backdrop-blur-2xl shadow-[0_32px_128px_rgba(0,0,0,0.5)] flex items-center justify-center">
+        <div className="relative w-full aspect-video md:aspect-[21/9] rounded-[3rem] overflow-hidden border border-white/10 bg-black/40 backdrop-blur-2xl shadow-[0_32px_128px_rgba(0,0,0,0.5)] flex items-center justify-center">
           {songMode === 'audio' ? (
-            <div className="flex flex-col items-center justify-center gap-8 w-full h-full">
+            <div className="flex flex-col items-center justify-center gap-8 w-full h-full relative">
+              {/* Background image layer inside the player container */}
+              <div className="absolute inset-0 z-0 opacity-40">
+                <Image 
+                  src={item.audioBackgroundUrl || item.thumbnailUrl} 
+                  alt="" 
+                  fill 
+                  className="object-cover" 
+                  unoptimized 
+                />
+              </div>
+
               {/* Central Disk visualizer */}
-              <div className="relative w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-card/60 border-2 border-primary/20 flex items-center justify-center overflow-hidden shadow-[0_0_80px_rgba(var(--primary),0.3)]">
+              <div className="relative z-10 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-card/80 border-2 border-primary/30 flex items-center justify-center overflow-hidden shadow-[0_0_80px_rgba(var(--primary),0.3)]">
                 <Image 
                   src={item.thumbnailUrl} 
                   alt="" 
                   fill 
-                  className="object-cover opacity-60 animate-[spin_10s_linear_infinite]" 
+                  className="object-cover opacity-80 animate-[spin_10s_linear_infinite]" 
                   unoptimized
                 />
                 <div className="relative z-10 flex items-end gap-1.5 h-12">
