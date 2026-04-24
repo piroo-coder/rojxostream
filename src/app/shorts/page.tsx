@@ -99,10 +99,10 @@ const ShortItem = ({
   };
 
   const sharePlatforms = [
-    { icon: Instagram, color: 'hover:text-pink-400' },
-    { icon: Youtube, color: 'hover:text-red-500' },
-    { icon: Twitter, color: 'hover:text-blue-400' },
-    { icon: Facebook, color: 'hover:text-blue-600' },
+    { name: 'Instagram', icon: Instagram, color: 'hover:text-pink-400 hover:shadow-pink-500/20' },
+    { name: 'YouTube', icon: Youtube, color: 'hover:text-red-500 hover:shadow-red-500/20' },
+    { name: 'Twitter', icon: Twitter, color: 'hover:text-blue-400 hover:shadow-blue-400/20' },
+    { name: 'Facebook', icon: Facebook, color: 'hover:text-blue-600 hover:shadow-blue-600/20' },
   ];
 
   return (
@@ -302,17 +302,29 @@ const ShortItem = ({
         <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10" />
       </div>
 
-      {/* Share Dialog - Enhanced Cuteness & Style */}
+      {/* Share Dialog - Enhanced Romantic & Professional Aesthetic */}
       <Dialog open={showShare} onOpenChange={setShowShare}>
-        <DialogContent className="bg-background/90 backdrop-blur-3xl border-white/10 text-white rounded-[2.5rem] max-w-[90vw] sm:max-w-md p-8 shadow-2xl">
-          <DialogHeader className="mb-6">
-            <DialogTitle className="font-headline font-bold text-2xl text-center tracking-tight">
-              Share the Magic ✨
+        <DialogContent className="bg-gradient-to-br from-background via-background/95 to-pink-500/10 backdrop-blur-3xl border-white/10 text-white rounded-[2rem] sm:rounded-[3rem] w-[92vw] max-w-md p-6 sm:p-10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] border overflow-hidden">
+          {/* Decorative Elements */}
+          <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
+            <Sparkles size={120} className="text-pink-500 animate-pulse" />
+          </div>
+          <div className="absolute bottom-[-20%] left-[-10%] p-8 opacity-10 pointer-events-none">
+            <Heart size={200} className="text-primary animate-pulse-slow" fill="currentColor" />
+          </div>
+
+          <DialogHeader className="mb-8 relative z-10">
+            <DialogTitle className="font-headline font-bold text-2xl sm:text-3xl text-center tracking-tight text-white drop-shadow-md flex items-center justify-center gap-3">
+              <Stars className="text-pink-400" size={20} />
+              Share the Magic
+              <Stars className="text-pink-400" size={20} />
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-8">
-            <div className="flex items-center gap-4 bg-white/5 border border-white/10 p-4 rounded-3xl group hover:border-accent/40 transition-all duration-300">
-              <div className="flex-1 truncate font-code text-xs font-medium text-white/50 group-hover:text-white/80 transition-colors">
+
+          <div className="space-y-8 relative z-10">
+            {/* Link Container - More responsive and elegant */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-white/5 border border-white/10 p-3 sm:p-4 rounded-[1.5rem] sm:rounded-[2rem] group hover:border-pink-500/30 transition-all duration-500 backdrop-blur-md">
+              <div className="flex-1 w-full truncate font-code text-[11px] sm:text-xs font-medium text-white/50 group-hover:text-white/80 transition-colors px-2">
                 {short.mediaUrl}
               </div>
               <Button 
@@ -320,29 +332,39 @@ const ShortItem = ({
                 variant="ghost" 
                 onClick={handleCopyLink}
                 className={cn(
-                  "h-12 w-12 rounded-2xl transition-all duration-500 shadow-xl",
+                  "h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl transition-all duration-500 shadow-xl flex-shrink-0",
                   copied 
-                    ? "bg-green-500/20 text-green-400 border border-green-500/30 scale-110" 
-                    : "bg-white/10 text-white/40 hover:text-white hover:bg-white/20 border border-white/5"
+                    ? "bg-green-500/20 text-green-400 border border-green-500/30 scale-105" 
+                    : "bg-white/10 text-white/40 hover:text-white hover:bg-pink-500/20 border border-white/5"
                 )}
               >
-                {copied ? <Check size={20} /> : <Copy size={20} />}
+                {copied ? <Check size={18} /> : <Copy size={18} />}
               </Button>
             </div>
             
-            <div className="grid grid-cols-4 gap-4 px-2">
+            {/* Social Grid - Optimized for all screens */}
+            <div className="grid grid-cols-4 gap-3 sm:gap-6 px-1">
               {sharePlatforms.map((platform, idx) => (
-                <div key={idx} className="flex flex-col items-center group">
+                <div key={idx} className="flex flex-col items-center gap-2 group">
                   <button className={cn(
-                    "w-14 h-14 rounded-[1.25rem] bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-500",
-                    "hover:bg-white/10 hover:scale-110 hover:-translate-y-1 active:scale-95 shadow-lg",
+                    "w-12 h-12 sm:w-16 sm:h-16 rounded-[1.25rem] sm:rounded-[1.75rem] bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-500",
+                    "hover:bg-white/10 hover:scale-110 hover:-translate-y-1 active:scale-95 shadow-xl",
                     platform.color
                   )}>
-                    <platform.icon size={24} strokeWidth={1.5} />
+                    <platform.icon size={22} strokeWidth={1.5} className="sm:size-7" />
                   </button>
+                  <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-white/30 group-hover:text-white/60 transition-colors">
+                    {platform.name}
+                  </span>
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-white/5 text-center relative z-10">
+            <p className="text-[10px] font-headline font-bold text-white/20 uppercase tracking-[0.4em]">
+              Spread Love Across the Multiverse
+            </p>
           </div>
         </DialogContent>
       </Dialog>
