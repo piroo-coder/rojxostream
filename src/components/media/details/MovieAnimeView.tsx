@@ -1,8 +1,7 @@
-
 "use client";
 
-import { MediaItem } from '@/app/types/media';
-import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages, ShieldAlert } from 'lucide-react';
+import { MediaItem, MediaCharacter } from '@/app/types/media';
+import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages, ShieldAlert, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
@@ -25,9 +24,12 @@ interface MovieAnimeViewProps {
   onClose: () => void;
 }
 
+type ViewMode = 'discovery' | 'playing' | 'analysis' | 'hindi-explanation' | 'wikipedia' | 'character-details';
+
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
-  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis' | 'hindi-explanation' | 'wikipedia'>('discovery');
+  const [mode, setMode] = useState<ViewMode>('discovery');
   const [showMangaConfirm, setShowMangaConfirm] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState<MediaCharacter | null>(null);
 
   const getEmbedSource = (url: string) => {
     if (!url) return '';
@@ -60,6 +62,11 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
       window.open(item.mangaUrl, '_blank', 'noopener,noreferrer');
     }
     setShowMangaConfirm(false);
+  };
+
+  const handleCharacterClick = (char: MediaCharacter) => {
+    setSelectedCharacter(char);
+    setMode('character-details');
   };
 
   return (
@@ -188,14 +195,18 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {item.characters.map((char, i) => (
-                          <div key={i} className="flex items-center gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 hover:border-accent/30 transition-all group/char cursor-default">
+                          <div 
+                            key={i} 
+                            onClick={() => handleCharacterClick(char)}
+                            className="flex items-center gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 hover:border-accent/50 hover:bg-white/10 transition-all group/char cursor-pointer"
+                          >
                             <Avatar className="h-14 w-14 border-2 border-white/10 group-hover/char:border-accent/50 transition-all">
                               <AvatarImage src={char.image_url} alt={char.name} className="object-cover" />
                               <AvatarFallback><Users className="text-white/20" /></AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-black text-white group-hover/char:text-accent transition-colors">{char.name}</p>
-                              <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Main Character</p>
+                              <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">{char.role || "Main Character"}</p>
                             </div>
                           </div>
                         ))}
@@ -230,6 +241,75 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                   className="text-white/30 hover:text-white uppercase tracking-[0.4em] font-black text-[10px] bg-transparent border-0 cursor-pointer"
                 >
                   Exit to Explore
+                </button>
+              </div>
+            </div>
+          ) : mode === 'character-details' && selectedCharacter ? (
+            <div className="w-full max-w-4xl space-y-12 animate-in fade-in zoom-in-95 duration-700">
+              <header className="flex flex-col items-center text-center space-y-6">
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-accent to-primary rounded-full blur opacity-40 group-hover:opacity-100 transition duration-1000" />
+                  <div className="relative w-40 h-40 sm:w-64 sm:h-64 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl">
+                    <Image 
+                      src={selectedCharacter.image_url} 
+                      alt={selectedCharacter.name}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <h2 className="text-4xl sm:text-6xl font-headline font-bold text-white tracking-tighter drop-shadow-2xl">
+                    {selectedCharacter.name}
+                  </h2>
+                  <Badge variant="secondary" className="bg-accent/20 text-accent border-accent/30 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.2em]">
+                    {selectedCharacter.role || "Soul Participant"}
+                  </Badge>
+                </div>
+                <button 
+                  onClick={() => setMode('discovery')} 
+                  className="text-white/40 hover:text-white gap-2 uppercase tracking-widest text-[10px] font-black bg-transparent border-0 flex items-center mx-auto"
+                >
+                  <ArrowLeft size={14} /> Return to Discovery
+                </button>
+              </header>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8">
+                <div className="md:col-span-2 space-y-8">
+                  <section className="p-8 sm:p-12 rounded-[3rem] bg-white/5 border border-white/10 backdrop-blur-xl space-y-6 relative overflow-hidden">
+                    <User className="absolute -top-10 -right-10 text-white/5" size={240} />
+                    <h3 className="text-[10px] font-black text-accent uppercase tracking-[0.5em] flex items-center gap-3">
+                      <div className="h-px w-8 bg-accent/30" /> Character Biography
+                    </h3>
+                    <p className="text-xl sm:text-2xl font-light text-white/90 leading-relaxed italic relative z-10">
+                      {selectedCharacter.description || "The history of this character remains hidden in the archives of the multiverse."}
+                    </p>
+                  </section>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="p-8 rounded-[2rem] bg-primary/5 border border-primary/20 space-y-4">
+                    <h4 className="text-[10px] font-black text-primary uppercase tracking-widest">Innate Traits</h4>
+                    <ul className="space-y-3 text-sm text-white/60">
+                      <li className="flex items-center gap-2"><div className="w-1 h-1 bg-primary rounded-full" /> Complex Emotions</li>
+                      <li className="flex items-center gap-2"><div className="w-1 h-1 bg-primary rounded-full" /> Narrative Critical</li>
+                      <li className="flex items-center gap-2"><div className="w-1 h-1 bg-primary rounded-full" /> Multi-Dimensional</li>
+                    </ul>
+                  </div>
+                  <div className="p-8 rounded-[2rem] bg-white/5 border border-white/10 space-y-4">
+                    <h4 className="text-[10px] font-black text-white/40 uppercase tracking-widest">Status</h4>
+                    <p className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Active in Chronicle</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-center pt-12">
+                <button 
+                  onClick={() => setMode('playing')}
+                  className="h-16 px-12 rounded-2xl bg-primary hover:bg-primary/90 font-black text-lg shadow-2xl text-white transition-all hover:scale-105 active:scale-95"
+                >
+                  Witness {selectedCharacter.name.split(' ')[0]} in Action
                 </button>
               </div>
             </div>

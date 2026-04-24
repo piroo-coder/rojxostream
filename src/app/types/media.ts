@@ -1,6 +1,8 @@
 export interface MediaCharacter {
   name: string;
   image_url: string;
+  role?: string;
+  description?: string;
 }
 
 export type MediaType = 'anime' | 'movie' | 'song' | 'short';
