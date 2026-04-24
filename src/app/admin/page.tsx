@@ -4,20 +4,18 @@
 import { useState } from 'react';
 import { useMedia } from '@/context/MediaContext';
 import { Navbar } from '@/components/layout/Navbar';
-import { generateMediaSummaryAndMoral } from '@/ai/flows/admin-generates-media-summary-and-moral';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from '@/components/ui/label';
-import { Sparkles, Plus, Loader2, Trash2, LayoutDashboard } from 'lucide-react';
+import { Plus, Trash2, LayoutDashboard } from 'lucide-react';
 import { MediaType } from '@/app/types/media';
 import { toast } from '@/hooks/use-toast';
 
 export default function AdminPage() {
   const { library, addToLibrary } = useMedia();
-  const [isGenerating, setIsGenerating] = useState(false);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -31,30 +29,6 @@ export default function AdminPage() {
     imdbRating: '',
     rottenTomatoesRating: '',
   });
-
-  const handleAiAssist = async () => {
-    if (!formData.title && !formData.description) {
-      toast({ title: "Missing Information", description: "Provide at least a title or description for AI analysis." });
-      return;
-    }
-
-    setIsGenerating(true);
-    try {
-      const result = await generateMediaSummaryAndMoral({
-        mediaContent: `${formData.title}: ${formData.description}`
-      });
-      setFormData(prev => ({
-        ...prev,
-        summary: result.summary,
-        moral: result.moral
-      }));
-      toast({ title: "AI Generation Success", description: "Summary and Moral have been populated." });
-    } catch (error) {
-      toast({ title: "AI Generation Failed", description: "Could not generate content at this time." });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,7 +76,7 @@ export default function AdminPage() {
             <Card className="border-white/5 bg-card/40 backdrop-blur-xl shadow-2xl rounded-[2.5rem] overflow-hidden">
               <CardHeader className="bg-primary/5 p-8 border-b border-white/5">
                 <CardTitle className="font-headline text-2xl">Deploy New Universe</CardTitle>
-                <CardDescription className="text-base">Fill in the dimensional coordinates. Use AI to refine the narrative.</CardDescription>
+                <CardDescription className="text-base">Fill in the dimensional coordinates manually to define the narrative.</CardDescription>
               </CardHeader>
               <CardContent className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -171,19 +145,6 @@ export default function AdminPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label className="text-xs uppercase tracking-widest font-black text-white/50">Primary Description</Label>
-                      {(formData.type === 'movie' || formData.type === 'anime') && (
-                        <Button 
-                          type="button" 
-                          variant="ghost" 
-                          size="sm" 
-                          className="text-accent hover:text-accent-foreground font-black uppercase text-[10px] tracking-widest"
-                          onClick={handleAiAssist}
-                          disabled={isGenerating}
-                        >
-                          {isGenerating ? <Loader2 className="animate-spin mr-2" size={14} /> : <Sparkles className="mr-2" size={14} />}
-                          AI Enchant
-                        </Button>
-                      )}
                     </div>
                     <Textarea 
                       placeholder="The raw narrative of this media..." 
@@ -197,11 +158,11 @@ export default function AdminPage() {
                   {(formData.type === 'movie' || formData.type === 'anime') && (
                     <div className="space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
                       <div className="space-y-3">
-                        <Label className="text-xs uppercase tracking-widest font-black text-white/50">AI Summary (Chronicle)</Label>
+                        <Label className="text-xs uppercase tracking-widest font-black text-white/50">Summary (Chronicle)</Label>
                         <Textarea 
                           value={formData.summary} 
                           onChange={e => setFormData({...formData, summary: e.target.value})}
-                          placeholder="Wait for AI assist or craft the chronicle..."
+                          placeholder="Craft the chronicle manually..."
                           rows={4}
                           className="bg-white/5 border-white/10 rounded-2xl p-4 min-h-[140px]"
                         />

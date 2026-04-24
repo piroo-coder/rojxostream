@@ -1,4 +1,9 @@
+
+/**
+ * @fileOverview AI Dev entry point (Disabled)
+ */
 import { config } from 'dotenv';
 config();
 
-import '@/ai/flows/admin-generates-media-summary-and-moral.ts';
+// Genkit flows are disabled to keep the app AI-free and hosting-ready without API keys.
+console.log('AI features are disabled.');
