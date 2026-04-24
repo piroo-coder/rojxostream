@@ -3,6 +3,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { MediaProvider } from "@/context/MediaContext";
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: 'RojXOStream - Immersive Media Experience',
@@ -26,6 +27,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </MediaProvider>
+        <Analytics />
       </body>
     </html>
   );
