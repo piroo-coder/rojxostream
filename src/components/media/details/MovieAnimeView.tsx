@@ -1,8 +1,7 @@
-
 "use client";
 
 import { MediaItem } from '@/app/types/media';
-import { X, Info, Play, Film, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft } from 'lucide-react';
+import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
@@ -16,10 +15,9 @@ interface MovieAnimeViewProps {
 }
 
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
-  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis'>('discovery');
+  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis' | 'hindi-explanation'>('discovery');
 
-  const getEmbedSource = () => {
-    let url = item.mediaUrl;
+  const getEmbedSource = (url: string) => {
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
       let id = '';
       if (url.includes('watch?v=')) id = url.split('v=')[1].split('&')[0];
@@ -42,7 +40,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
     return url;
   };
 
-  const isDirectVideo = item.mediaUrl.includes('dropbox.com') || item.mediaUrl.endsWith('.mp4');
+  const isDirectVideo = (url: string) => url.includes('dropbox.com') || url.endsWith('.mp4');
 
   return (
     <div className="fixed inset-0 z-[60] bg-background animate-in fade-in duration-500 overflow-hidden h-svh w-screen flex flex-col">
@@ -121,16 +119,29 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       </div>
                     </div>
 
-                    {item.type === 'anime' && item.criticalAnalysis && (
+                    {item.type === 'anime' && (
                       <div className="space-y-4 pt-4">
                         <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 border-b border-white/5 pb-2">Archive Insights</h4>
-                        <Button 
-                          onClick={() => setMode('analysis')} 
-                          className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(var(--primary),0.4)] transition-all font-bold text-xs gap-2"
-                        >
-                          <BrainCircuit size={16} />
-                          CRITICAL ANALYSIS
-                        </Button>
+                        <div className="flex flex-col gap-3">
+                          {item.criticalAnalysis && (
+                            <Button 
+                              onClick={() => setMode('analysis')} 
+                              className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(var(--primary),0.4)] transition-all font-bold text-xs gap-2"
+                            >
+                              <BrainCircuit size={16} />
+                              CRITICAL ANALYSIS
+                            </Button>
+                          )}
+                          {item.hindiExplanationUrl && (
+                            <Button 
+                              onClick={() => setMode('hindi-explanation')} 
+                              className="w-full h-14 rounded-2xl bg-gradient-to-r from-accent to-blue-600 hover:shadow-[0_0_20px_rgba(var(--accent),0.4)] transition-all font-bold text-xs gap-2"
+                            >
+                              <Languages size={16} />
+                              HINDI EXPLANATION
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -283,6 +294,28 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                   </Button>
                </div>
             </div>
+          ) : mode === 'hindi-explanation' && item.hindiExplanationUrl ? (
+            <div className="w-full flex flex-col items-center gap-12 animate-in zoom-in-95 duration-1000">
+               <div className="text-center space-y-4">
+                 <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/30 px-4 py-1.5 rounded-full backdrop-blur-3xl">
+                    <Languages size={14} className="text-accent" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-accent">Hindi Narrative Summary</span>
+                 </div>
+                 <h2 className="text-3xl md:text-5xl font-headline font-bold text-white drop-shadow-2xl">{item.title}</h2>
+                 <Button variant="ghost" onClick={() => setMode('discovery')} className="text-white/40 hover:text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+                    <ArrowLeft size={14} /> Back to Discovery
+                 </Button>
+               </div>
+               
+               <div className="w-full max-w-5xl aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-black">
+                 <iframe 
+                    src={getEmbedSource(item.hindiExplanationUrl)}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+               </div>
+            </div>
           ) : (
             <div className="w-full flex flex-col items-center gap-12 animate-in zoom-in-95 duration-1000">
                <div className="text-center space-y-4">
@@ -293,16 +326,16 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                </div>
                
                <div className="w-full max-w-5xl aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-black">
-                 {isDirectVideo ? (
+                 {isDirectVideo(item.mediaUrl) ? (
                    <video 
-                    src={getEmbedSource()} 
+                    src={getEmbedSource(item.mediaUrl)} 
                     className="w-full h-full" 
                     controls 
                     autoPlay 
                   />
                  ) : (
                    <iframe 
-                    src={getEmbedSource()}
+                    src={getEmbedSource(item.mediaUrl)}
                     className="w-full h-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen

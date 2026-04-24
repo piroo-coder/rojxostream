@@ -20,6 +20,7 @@ export interface MediaItem {
   thumbnailUrl: string;
   audioBackgroundUrl?: string; // Background image for audio-only mode
   mediaUrl: string;
+  hindiExplanationUrl?: string; // Link for Hindi summary/explanation
   description?: string;
   summary?: string;
   moral?: string;

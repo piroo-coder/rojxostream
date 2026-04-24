@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
@@ -20,6 +19,7 @@ const initialData: MediaItem[] = [
     title: 'Suzume',
     thumbnailUrl: 'https://wallpapers.com/images/hd/suzume-anime-movie-poster-69doru0ca93nyhwn.jpg',
     mediaUrl: 'https://www.dailymotion.com/video/x9te5vk',
+    hindiExplanationUrl: 'http://www.youtube.com/watch?v=_KFk8FVr4mk',
     creator: 'Makoto Shinkai',
     writers: 'Makoto Shinkai',
     producers: 'Koichiro Ito, Genki Kawamura',
@@ -61,6 +61,7 @@ const initialData: MediaItem[] = [
     title: 'I Want to Eat Your Pancreas',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp5496669.jpg',
     mediaUrl: 'https://app.videas.fr/embed/media/69469d2b-d21b-4636-94d2-b6613c005089/',
+    hindiExplanationUrl: 'http://www.youtube.com/watch?v=vYqD3PEFRno',
     creator: 'Shin\'ichirō Ushijima',
     writers: 'Shin\'ichirō Ushijima',
     producers: 'Keisuke Konishi',
@@ -101,6 +102,7 @@ const initialData: MediaItem[] = [
     title: 'The Garden of Words',
     thumbnailUrl: 'https://wallpaperaccess.com/full/970464.jpg',
     mediaUrl: 'https://vimeo.com/855974784?fl=pl&fe=sh',
+    hindiExplanationUrl: 'http://www.youtube.com/watch?v=q9KLjQJ_ZYc',
     creator: 'Makoto Shinkai',
     writers: 'Makoto Shinkai',
     producers: 'Noritaka Kawaguchi',
@@ -141,6 +143,7 @@ const initialData: MediaItem[] = [
     title: 'A Silent Voice',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp5165277.jpg',
     mediaUrl: 'https://www.dropbox.com/scl/fi/wo0nqqg27jckoym42v8hc/a-silent-voice.mp4?rlkey=nl6cmtjct02abzjtebje4ouy2&st=z3n2evlg&dl=0',
+    hindiExplanationUrl: 'http://www.youtube.com/watch?v=NgqzkrvdIo0',
     creator: 'Naoko Yamada',
     writers: 'Reiko Yoshida',
     producers: 'Kyoto Animation',
@@ -181,6 +184,7 @@ const initialData: MediaItem[] = [
     title: 'Your Name',
     thumbnailUrl: 'https://4kwallpapers.com/images/walls/thumbs_3t/14943.jpg',
     mediaUrl: 'https://www.youtube.com/watch?v=vAEc_DMNz00',
+    hindiExplanationUrl: 'http://www.youtube.com/watch?v=4KhPxND5x1E',
     creator: 'Makoto Shinkai',
     writers: 'Makoto Shinkai',
     producers: 'Genki Kawamura',
@@ -221,6 +225,7 @@ const initialData: MediaItem[] = [
     title: 'Weathering with You',
     thumbnailUrl: 'https://m.gettywallpapers.com/wp-content/uploads/2021/09/Weathering-With-You-Background-Images.png',
     mediaUrl: 'https://www.dailymotion.com/video/x9fne28',
+    hindiExplanationUrl: 'http://www.youtube.com/watch?v=KN1B7CN574g',
     creator: 'Makoto Shinkai',
     writers: 'Makoto Shinkai',
     producers: 'Genki Kawamura',
@@ -336,29 +341,13 @@ const initialData: MediaItem[] = [
   {
     id: 'sh1',
     type: 'short',
-    title: 'True Love Never Ends',
-    thumbnailUrl: 'https://picsum.photos/seed/truelove/400/600',
-    mediaUrl: 'https://www.youtube.com/shorts/9d1N4c5tHxQ',
-    creator: 'LoveStories'
-  },
-  {
-    id: 'sh2',
-    type: 'short',
-    title: 'Life in Perspective',
-    thumbnailUrl: 'https://picsum.photos/seed/perspective/400/600',
-    mediaUrl: 'https://www.youtube.com/shorts/wXpvE2QLgio',
-    creator: 'DailyInsights'
-  },
-  {
-    id: 'sh3',
-    type: 'short',
     title: 'Multiverse Explorer 01',
     thumbnailUrl: 'https://picsum.photos/seed/sh3/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/_wHs0P8Pk04',
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh4',
+    id: 'sh2',
     type: 'short',
     title: 'Multiverse Explorer 02',
     thumbnailUrl: 'https://picsum.photos/seed/sh4/400/600',
@@ -366,7 +355,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh5',
+    id: 'sh3',
     type: 'short',
     title: 'Multiverse Explorer 03',
     thumbnailUrl: 'https://picsum.photos/seed/sh5/400/600',
@@ -374,7 +363,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh6',
+    id: 'sh4',
     type: 'short',
     title: 'Multiverse Explorer 04',
     thumbnailUrl: 'https://picsum.photos/seed/sh6/400/600',
@@ -382,7 +371,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh7',
+    id: 'sh5',
     type: 'short',
     title: 'Multiverse Explorer 05',
     thumbnailUrl: 'https://picsum.photos/seed/sh7/400/600',
@@ -390,7 +379,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh8',
+    id: 'sh6',
     type: 'short',
     title: 'Multiverse Explorer 06',
     thumbnailUrl: 'https://picsum.photos/seed/sh8/400/600',
@@ -398,7 +387,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh9',
+    id: 'sh7',
     type: 'short',
     title: 'Multiverse Explorer 07',
     thumbnailUrl: 'https://picsum.photos/seed/sh9/400/600',
@@ -406,7 +395,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh10',
+    id: 'sh8',
     type: 'short',
     title: 'Multiverse Explorer 08',
     thumbnailUrl: 'https://picsum.photos/seed/sh10/400/600',
@@ -414,7 +403,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh11',
+    id: 'sh9',
     type: 'short',
     title: 'Multiverse Explorer 09',
     thumbnailUrl: 'https://picsum.photos/seed/sh11/400/600',
@@ -422,7 +411,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh12',
+    id: 'sh10',
     type: 'short',
     title: 'Multiverse Explorer 10',
     thumbnailUrl: 'https://picsum.photos/seed/sh12/400/600',
@@ -430,7 +419,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh13',
+    id: 'sh11',
     type: 'short',
     title: 'Multiverse Explorer 11',
     thumbnailUrl: 'https://picsum.photos/seed/sh13/400/600',
@@ -438,7 +427,7 @@ const initialData: MediaItem[] = [
     creator: 'RojXO Creator'
   },
   {
-    id: 'sh14',
+    id: 'sh12',
     type: 'short',
     title: 'Multiverse Explorer 12',
     thumbnailUrl: 'https://picsum.photos/seed/sh14/400/600',
