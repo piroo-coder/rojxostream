@@ -28,7 +28,7 @@ const initialData: MediaItem[] = [
     mangaUrl: 'https://mangamirai.com/product_collections/a573a65b-6a2a-468e-8783-3bf3fa6e395f',
     imdbRating: '7.7',
     summary: 'A 17-year-old girl named Suzume helps a mysterious young man close doors from the other side that are releasing disasters all over Japan.',
-    fullPlot: 'Suzume Iwato is a 17-year-old high school girl who lives with her aunt in a quiet town in Kyushu. One day, she meets a mysterious young man named Sota who is looking for a door. Suzume follows him into the mountains and finds an old, weathered door standing alone in the middle of some ruins. When she reaches out and opens it, she is drawn into a series of events that lead her across Japan, closing "doors" that are releasing supernatural disasters. Along the way, she confronts her own past and the trauma of the 2011 earthquake.',
+    fullPlot: 'Suzume Iwato is a 17-year-old high school girl who lives with her aunt in a quiet town in Kyushu. One day, she meets a mysterious young man named Sota who is looking for a door. Suzume follows him into the mountains and finds an old, weathered door standing alone in the middle of some ruins.',
     moral: 'Coming to terms with past trauma is essential for moving forward.',
     genre: ['Adventure', 'Fantasy'],
     characters: [
@@ -48,7 +48,7 @@ const initialData: MediaItem[] = [
       ],
       narrativeEvents: [
         { event: "The Worm and the Doors", explanation: "Disasters manifest in abandoned ruins where the 'weight' of human emotion and memory has faded, leaving a void." },
-        { event: "Daijin the Cat", explanation: "Acts as a chaotic catalyst, forcing Suzume out of her stagnant life and into a journey of active recovery." }
+        { event: "Closing the Past", explanation: "Each door closed represents Suzume acknowledging a piece of history that was abandoned, mirroring her own emotional recovery." }
       ],
       writersMessage: "Shinkai suggests that we cannot simply abandon the places of our past; we must acknowledge their history and 'close the doors' with gratitude to move forward.",
       realLifeRelation: "The film is a direct dialogue with the 2011 Great East Japan Earthquake, reflecting the collective trauma and ongoing healing of the nation.",
@@ -69,7 +69,6 @@ const initialData: MediaItem[] = [
     mangaUrl: 'https://www.scribd.com/document/672961829/I-Want-to-Eat-Your-Pancreas-Omnibus-2019-Digital-Danke-Empire-1',
     imdbRating: '8.0',
     summary: 'An aloof high school student finds the diary of his popular classmate and learns she is dying from a pancreatic disease.',
-    fullPlot: 'An unnamed high school student finds a diary in a hospital waiting room. It belongs to his popular classmate, Sakura Yamauchi, who reveals she is suffering from a terminal pancreatic illness. Despite their vastly different personalities, they form an unlikely bond as Sakura tries to live her remaining days to the fullest. The story explores the meaning of life, the impact we have on others, and the beauty of human connection.',
     moral: 'Live every day to the fullest, for life is fragile and beautiful.',
     genre: ['Drama', 'Romance'],
     characters: [
@@ -110,7 +109,6 @@ const initialData: MediaItem[] = [
     mangaUrl: 'https://mangamirai.com/product_collections/0b42561f-0f02-4606-9f49-f15c2f58d3f9',
     imdbRating: '7.4',
     summary: 'A 15-year-old boy training to be a shoemaker skips school on rainy days to sketch shoes in a Japanese garden and meets a mysterious older woman.',
-    fullPlot: 'Takao Akizuki, a 15-year-old aspiring shoemaker, skips school on rainy mornings to sketch shoe designs in Shinjuku Gyoen National Garden. There he meets Yukari Yukino, a 27-year-old woman who is also skipping work. Without knowing each other\'s names or backgrounds, they begin to meet every rainy morning, finding solace in each other\'s company as they deal with their own personal struggles and the feeling of being "stuck" in life.',
     moral: 'Sometimes, a brief connection can give us the strength to keep walking.',
     genre: ['Drama', 'Romance'],
     characters: [
@@ -126,7 +124,7 @@ const initialData: MediaItem[] = [
     criticalAnalysis: {
       characterMotivations: [
         { topic: "Takao's Shoes", explanation: "Shoemaking is a metaphor for his desire to stand on his own feet and 'walk' into a meaningful adult future." },
-        { topic: "Yukari's Stagnation", explanation: "Paralyzed by professional bullying and trauma, the garden represents a sanctuary where she doesn't have to 'walk'." }
+        { topic: "Yukari's Stagnation", explanation: "Paralyzed by professional bullying and trauma, the garden represents a sanctuary where she doesn't have to 'walk' according to society's rules." }
       ],
       narrativeEvents: [
         { event: "The Rainy Season", explanation: "The rain acts as a physical and emotional boundary that separates the two from the harsh expectations of society." },
@@ -151,7 +149,6 @@ const initialData: MediaItem[] = [
     mangaUrl: 'https://globalcomix.com/c/a-silent-voice/chapters/en/1/',
     imdbRating: '8.1',
     summary: 'A young man who bullied a deaf classmate in elementary school tries to make amends years later after meeting her again.',
-    fullPlot: 'Shoya Ishida is a high school student who is isolated and suicidal. Years earlier, in elementary school, he led the bullying of a deaf girl named Shoko Nishimiya until she transferred schools. The bullying backfired on him, and he became the outcast. Haunted by his actions, Shoya seeks out Shoko to apologize and make amends, beginning a difficult journey of self-forgiveness and learning to connect with others.',
     moral: 'Forgiveness, both for others and oneself, is the path to redemption.',
     genre: ['Drama', 'Romance'],
     characters: [
@@ -171,7 +168,7 @@ const initialData: MediaItem[] = [
       ],
       narrativeEvents: [
         { event: "The 'X' on Faces", explanation: "A powerful visual metaphor for social anxiety and the protagonist's refusal to truly 'see' the humanity in others." },
-        { event: "The Bridge Scene", explanation: "The focal point of the story where communication fails and then finally, painfully, begins to succeed." }
+        { event: "The Bridge Scene", explanation: "The focal point where communication fails and then finally, painfully, begins to succeed, showing that hearing is not listening." }
       ],
       writersMessage: "True listening goes beyond sound. Redemption is a long, active process that requires the courage to face one's past honestly.",
       realLifeRelation: "A searingly accurate portrayal of the long-term psychological impact of bullying and the struggle of living with a disability.",
@@ -192,7 +189,6 @@ const initialData: MediaItem[] = [
     mangaUrl: 'https://mangamirai.com/product_collections/6f3fc5a7-18c3-437a-94e4-de43b3929db3',
     imdbRating: '8.4',
     summary: 'Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart?',
-    fullPlot: 'Mitsuha Miyamizu, a high school girl living in the rural town of Itomori, and Taki Tachibana, a high school boy in Tokyo, suddenly begin to swap bodies periodically. They start communicating by leaving notes on their phones. As they learn about each other\'s lives and help one another, they form a deep bond. However, when the swaps stop, Taki sets out to find Mitsuha, only to discover a devastating truth about Itomori and the role of a comet that passed years ago.',
     moral: 'Destiny is real, but it requires effort and memory to fulfill.',
     genre: ['Fantasy', 'Romance'],
     characters: [
@@ -215,7 +211,7 @@ const initialData: MediaItem[] = [
         { event: "Musubi", explanation: "The central philosophy of 'twisting and tangling' threads representing time, relationships, and the flow of energy." }
       ],
       writersMessage: "True connection is a force of nature that can bridge even the widest gaps of time and space, provided we fight to remember it.",
-      realLifeRelation: "Speaks to the modern feeling of loss—loss of traditions, loss of places, and the lingering sense of searching for a lost connection.",
+      realLifeRelation: "Speaks to the modern feeling of loss— tradiciones, places, and the lingering sense of searching for a lost connection.",
       importanceToUs: "It gives hope that the people we are 'meant' to find are searching for us too, across whatever distance exists."
     }
   },
@@ -233,7 +229,6 @@ const initialData: MediaItem[] = [
     mangaUrl: 'https://kmanga.kodansha.com/title/10233/episode/337946',
     imdbRating: '7.5',
     summary: 'A high-school boy who has run away to Tokyo befriends a girl who appears to be able to manipulate the weather.',
-    fullPlot: 'Hodaka Morishima, a high school freshman who runs away from his remote island home to Tokyo, meets Hina Amano, a girl with the mysterious ability to stop the rain and clear the sky. They start a business as "Sunshine Girls," bringing clear weather for special events in a city plagued by endless rain. But Hina\'s power comes with a heavy price, forcing Hodaka to choose between the safety of the world and the girl he loves.',
     moral: 'Sometimes the world\'s balance matters less than the person you love.',
     genre: ['Fantasy', 'Drama'],
     characters: [
@@ -273,7 +268,6 @@ const initialData: MediaItem[] = [
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Chhichhore',
     imdbRating: '8.3',
     summary: 'A group of college friends reunite after a tragic incident involving one of their children, recalling their days as "losers".',
-    fullPlot: 'Anni and Maya are a divorced couple whose son attempts suicide after failing the entrance exams. To help him recover, Anni gathers his old college friends—a group once known as "The Losers." They recount their experiences at an engineering college, their participation in an inter-hostel sports championship, and how they learned that the effort put into a journey is more important than the final result.',
     moral: 'Success is not the destination; the effort we put in is what truly counts.',
     genre: ['Comedy', 'Drama']
   },
@@ -290,7 +284,6 @@ const initialData: MediaItem[] = [
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Half_Girlfriend_(film)',
     imdbRating: '4.5',
     summary: 'A young man from a rural area falls in love with a wealthy girl at college, leading to a complex relationship.',
-    fullPlot: 'Madhav Jha, a boy from Bihar with poor English skills, gets into a prestigious college in Delhi on a sports quota. He falls in love with Riya Somani, an affluent girl from the city. Riya, hesitant to commit to a full relationship, suggests she be his "Half Girlfriend." The story follows their tumultuous relationship across different cities and years, exploring Madhav\'s unwavering persistence.',
     moral: 'Persistence in love can bridge any gap.',
     genre: ['Romance', 'Drama']
   },
@@ -307,7 +300,6 @@ const initialData: MediaItem[] = [
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Oh_My_God!',
     imdbRating: '8.1',
     summary: 'A shopkeeper sues God after his shop is destroyed in an earthquake, leading to a trial that challenges religious norms.',
-    fullPlot: 'Kanji Lalji Mehta is an atheist who runs an antique shop. When his shop is destroyed by a minor earthquake—the only shop damaged in the area—the insurance company denies his claim, calling it an "Act of God." Kanji decides to sue God in court, challenging self-proclaimed godmen and religious institutions, eventually meeting Lord Krishna himself in a modern avatar.',
     moral: 'True spirituality is found in humanity, not just in rituals.',
     genre: ['Comedy', 'Fantasy']
   },
@@ -319,7 +311,6 @@ const initialData: MediaItem[] = [
     audioBackgroundUrl: 'https://images5.alphacoders.com/131/thumb-1920-1311599.jpg',
     mediaUrl: 'https://www.youtube.com/watch?v=m3w1mUXtCj0',
     creator: 'Radwimps',
-    description: 'The hauntingly beautiful main theme from the movie Suzume.',
     genre: ['J-Pop', 'Soundtrack']
   },
   {
@@ -330,7 +321,6 @@ const initialData: MediaItem[] = [
     audioBackgroundUrl: 'https://wallpapercat.com/w/full/0/2/d/874883-1920x1080-desktop-1080p-a-silent-voice-anime-wallpaper-photo.jpg',
     mediaUrl: 'https://www.youtube.com/watch?v=jQdDpRTVe9k',
     creator: 'Arijit Singh',
-    description: 'A soulful ballad about eternal love from the movie Half Girlfriend.',
     genre: ['Bollywood', 'Romantic']
   },
   {
@@ -341,7 +331,6 @@ const initialData: MediaItem[] = [
     audioBackgroundUrl: 'https://wallpaperaccess.com/full/970464.jpg',
     mediaUrl: 'https://www.youtube.com/watch?v=NeXbmEnpSz0',
     creator: 'Bombay Jayashri',
-    description: 'A timeless romantic classic from Rehnaa Hai Terre Dil Mein.',
     genre: ['Bollywood', 'Romantic']
   },
   {
@@ -350,8 +339,7 @@ const initialData: MediaItem[] = [
     title: 'True Love Never Ends',
     thumbnailUrl: 'https://picsum.photos/seed/truelove/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/9d1N4c5tHxQ',
-    creator: 'LoveStories',
-    description: 'A short visual poem about the enduring nature of love.'
+    creator: 'LoveStories'
   },
   {
     id: 'sh2',
@@ -359,8 +347,7 @@ const initialData: MediaItem[] = [
     title: 'Life in Perspective',
     thumbnailUrl: 'https://picsum.photos/seed/perspective/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/wXpvE2QLgio',
-    creator: 'DailyInsights',
-    description: 'A profound look at life through a different lens.'
+    creator: 'DailyInsights'
   }
 ];
 

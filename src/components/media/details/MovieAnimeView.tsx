@@ -18,27 +18,34 @@ interface MovieAnimeViewProps {
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
   const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis'>('discovery');
 
-  const isYoutube = item.mediaUrl.includes('youtube.com') || item.mediaUrl.includes('youtu.be');
-  
   const getEmbedSource = () => {
-    if (isYoutube) {
+    let url = item.mediaUrl;
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
       let id = '';
-      if (item.mediaUrl.includes('watch?v=')) id = item.mediaUrl.split('v=')[1].split('&')[0];
-      else if (item.mediaUrl.includes('youtu.be/')) id = item.mediaUrl.split('be/')[1].split('?')[0];
+      if (url.includes('watch?v=')) id = url.split('v=')[1].split('&')[0];
+      else if (url.includes('youtu.be/')) id = url.split('be/')[1].split('?')[0];
       return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
     }
-    return item.mediaUrl;
+    if (url.includes('dailymotion.com')) {
+      const parts = url.split('/');
+      const id = parts[parts.length - 1].split('?')[0];
+      return `https://www.dailymotion.com/embed/video/${id}?autoplay=1`;
+    }
+    if (url.includes('vimeo.com')) {
+      const parts = url.split('/');
+      const id = parts[parts.length - 1].split('?')[0];
+      return `https://player.vimeo.com/video/${id}?autoplay=1`;
+    }
+    if (url.includes('dropbox.com')) {
+      return url.replace('dl=0', 'raw=1');
+    }
+    return url;
   };
 
-  const handleShowAnalysis = () => {
-    if (item.criticalAnalysis) {
-      setMode('analysis');
-    }
-  };
+  const isDirectVideo = item.mediaUrl.includes('dropbox.com') || item.mediaUrl.endsWith('.mp4');
 
   return (
     <div className="fixed inset-0 z-[60] bg-background animate-in fade-in duration-500 overflow-hidden h-svh w-screen flex flex-col">
-      {/* PROFESSIONAL DARK ANIMATED BACKGROUND */}
       <div className="absolute inset-0 z-0 h-full w-full overflow-hidden pointer-events-none">
         <Image 
           src={item.thumbnailUrl} 
@@ -48,7 +55,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
           unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
-        {/* Ambient Dark Neon Pulse */}
         <div className="absolute top-[20%] left-[10%] w-[40rem] h-[40rem] bg-primary/5 rounded-full blur-[120px] animate-pulse-slow" />
         <div className="absolute bottom-[20%] right-[10%] w-[50rem] h-[50rem] bg-accent/5 rounded-full blur-[150px] animate-pulse-slow delay-1000" />
       </div>
@@ -67,7 +73,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
           
           {mode === 'discovery' ? (
             <div className="w-full space-y-16 animate-in slide-in-from-bottom-8 duration-700">
-              {/* Header section with professional typography and neon accent */}
               <div className="text-center space-y-6">
                 <div className="inline-flex items-center gap-3 bg-black/40 border border-primary/30 px-6 py-2 rounded-full backdrop-blur-3xl shadow-[0_0_20px_rgba(var(--primary),0.2)]">
                   <Sparkles size={14} className="text-primary animate-pulse" />
@@ -79,9 +84,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                 <p className="text-xl md:text-2xl text-accent font-bold tracking-tight italic">{item.creator}</p>
               </div>
 
-              {/* Main Content Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                {/* Left: Info sidebar */}
                 <div className="lg:col-span-4 space-y-8">
                   <div className="p-8 rounded-[2.5rem] bg-card/60 border border-white/5 backdrop-blur-3xl shadow-2xl space-y-8">
                     <div className="space-y-4">
@@ -122,7 +125,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       <div className="space-y-4 pt-4">
                         <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 border-b border-white/5 pb-2">Archive Insights</h4>
                         <Button 
-                          onClick={handleShowAnalysis} 
+                          onClick={() => setMode('analysis')} 
                           className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(var(--primary),0.4)] transition-all font-bold text-xs gap-2"
                         >
                           <BrainCircuit size={16} />
@@ -133,7 +136,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                   </div>
                 </div>
 
-                {/* Right: Narrative & Characters */}
                 <div className="lg:col-span-8 space-y-12">
                   <div className="space-y-6">
                     <h3 className="text-xs font-black uppercase tracking-[0.4em] text-primary flex items-center gap-4">
@@ -180,7 +182,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                 </div>
               </div>
 
-              {/* Enter Action */}
               <div className="flex flex-col items-center gap-8 pt-12">
                 <Button 
                   size="lg" 
@@ -217,7 +218,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                </header>
 
                <div className="space-y-12">
-                 {/* Character Motivations */}
                  <section className="space-y-6">
                     <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-4">
                       <div className="h-px w-12 bg-primary/30" /> Character Psychology
@@ -232,7 +232,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     </div>
                  </section>
 
-                 {/* Narrative Events */}
                  <section className="space-y-6">
                     <h3 className="text-xs font-black uppercase tracking-[0.3em] text-accent flex items-center gap-4">
                       <div className="h-px w-12 bg-accent/30" /> Narrative Significance
@@ -247,7 +246,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     </div>
                  </section>
 
-                 {/* Writer's Message */}
                  <section className="p-10 rounded-[3rem] bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20 relative overflow-hidden">
                     <Quote className="absolute -top-4 -left-4 text-white/5" size={160} />
                     <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.5em] mb-6 relative z-10">The Writer's Conveyance</h3>
@@ -256,7 +254,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     </p>
                  </section>
 
-                 {/* Real Life Relation */}
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <section className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 space-y-4">
                       <h3 className="text-[10px] font-black text-accent uppercase tracking-widest flex items-center gap-2">
@@ -296,17 +293,20 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                </div>
                
                <div className="w-full max-w-5xl aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] bg-black">
-                 {isYoutube ? (
+                 {isDirectVideo ? (
+                   <video 
+                    src={getEmbedSource()} 
+                    className="w-full h-full" 
+                    controls 
+                    autoPlay 
+                  />
+                 ) : (
                    <iframe 
                     src={getEmbedSource()}
                     className="w-full h-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
-                 ) : (
-                   <div className="flex items-center justify-center h-full text-white/20 font-black uppercase tracking-widest">
-                     External Media Link Found
-                   </div>
                  )}
                </div>
             </div>
