@@ -56,8 +56,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
 
   const handleOpenManga = () => {
     if (item.mangaUrl) {
-      window.open(item.mangaUrl, '_blank');
-      setShowMangaConfirm(false);
+      window.open(item.mangaUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -395,18 +394,18 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
             </div>
             <AlertDialogTitle className="text-center font-headline text-2xl">Permission Required</AlertDialogTitle>
             <AlertDialogDescription className="text-center text-white/60">
-              You are about to teleport to an external library to read the manga for <strong>{item.title}</strong>. This content will open in a new tab. Do you wish to proceed?
+              Do you want to open manga in new tab?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="sm:justify-center gap-4 mt-6">
-            <AlertDialogCancel className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white min-w-[100px]">
-              Stay Here
+            <AlertDialogCancel className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white min-w-[120px]">
+              No dont
             </AlertDialogCancel>
             <AlertDialogAction 
               onClick={handleOpenManga}
-              className="rounded-xl bg-accent hover:bg-accent/90 text-background font-bold min-w-[100px]"
+              className="rounded-xl bg-accent hover:bg-accent/90 text-background font-bold min-w-[120px]"
             >
-              Continue
+              Yes open
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
