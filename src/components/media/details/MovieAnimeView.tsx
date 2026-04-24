@@ -55,7 +55,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
 
   const isDirectVideo = (url: string) => url?.includes('dropbox.com') || url?.endsWith('.mp4');
 
-  const handleOpenMangaPortal = () => {
+  const handleOpenManga = () => {
     if (item.mangaUrl) {
       window.open(item.mangaUrl, '_blank', 'noopener,noreferrer');
     }
@@ -132,10 +132,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                         )}
                         {item.type === 'anime' && item.mangaUrl && (
                           <Button 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setShowMangaConfirm(true);
-                            }} 
+                            onClick={() => setShowMangaConfirm(true)} 
                             variant="outline" 
                             className="justify-start gap-3 h-12 rounded-2xl bg-white/5 border-white/10 hover:border-accent/50 transition-all group"
                           >
@@ -395,7 +392,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
 
       {/* Manga Permission Alert Dialog */}
       <AlertDialog open={showMangaConfirm} onOpenChange={setShowMangaConfirm}>
-        <AlertDialogContent className="bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2rem]">
+        <AlertDialogContent className="bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2rem] z-[100]">
           <AlertDialogHeader>
             <div className="mx-auto w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center mb-4 border border-accent/30">
               <ShieldAlert className="text-accent" size={24} />
@@ -407,19 +404,12 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
           </AlertDialogHeader>
           <AlertDialogFooter className="sm:justify-center gap-4 mt-6">
             <AlertDialogCancel 
-              onClick={(e) => {
-                e.preventDefault();
-                setShowMangaConfirm(false);
-              }} 
               className="rounded-xl border-white/10 bg-white/5 hover:bg-white/10 text-white min-w-[120px]"
             >
               No dont
             </AlertDialogCancel>
             <AlertDialogAction 
-              onClick={(e) => {
-                e.preventDefault();
-                handleOpenMangaPortal();
-              }}
+              onClick={handleOpenManga}
               className="rounded-xl bg-accent hover:bg-accent/90 text-background font-bold min-w-[120px]"
             >
               Yes open
