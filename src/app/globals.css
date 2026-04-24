@@ -175,6 +175,7 @@
 
 .short-item {
   scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 /* Responsive Viewport Height Fix */

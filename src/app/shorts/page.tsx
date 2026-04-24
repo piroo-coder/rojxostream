@@ -107,7 +107,7 @@ const ShortItem = ({
 
   return (
     <div 
-      className="short-item relative flex items-center justify-center bg-black w-full h-[calc(100svh-64px)] md:h-[calc(100svh-80px)] overflow-hidden"
+      className="short-item relative flex items-center justify-center bg-black w-full h-full overflow-hidden"
       data-short-id={short.id}
     >
       {/* PROFOUND AMBIENT GLOW SYSTEM */}
@@ -458,7 +458,7 @@ function ShortsPageContent() {
           shorts.map((short) => (
             <div 
               key={short.id} 
-              className="w-full h-full snap-start"
+              className="w-full h-full snap-start snap-always"
             >
               <ShortItem 
                 short={short} 
