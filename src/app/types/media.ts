@@ -11,6 +11,12 @@ export interface MediaItem {
   summary?: string;
   moral?: string;
   creator?: string; // Movie: Director, Song: Singer, Short: Channel
+  writers?: string;
+  producers?: string;
+  theme?: string;
+  wikipediaUrl?: string;
+  mangaUrl?: string;
+  fullPlot?: string;
   characters?: string[];
   imdbRating?: string;
   rottenTomatoesRating?: string;
