@@ -65,7 +65,7 @@ const initialData: MediaItem[] = [
       },
       {
         name: "Sakura Yamauchi",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIgIc88ZiIvCSPRK2Y__7CRgve5MQXLoqhJpJSuuzINoPax28tF6xohYYqxTVSTbmZf9R_-cXEQCgicaRBCzsOUAL5AIQX3Py-kKenxQL&s=10"
       }
     ]
   },
@@ -89,7 +89,7 @@ const initialData: MediaItem[] = [
     characters: [
       {
         name: "Takao Akizuki",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8H2rO-jV9Q093F5v1lD8h-B7Y-p6D7Y-p6Q&s"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvSfJY6gPhuAoD_krTYcVI3TFL4PWNpooNgr3PCt0JB5h3H29PEmHRcQTtzmrNiPrs4uNoOUsGyWr5S83wbPn9ViW4-D6XsBmGo7FQqYpH&s=10"
       },
       {
         name: "Yukari Yukino",
@@ -145,7 +145,7 @@ const initialData: MediaItem[] = [
     characters: [
       {
         name: "Taki Tachibana",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4CkuUsXgYLlB420EJvf8b9pZSE-fbob-2kjRSO97t17M8LvlqBYfZPJWR-Ig1_o0yNqlSNDb3iQIcY9BXGO-KyoL7DjfT7pdu8u_kCOCl&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8JKCdjiJ0iXhi2WC7yOrE5q8yCyA66HZxH9QcwQNdK7snLkmoNU7iy4OzkiOVkg5HXtugGgX2jvrO8Ye30-B8-H419GBJojRP_ZvTKI2u&s=10"
       },
       {
         name: "Mitsuha Miyamizu",
@@ -177,7 +177,7 @@ const initialData: MediaItem[] = [
       },
       {
         name: "Hina Amano",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS67Vz5hpqaOf-r51CBaKFkX-PxGrUZ49VfUTBFrk631sMAPbCTXwWw6_nm34gSnH3I0vlcRsEYE3QqfGQ7941LZBQaw6nXo7WJEeiMkL5ouQ&s=10"
       }
     ]
   },
@@ -225,7 +225,7 @@ const initialData: MediaItem[] = [
     writers: 'Umesh Shukla, Bhavesh Mandalia',
     producers: 'Akshay Kumar, Paresh Rawal',
     theme: 'Religion, Skepticism, Social Commentary',
-    wikipediaUrl: 'https://en.wikipedia.org/wiki/OMG_%E2%80%93_Oh_My_God!',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Oh_My_God!',
     imdbRating: '8.1',
     summary: 'A shopkeeper sues God after his shop is destroyed in an earthquake, leading to a trial that challenges religious norms.',
     fullPlot: 'Kanji Lalji Mehta is an atheist who runs an antique shop. When his shop is destroyed by a minor earthquake—the only shop damaged in the area—the insurance company denies his claim, calling it an "Act of God." Kanji decides to sue God in court, challenging self-proclaimed godmen and religious institutions, eventually meeting Lord Krishna himself in a modern avatar.',
