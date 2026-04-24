@@ -1,3 +1,8 @@
+export interface MediaCharacter {
+  name: string;
+  image_url: string;
+}
+
 export type MediaType = 'anime' | 'movie' | 'song' | 'short';
 
 export interface MediaItem {
@@ -17,7 +22,7 @@ export interface MediaItem {
   wikipediaUrl?: string;
   mangaUrl?: string;
   fullPlot?: string;
-  characters?: string[];
+  characters?: MediaCharacter[];
   imdbRating?: string;
   rottenTomatoesRating?: string;
   youtubeViews?: string;

@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 interface MovieAnimeViewProps {
   item: MediaItem;
@@ -124,15 +125,21 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                   </div>
 
                   {item.characters && item.characters.length > 0 && (
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                       <h3 className="text-xs font-black uppercase tracking-[0.4em] text-accent flex items-center gap-4">
                         <div className="h-px w-12 bg-accent/30" /> Manifested Souls
                       </h3>
-                      <div className="flex flex-wrap gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {item.characters.map((char, i) => (
-                          <div key={i} className="px-6 py-2 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-white hover:border-accent/40 transition-all cursor-default flex items-center gap-2">
-                            <Users size={12} className="text-accent/50" />
-                            {char}
+                          <div key={i} className="flex items-center gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 hover:border-accent/30 transition-all group/char cursor-default">
+                            <Avatar className="h-14 w-14 border-2 border-white/10 group-hover/char:border-accent/50 transition-all">
+                              <AvatarImage src={char.image_url} alt={char.name} className="object-cover" />
+                              <AvatarFallback><Users className="text-white/20" /></AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-black text-white group-hover/char:text-accent transition-colors">{char.name}</p>
+                              <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Main Character</p>
+                            </div>
                           </div>
                         ))}
                       </div>

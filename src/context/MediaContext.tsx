@@ -29,7 +29,17 @@ const initialData: MediaItem[] = [
     summary: 'A 17-year-old girl named Suzume helps a mysterious young man close doors from the other side that are releasing disasters all over Japan.',
     fullPlot: 'Suzume Iwato is a 17-year-old high school girl who lives with her aunt in a quiet town in Kyushu. One day, she meets a mysterious young man named Sota who is looking for a door. Suzume follows him into the mountains and finds an old, weathered door standing alone in the middle of some ruins. When she reaches out and opens it, she is drawn into a series of events that lead her across Japan, closing "doors" that are releasing supernatural disasters. Along the way, she confronts her own past and the trauma of the 2011 earthquake.',
     moral: 'Coming to terms with past trauma is essential for moving forward.',
-    genre: ['Adventure', 'Fantasy']
+    genre: ['Adventure', 'Fantasy'],
+    characters: [
+      {
+        name: "Suzume Iwato",
+        image_url: "https://cdn.anisearch.com/images/character/cover/121/121822_400.webp"
+      },
+      {
+        name: "Souta Munakata",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkJb7HiZNRg5og-WOFj1kdoacn2WZuN9Z3qseWZxbuyjVpbhrLIjSPSOi2eZWn7sLb2jck7L4dwLTC-1BOz73C_1CIOOzYah-rbnomjLigUg&s=10"
+      }
+    ]
   },
   {
     id: 'a2',
@@ -47,7 +57,17 @@ const initialData: MediaItem[] = [
     summary: 'An aloof high school student finds the diary of his popular classmate and learns she is dying from a pancreatic disease.',
     fullPlot: 'An unnamed high school student finds a diary in a hospital waiting room. It belongs to his popular classmate, Sakura Yamauchi, who reveals she is suffering from a terminal pancreatic illness. Despite their vastly different personalities, they form an unlikely bond as Sakura tries to live her remaining days to the fullest. The story explores the meaning of life, the impact we have on others, and the beauty of human connection.',
     moral: 'Live every day to the fullest, for life is fragile and beautiful.',
-    genre: ['Drama', 'Romance']
+    genre: ['Drama', 'Romance'],
+    characters: [
+      {
+        name: "Haruki Shiga",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjUzF9ookHnecPPfp3i10_dZWsynMm06-5CjCeJ-PFiA2GLtiNWASabYTkJ8WwV6JAHZ4pwqzDwPCZ1mGaHXx9w8rqlSXmVLRfdByV6PVZ&s=10"
+      },
+      {
+        name: "Sakura Yamauchi",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s"
+      }
+    ]
   },
   {
     id: 'a3',
@@ -65,7 +85,17 @@ const initialData: MediaItem[] = [
     summary: 'A 15-year-old boy training to be a shoemaker skips school on rainy days to sketch shoes in a Japanese garden and meets a mysterious older woman.',
     fullPlot: 'Takao Akizuki, a 15-year-old aspiring shoemaker, skips school on rainy mornings to sketch shoe designs in Shinjuku Gyoen National Garden. There he meets Yukari Yukino, a 27-year-old woman who is also skipping work. Without knowing each other\'s names or backgrounds, they begin to meet every rainy morning, finding solace in each other\'s company as they deal with their own personal struggles and the feeling of being "stuck" in life.',
     moral: 'Sometimes, a brief connection can give us the strength to keep walking.',
-    genre: ['Drama', 'Romance']
+    genre: ['Drama', 'Romance'],
+    characters: [
+      {
+        name: "Takao Akizuki",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8H2rO-jV9Q093F5v1lD8h-B7Y-p6D7Y-p6Q&s"
+      },
+      {
+        name: "Yukari Yukino",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIbS1zOmnpnPkUJlslhgA1KogTnAADPCkNfw&s"
+      }
+    ]
   },
   {
     id: 'a4',
@@ -83,7 +113,17 @@ const initialData: MediaItem[] = [
     summary: 'A young man who bullied a deaf classmate in elementary school tries to make amends years later after meeting her again.',
     fullPlot: 'Shoya Ishida is a high school student who is isolated and suicidal. Years earlier, in elementary school, he led the bullying of a deaf girl named Shoko Nishimiya until she transferred schools. The bullying backfired on him, and he became the outcast. Haunted by his actions, Shoya seeks out Shoko to apologize and make amends, beginning a difficult journey of self-forgiveness and learning to connect with others.',
     moral: 'Forgiveness, both for others and oneself, is the path to redemption.',
-    genre: ['Drama', 'Romance']
+    genre: ['Drama', 'Romance'],
+    characters: [
+      {
+        name: "Shoya Ishida",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd9IugSfXH5tvuUP0rL3S2R3-9eniMsVr-Ka3CuYMLn1_BYL4OY34C0jAjMRBYum9uNqlK47dF5dRQA2Zv-idqHvjmwzZAF60iFjtgr4yT8g&s=10"
+      },
+      {
+        name: "Shoko Nishimiya",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTduf3cc61Q1zWeRhXeUVnxa4zU2sTpLegMvXxoIPUYTrzieoSdiZEEQUQdlkovNJTElGQXkd_hIXxGCVsKf_NgliRTOsaQbfhZEVSeVq9y&s=10"
+      }
+    ]
   },
   {
     id: 'a5',
@@ -101,7 +141,17 @@ const initialData: MediaItem[] = [
     summary: 'Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart?',
     fullPlot: 'Mitsuha Miyamizu, a high school girl living in the rural town of Itomori, and Taki Tachibana, a high school boy in Tokyo, suddenly begin to swap bodies periodically. They start communicating by leaving notes on their phones. As they learn about each other\'s lives and help one another, they form a deep bond. However, when the swaps stop, Taki sets out to find Mitsuha, only to discover a devastating truth about Itomori and the role of a comet that passed years ago.',
     moral: 'Destiny is real, but it requires effort and memory to fulfill.',
-    genre: ['Fantasy', 'Romance']
+    genre: ['Fantasy', 'Romance'],
+    characters: [
+      {
+        name: "Taki Tachibana",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4CkuUsXgYLlB420EJvf8b9pZSE-fbob-2kjRSO97t17M8LvlqBYfZPJWR-Ig1_o0yNqlSNDb3iQIcY9BXGO-KyoL7DjfT7pdu8u_kCOCl&s=10"
+      },
+      {
+        name: "Mitsuha Miyamizu",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4CkuUsXgYLlB420EJvf8b9pZSE-fbob-2kjRSO97t17M8LvlqBYfZPJWR-Ig1_o0yNqlSNDb3iQIcY9BXGO-KyoL7DjfT7pdu8u_kCOCl&s=10"
+      }
+    ]
   },
   {
     id: 'a6',
@@ -119,7 +169,17 @@ const initialData: MediaItem[] = [
     summary: 'A high-school boy who has run away to Tokyo befriends a girl who appears to be able to manipulate the weather.',
     fullPlot: 'Hodaka Morishima, a high school freshman who runs away from his remote island home to Tokyo, meets Hina Amano, a girl with the mysterious ability to stop the rain and clear the sky. They start a business as "Sunshine Girls," bringing clear weather for special events in a city plagued by endless rain. But Hina\'s power comes with a heavy price, forcing Hodaka to choose between the safety of the world and the girl he loves.',
     moral: 'Sometimes the world\'s balance matters less than the person you love.',
-    genre: ['Fantasy', 'Drama']
+    genre: ['Fantasy', 'Drama'],
+    characters: [
+      {
+        name: "Hodaka Morishima",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkL8svqXCyX9peFJkQgPmBWQeRVNIvOqd0iruYOU8o_OPFwLlDlI_TV2zYitbFrRlMkyjHIpYQGFRfC-Y4vFFq4eABGioqbW4FA4c2HguD7g&s=10"
+      },
+      {
+        name: "Hina Amano",
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s"
+      }
+    ]
   },
   {
     id: 'm1',
