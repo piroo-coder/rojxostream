@@ -5,6 +5,14 @@ export interface MediaCharacter {
 
 export type MediaType = 'anime' | 'movie' | 'song' | 'short';
 
+export interface CriticalAnalysis {
+  characterMotivations: { topic: string; explanation: string }[];
+  narrativeEvents: { event: string; explanation: string }[];
+  writersMessage: string;
+  realLifeRelation: string;
+  importanceToUs: string;
+}
+
 export interface MediaItem {
   id: string;
   type: MediaType;
@@ -23,6 +31,7 @@ export interface MediaItem {
   mangaUrl?: string;
   fullPlot?: string;
   characters?: MediaCharacter[];
+  criticalAnalysis?: CriticalAnalysis;
   imdbRating?: string;
   rottenTomatoesRating?: string;
   youtubeViews?: string;

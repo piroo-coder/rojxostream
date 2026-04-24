@@ -1,13 +1,15 @@
 "use client";
 
 import { MediaItem } from '@/app/types/media';
-import { X, Info, Play, Film, BookOpen, Sparkles, Users } from 'lucide-react';
+import { X, Info, Play, Film, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { generateCriticalAnalysis } from '@/ai/flows/generate-critical-analysis';
+import { toast } from '@/hooks/use-toast';
 
 interface MovieAnimeViewProps {
   item: MediaItem;
@@ -15,7 +17,9 @@ interface MovieAnimeViewProps {
 }
 
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
-  const [mode, setMode] = useState<'discovery' | 'playing'>('discovery');
+  const [mode, setMode] = useState<'discovery' | 'playing' | 'analysis'>('discovery');
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
+  const [analysis, setAnalysis] = useState(item.criticalAnalysis);
 
   const isYoutube = item.mediaUrl.includes('youtube.com') || item.mediaUrl.includes('youtu.be');
   
@@ -27,6 +31,31 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
       return `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
     }
     return item.mediaUrl;
+  };
+
+  const handleFetchAnalysis = async () => {
+    if (analysis) {
+      setMode('analysis');
+      return;
+    }
+
+    setLoadingAnalysis(true);
+    try {
+      const result = await generateCriticalAnalysis({
+        title: item.title,
+        plot: item.fullPlot || item.summary || item.description || ''
+      });
+      setAnalysis(result);
+      setMode('analysis');
+    } catch (error) {
+      toast({
+        title: "Insight Disrupted",
+        description: "The multiverse archive is currently unstable. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingAnalysis(false);
+    }
   };
 
   return (
@@ -110,6 +139,20 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                         )}
                       </div>
                     </div>
+
+                    {item.type === 'anime' && (
+                      <div className="space-y-4 pt-4">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 border-b border-white/5 pb-2">Intellectual Archive</h4>
+                        <Button 
+                          onClick={handleFetchAnalysis} 
+                          disabled={loadingAnalysis}
+                          className="w-full h-14 rounded-2xl bg-gradient-to-r from-primary to-purple-600 hover:shadow-[0_0_20px_rgba(var(--primary),0.4)] transition-all font-bold text-xs gap-2"
+                        >
+                          {loadingAnalysis ? <Loader2 className="animate-spin" size={16} /> : <BrainCircuit size={16} />}
+                          CRITICAL ANALYSIS
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -178,6 +221,93 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                   Exit to Explore
                 </Button>
               </div>
+            </div>
+          ) : mode === 'analysis' && analysis ? (
+            <div className="w-full max-w-4xl space-y-16 animate-in fade-in zoom-in-95 duration-700">
+               <header className="text-center space-y-4">
+                 <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/30 px-4 py-1.5 rounded-full backdrop-blur-3xl">
+                    <BrainCircuit size={14} className="text-purple-400" />
+                    <span className="text-[10px] font-black uppercase tracking-widest text-purple-200">Critical Analysis</span>
+                 </div>
+                 <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">{item.title}</h2>
+                 <Button 
+                  variant="ghost" 
+                  onClick={() => setMode('discovery')} 
+                  className="text-white/40 hover:text-white gap-2 uppercase tracking-widest text-[10px] font-black"
+                >
+                   <ArrowLeft size={14} /> Return to Discovery
+                 </Button>
+               </header>
+
+               <div className="space-y-12">
+                 {/* Character Motivations */}
+                 <section className="space-y-6">
+                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-primary flex items-center gap-4">
+                      <div className="h-px w-12 bg-primary/30" /> Character Psychology
+                    </h3>
+                    <div className="grid gap-4">
+                      {analysis.characterMotivations.map((m, i) => (
+                        <div key={i} className="p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-primary/20 transition-all space-y-2">
+                          <p className="text-sm font-black text-primary uppercase tracking-widest">{m.topic}</p>
+                          <p className="text-white/70 leading-relaxed italic">{m.explanation}</p>
+                        </div>
+                      ))}
+                    </div>
+                 </section>
+
+                 {/* Narrative Events */}
+                 <section className="space-y-6">
+                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-accent flex items-center gap-4">
+                      <div className="h-px w-12 bg-accent/30" /> Narrative Significance
+                    </h3>
+                    <div className="grid gap-4">
+                      {analysis.narrativeEvents.map((e, i) => (
+                        <div key={i} className="p-6 rounded-3xl bg-white/5 border border-white/5 hover:border-accent/20 transition-all space-y-2">
+                          <p className="text-sm font-black text-accent uppercase tracking-widest">{e.event}</p>
+                          <p className="text-white/70 leading-relaxed italic">{e.explanation}</p>
+                        </div>
+                      ))}
+                    </div>
+                 </section>
+
+                 {/* Writer's Message */}
+                 <section className="p-10 rounded-[3rem] bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20 relative overflow-hidden">
+                    <Quote className="absolute -top-4 -left-4 text-white/5" size={160} />
+                    <h3 className="text-[10px] font-black text-primary uppercase tracking-[0.5em] mb-6 relative z-10">The Writer's Conveyance</h3>
+                    <p className="text-2xl md:text-3xl font-headline font-bold text-white leading-tight relative z-10">
+                      {analysis.writersMessage}
+                    </p>
+                 </section>
+
+                 {/* Real Life Relation */}
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <section className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 space-y-4">
+                      <h3 className="text-[10px] font-black text-accent uppercase tracking-widest flex items-center gap-2">
+                        <Heart size={14} /> Real World Resonance
+                      </h3>
+                      <p className="text-sm text-white/60 leading-relaxed">
+                        {analysis.realLifeRelation}
+                      </p>
+                    </section>
+                    <section className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 space-y-4">
+                      <h3 className="text-[10px] font-black text-pink-400 uppercase tracking-widest flex items-center gap-2">
+                        <Sparkles size={14} /> Human Importance
+                      </h3>
+                      <p className="text-sm text-white/60 leading-relaxed">
+                        {analysis.importanceToUs}
+                      </p>
+                    </section>
+                 </div>
+               </div>
+
+               <div className="flex justify-center pt-8">
+                  <Button 
+                    onClick={() => setMode('playing')}
+                    className="h-16 px-12 rounded-2xl bg-primary hover:bg-primary/90 font-black text-lg shadow-2xl"
+                  >
+                    Watch Now
+                  </Button>
+               </div>
             </div>
           ) : (
             <div className="w-full flex flex-col items-center gap-12 animate-in zoom-in-95 duration-1000">
