@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -13,7 +12,6 @@ import {
   Sparkles, 
   Stars, 
   Music, 
-  Plus, 
   Send, 
   Copy, 
   Check, 
@@ -28,7 +26,7 @@ import { useState, useEffect, useRef, Suspense } from 'react';
 import { MediaItem } from '@/app/types/media';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import { useSearchParams } from 'next/navigation';
 
@@ -307,24 +305,24 @@ const ShortItem = ({
       {/* Share Dialog */}
       <Dialog open={showShare} onOpenChange={setShowShare}>
         <DialogContent className="bg-gradient-to-br from-background via-background/95 to-pink-500/10 backdrop-blur-3xl border-white/10 text-white rounded-[2rem] sm:rounded-[3rem] w-[92vw] max-w-md p-6 sm:p-10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] border overflow-hidden">
-          <div className="absolute top-0 right-0 p-8 opacity-20 pointer-events-none">
+          <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
             <Sparkles size={120} className="text-pink-500 animate-pulse" />
           </div>
           <div className="absolute bottom-[-20%] left-[-10%] p-8 opacity-10 pointer-events-none">
             <Heart size={200} className="text-primary animate-pulse-slow" fill="currentColor" />
           </div>
 
-          <DialogHeader className="mb-8 relative z-10">
-            <DialogTitle className="font-headline font-bold text-2xl sm:text-3xl text-center tracking-tight text-white drop-shadow-md flex items-center justify-center gap-3">
-              <Stars className="text-pink-400" size={20} />
+          <DialogHeader className="mb-6 sm:mb-8 relative z-10">
+            <DialogTitle className="font-headline font-bold text-xl sm:text-3xl text-center tracking-tight text-white drop-shadow-md flex items-center justify-center gap-3">
+              <Stars className="text-pink-400" size={16} />
               Share the Magic
-              <Stars className="text-pink-400" size={20} />
+              <Stars className="text-pink-400" size={16} />
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-8 relative z-10">
-            <div className="flex flex-col sm:flex-row items-center gap-3 bg-white/5 border border-white/10 p-3 sm:p-4 rounded-[1.5rem] sm:rounded-[2rem] group hover:border-pink-500/30 transition-all duration-500 backdrop-blur-md">
-              <div className="flex-1 w-full truncate font-code text-[11px] sm:text-xs font-medium text-white/50 group-hover:text-white/80 transition-colors px-2">
+          <div className="space-y-6 sm:space-y-8 relative z-10">
+            <div className="flex flex-col sm:flex-row items-center gap-3 bg-white/5 border border-white/10 p-2 sm:p-4 rounded-[1.25rem] sm:rounded-[2rem] group hover:border-pink-500/30 transition-all duration-500 backdrop-blur-md">
+              <div className="flex-1 w-full truncate font-code text-[10px] sm:text-xs font-medium text-white/50 group-hover:text-white/80 transition-colors px-2">
                 {short.mediaUrl}
               </div>
               <Button 
@@ -342,17 +340,17 @@ const ShortItem = ({
               </Button>
             </div>
             
-            <div className="grid grid-cols-4 gap-3 sm:gap-6 px-1">
+            <div className="grid grid-cols-4 gap-2 sm:gap-6 px-1">
               {sharePlatforms.map((platform, idx) => (
                 <div key={idx} className="flex flex-col items-center gap-2 group">
                   <button className={cn(
-                    "w-12 h-12 sm:w-16 sm:h-16 rounded-[1.25rem] sm:rounded-[1.75rem] bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-500",
+                    "w-10 h-10 sm:w-16 sm:h-16 rounded-[1rem] sm:rounded-[1.75rem] bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-500",
                     "hover:bg-white/10 hover:scale-110 hover:-translate-y-1 active:scale-95 shadow-xl",
                     platform.color
                   )}>
-                    <platform.icon size={22} strokeWidth={1.5} className="sm:size-7" />
+                    <platform.icon size={18} strokeWidth={1.5} className="sm:size-7" />
                   </button>
-                  <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-white/30 group-hover:text-white/60 transition-colors">
+                  <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-widest text-white/30 group-hover:text-white/60 transition-colors">
                     {platform.name}
                   </span>
                 </div>
@@ -360,10 +358,15 @@ const ShortItem = ({
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-white/5 text-center relative z-10">
-            <p className="text-[10px] font-headline font-bold text-white/20 uppercase tracking-[0.4em]">
+          <div className="mt-8 pt-6 border-t border-white/5 text-center relative z-10 space-y-4">
+            <p className="text-[9px] font-headline font-bold text-white/20 uppercase tracking-[0.4em]">
               Spread Love Across the Multiverse
             </p>
+            <DialogClose asChild>
+              <Button variant="ghost" className="sm:hidden text-white/40 hover:text-white hover:bg-white/5 h-10 w-full rounded-xl">
+                Dismiss
+              </Button>
+            </DialogClose>
           </div>
         </DialogContent>
       </Dialog>
