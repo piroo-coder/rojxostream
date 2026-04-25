@@ -83,13 +83,6 @@ export default function PlansPage() {
                   <span className="text-white font-bold tracking-[0.2em] uppercase text-xs">Return to Abhi</span>
                 </button>
               </Link>
-              
-              <div className="flex items-center gap-5 opacity-50">
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white">Live Wallpaper</span>
-                  <span className="text-[10px] text-white/50">Continuous Looping Eternity</span>
-                </div>
-              </div>
             </footer>
           </div>
         </div>
