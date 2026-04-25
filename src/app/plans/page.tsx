@@ -8,8 +8,8 @@ import Link from 'next/link';
 
 export default function PlansPage() {
   const sideImage = "https://wallpapercave.com/wp/wp12944056.jpg";
-  // The Dailymotion video ID extracted from your link
-  const videoId = "k6J76zgIOHeOWiFI754";
+  // High quality Naruto and Hinata live wallpaper loop from YouTube
+  const videoId = "V1bFr2SWP1I";
 
   return (
     <main className="h-screen w-full overflow-hidden relative bg-black">
@@ -17,10 +17,10 @@ export default function PlansPage() {
       
       {/* Live Wallpaper Background Video - Full Screen & Looping */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
-        {/* Background Video using Dailymotion Embed optimized for Live Wallpaper */}
+        {/* Background Video using YouTube Embed optimized for Live Wallpaper */}
         <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
           <iframe
-            src={`https://www.dailymotion.com/embed/video/${videoId}?autoplay=1&mute=1&loop=1&controls=0&ui-logo=0&sharing-enable=0&queue-enable=0&ui-start-screen-info=0&playlist=${videoId}`}
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playlist=${videoId}`}
             className="w-full h-full border-0"
             style={{
               width: '100vw',
@@ -30,8 +30,8 @@ export default function PlansPage() {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              transform: 'translate(-50%, -50%) scale(1.3)',
-              filter: 'brightness(0.6) contrast(1.1)'
+              transform: 'translate(-50%, -50%) scale(1.35)',
+              filter: 'brightness(0.5) contrast(1.1) saturate(1.2)'
             }}
             allow="autoplay; fullscreen"
           />
@@ -39,7 +39,7 @@ export default function PlansPage() {
         
         {/* Immersive Cinematic Overlays */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent" />
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
       </div>
 
       <div className="relative z-10 flex h-full w-full">
