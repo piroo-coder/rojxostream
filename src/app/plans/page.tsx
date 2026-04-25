@@ -8,8 +8,7 @@ import Link from 'next/link';
 
 export default function PlansPage() {
   const sideImage = "https://wallpapercave.com/wp/wp12944056.jpg";
-  // High quality Naruto and Hinata live wallpaper loop from YouTube
-  const videoId = "V1bFr2SWP1I";
+  const videoUrl = "https://motionbgs.com/media/1980/hinata-hyuga-with-naruto.960x540.mp4";
 
   return (
     <main className="h-screen w-full overflow-hidden relative bg-black">
@@ -17,25 +16,15 @@ export default function PlansPage() {
       
       {/* Live Wallpaper Background Video - Full Screen & Looping */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
-        {/* Background Video using YouTube Embed optimized for Live Wallpaper */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&playlist=${videoId}`}
-            className="w-full h-full border-0"
-            style={{
-              width: '100vw',
-              height: '56.25vw', /* 16:9 Aspect Ratio */
-              minHeight: '100vh',
-              minWidth: '177.77vh', /* 16:9 Aspect Ratio */
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%) scale(1.35)',
-              filter: 'brightness(0.5) contrast(1.1) saturate(1.2)'
-            }}
-            allow="autoplay; fullscreen"
-          />
-        </div>
+        <video
+          src={videoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover opacity-60 scale-105"
+          style={{ filter: 'brightness(0.6) contrast(1.1) saturate(1.2)' }}
+        />
         
         {/* Immersive Cinematic Overlays */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent" />
