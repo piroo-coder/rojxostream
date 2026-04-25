@@ -2,7 +2,7 @@
 "use client";
 
 import { Navbar } from '@/components/layout/Navbar';
-import { Heart, Stars, ArrowLeft, Sparkles, Play } from 'lucide-react';
+import { Heart, Stars, ArrowLeft, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -16,19 +16,20 @@ export default function PlansPage() {
       <Navbar />
       
       {/* Live Wallpaper Background Video - Full Screen & Looping */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         <video 
           autoPlay 
           muted 
           loop 
           playsInline 
-          className="absolute inset-0 w-full h-full object-cover opacity-70"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: 'brightness(0.6)' }}
         >
           <source src={bgVideo} type="video/mp4" />
         </video>
         
         {/* Immersive Cinematic Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
         <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
         
         {/* Subtle animated light patches */}
@@ -89,12 +90,6 @@ export default function PlansPage() {
               </Link>
               
               <div className="flex items-center gap-5 opacity-50">
-                <div className="relative">
-                  <div className="w-14 h-14 rounded-full border-2 border-white/20 flex items-center justify-center animate-spin-slow">
-                    <Play size={18} className="text-white ml-1" />
-                  </div>
-                  <div className="absolute inset-0 w-14 h-14 rounded-full border-2 border-indigo-500/30 animate-ping opacity-20" />
-                </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black uppercase tracking-widest text-white">Live Wallpaper</span>
                   <span className="text-[10px] text-white/50">Continuous Looping Eternity</span>
@@ -105,7 +100,7 @@ export default function PlansPage() {
         </div>
 
         {/* Mobile View Visual (Small floating polaroid style) */}
-        <div className="absolute bottom-8 right-8 lg:hidden w-36 h-52 rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl rotate-[6deg] animate-bounce-slow">
+        <div className="absolute bottom-8 right-8 lg:hidden w-36 h-52 rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl rotate-[6deg]">
            <Image 
               src={sideImage}
               alt=""
