@@ -2,12 +2,13 @@
 "use client";
 
 import { Navbar } from '@/components/layout/Navbar';
-import { Heart, Music, Code, Gamepad2, Stars, Sparkles, Instagram, Youtube, Twitter, Facebook } from 'lucide-react';
+import { Heart, Music, Code, Gamepad2, Stars, Sparkles, Instagram, Youtube, Twitter, Facebook, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function AboutPage() {
   const profileImage = PlaceHolderImages.find(img => img.id === 'priya-profile')?.imageUrl || "https://i.pinimg.com/736x/04/4d/26/044d2642935fb665c6cd6bb72e06b264.jpg";
@@ -52,7 +53,6 @@ export default function AboutPage() {
       
       {/* Calm & Romantic Background Animations */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        {/* Ambient Pulsing Blobs */}
         <div className="absolute top-[5%] left-[10%] w-[45rem] h-[45rem] bg-pink-500/10 rounded-full blur-[140px] animate-pulse-slow" />
         <div className="absolute bottom-[10%] right-[10%] w-[55rem] h-[55rem] bg-purple-500/10 rounded-full blur-[160px] animate-pulse-slow delay-1000" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[35rem] h-[35rem] bg-primary/10 rounded-full blur-[120px] animate-pulse-slow delay-500" />
@@ -80,10 +80,17 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <h1 className="text-5xl md:text-6xl font-headline font-bold tracking-tighter text-white">
-              Priya
-            </h1>
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+              <h1 className="text-5xl md:text-6xl font-headline font-bold tracking-tighter text-white">
+                Priya
+              </h1>
+              <Link href="/love">
+                <Button variant="outline" className="rounded-full border-pink-500/50 text-pink-400 hover:bg-pink-500/10 hover:text-pink-300 font-bold tracking-wide transition-all group">
+                  About My Love <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            </div>
             <Badge variant="outline" className="px-4 py-1 rounded-full border-pink-500/30 text-pink-400 font-bold tracking-widest uppercase text-[10px]">
               Dreamer • Creator • Lover
             </Badge>
