@@ -8,8 +8,8 @@ import Link from 'next/link';
 
 export default function PlansPage() {
   const sideImage = "https://wallpapercave.com/wp/wp12944056.jpg";
-  // A high-quality, aesthetic cinematic background video
-  const bgVideo = "https://cdn.pixabay.com/video/2021/08/04/83901-584742466_tiny.mp4";
+  // The Dailymotion video ID extracted from your link
+  const videoId = "k6J76zgIOHeOWiFI754";
 
   return (
     <main className="h-screen w-full overflow-hidden relative bg-black">
@@ -17,20 +17,29 @@ export default function PlansPage() {
       
       {/* Live Wallpaper Background Video - Full Screen & Looping */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
-        <video 
-          autoPlay 
-          muted 
-          loop 
-          playsInline 
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ filter: 'brightness(0.6)' }}
-        >
-          <source src={bgVideo} type="video/mp4" />
-        </video>
+        {/* Background Video using Dailymotion Embed optimized for Live Wallpaper */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+          <iframe
+            src={`https://www.dailymotion.com/embed/video/${videoId}?autoplay=1&mute=1&loop=1&controls=0&ui-logo=0&sharing-enable=0&queue-enable=0`}
+            className="w-full h-full border-0"
+            style={{
+              width: '100vw',
+              height: '56.25vw', /* 16:9 Aspect Ratio */
+              minHeight: '100vh',
+              minWidth: '177.77vh', /* 16:9 Aspect Ratio */
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%) scale(1.15)',
+              filter: 'brightness(0.5) contrast(1.1)'
+            }}
+            allow="autoplay; fullscreen"
+          />
+        </div>
         
         {/* Immersive Cinematic Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
-        <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
         
         {/* Subtle animated light patches */}
         <div className="absolute top-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-indigo-500/10 rounded-full blur-[150px] animate-pulse-slow" />
