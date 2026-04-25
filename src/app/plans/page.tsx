@@ -20,7 +20,7 @@ export default function PlansPage() {
         {/* Background Video using Dailymotion Embed optimized for Live Wallpaper */}
         <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
           <iframe
-            src={`https://www.dailymotion.com/embed/video/${videoId}?autoplay=1&mute=1&loop=1&controls=0&ui-logo=0&sharing-enable=0&queue-enable=0`}
+            src={`https://www.dailymotion.com/embed/video/${videoId}?autoplay=1&mute=1&loop=1&controls=0&ui-logo=0&sharing-enable=0&queue-enable=0&ui-start-screen-info=0&playlist=${videoId}`}
             className="w-full h-full border-0"
             style={{
               width: '100vw',
@@ -30,8 +30,8 @@ export default function PlansPage() {
               position: 'absolute',
               top: '50%',
               left: '50%',
-              transform: 'translate(-50%, -50%) scale(1.15)',
-              filter: 'brightness(0.5) contrast(1.1)'
+              transform: 'translate(-50%, -50%) scale(1.3)',
+              filter: 'brightness(0.6) contrast(1.1)'
             }}
             allow="autoplay; fullscreen"
           />
@@ -39,10 +39,7 @@ export default function PlansPage() {
         
         {/* Immersive Cinematic Overlays */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent" />
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
-        
-        {/* Subtle animated light patches */}
-        <div className="absolute top-[-10%] right-[-10%] w-[40rem] h-[40rem] bg-indigo-500/10 rounded-full blur-[150px] animate-pulse-slow" />
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
       </div>
 
       <div className="relative z-10 flex h-full w-full">
