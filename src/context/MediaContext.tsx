@@ -32,6 +32,7 @@ const initialData: MediaItem[] = [
     fullPlot: 'Suzume Iwato is a 17-year-old high school girl who lives with her aunt in a quiet town in Kyushu. One day, she meets a mysterious young man named Sota who is looking for a door.',
     moral: 'Coming to terms with past trauma is essential for moving forward.',
     genre: ['Adventure', 'Fantasy'],
+    relatedShortIds: ['sh10'],
     characters: [
       {
         name: "Suzume Iwato",
@@ -79,6 +80,7 @@ const initialData: MediaItem[] = [
     summary: 'An aloof high student student finds the diary of his popular classmate and learns she is dying from a pancreatic disease.',
     moral: 'Live every day to the fullest, for life is fragile and beautiful.',
     genre: ['Drama', 'Romance'],
+    relatedShortIds: ['sh8', 'sh9', 'sh5', 'sh7', 'sh14'],
     characters: [
       {
         name: "Haruki Shiga",
@@ -126,6 +128,7 @@ const initialData: MediaItem[] = [
     summary: 'A 15-year-old boy training to be a shoemaker skips school on rainy days and meets a mysterious older woman in a Japanese garden.',
     moral: 'Sometimes, a brief connection can give us the strength to keep walking.',
     genre: ['Drama', 'Romance'],
+    relatedShortIds: ['sh15'],
     characters: [
       {
         name: "Takao Akizuki",
@@ -173,6 +176,7 @@ const initialData: MediaItem[] = [
     summary: 'A young man who bullied a deaf classmate tries to make amends years later after meeting her again.',
     moral: 'Forgiveness, both for others and oneself, is the path to redemption.',
     genre: ['Drama', 'Romance'],
+    relatedShortIds: ['sh16'],
     characters: [
       {
         name: "Shoya Ishida",
@@ -220,6 +224,7 @@ const initialData: MediaItem[] = [
     summary: 'Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart?',
     moral: 'Destiny is real, but it requires effort and memory to fulfill.',
     genre: ['Fantasy', 'Romance'],
+    relatedShortIds: ['sh17'],
     characters: [
       {
         name: "Taki Tachibana",
@@ -267,6 +272,7 @@ const initialData: MediaItem[] = [
     summary: 'A high-school boy who has run away to Tokyo befriends a girl who appears to be able to manipulate the weather.',
     moral: 'Sometimes the world\'s balance matters less than the person you love.',
     genre: ['Fantasy', 'Drama'],
+    relatedShortIds: ['sh18'],
     characters: [
       {
         name: "Hodaka Morishima",
@@ -379,7 +385,7 @@ const initialData: MediaItem[] = [
     id: 'sh1',
     type: 'short',
     title: 'Multiverse Explorer 01',
-    thumbnailUrl: 'https://picsum.photos/seed/sh3/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh1/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/_wHs0P8Pk04',
     creator: 'RojXO Creator'
   },
@@ -387,7 +393,7 @@ const initialData: MediaItem[] = [
     id: 'sh2',
     type: 'short',
     title: 'Multiverse Explorer 02',
-    thumbnailUrl: 'https://picsum.photos/seed/sh4/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh2/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/0Ra8W_ppRhA',
     creator: 'RojXO Creator'
   },
@@ -395,7 +401,7 @@ const initialData: MediaItem[] = [
     id: 'sh3',
     type: 'short',
     title: 'Multiverse Explorer 03',
-    thumbnailUrl: 'https://picsum.photos/seed/sh5/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh3/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/UoeLg6pzgEw',
     creator: 'RojXO Creator'
   },
@@ -403,7 +409,7 @@ const initialData: MediaItem[] = [
     id: 'sh4',
     type: 'short',
     title: 'Multiverse Explorer 04',
-    thumbnailUrl: 'https://picsum.photos/seed/sh6/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh4/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/EdhaSFvY42s',
     creator: 'RojXO Creator'
   },
@@ -411,7 +417,7 @@ const initialData: MediaItem[] = [
     id: 'sh5',
     type: 'short',
     title: 'Multiverse Explorer 05',
-    thumbnailUrl: 'https://picsum.photos/seed/sh7/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh5/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/DDswrlId7_I',
     creator: 'RojXO Creator'
   },
@@ -419,7 +425,7 @@ const initialData: MediaItem[] = [
     id: 'sh6',
     type: 'short',
     title: 'Multiverse Explorer 06',
-    thumbnailUrl: 'https://picsum.photos/seed/sh8/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh6/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/XbXRxPulY5o',
     creator: 'RojXO Creator'
   },
@@ -427,7 +433,7 @@ const initialData: MediaItem[] = [
     id: 'sh7',
     type: 'short',
     title: 'Multiverse Explorer 07',
-    thumbnailUrl: 'https://picsum.photos/seed/sh9/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh7/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/PlpSDr_5Roc',
     creator: 'RojXO Creator'
   },
@@ -435,7 +441,7 @@ const initialData: MediaItem[] = [
     id: 'sh8',
     type: 'short',
     title: 'Multiverse Explorer 08',
-    thumbnailUrl: 'https://picsum.photos/seed/sh10/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh8/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/CdyaALQHMj8',
     creator: 'RojXO Creator'
   },
@@ -443,7 +449,7 @@ const initialData: MediaItem[] = [
     id: 'sh9',
     type: 'short',
     title: 'Multiverse Explorer 09',
-    thumbnailUrl: 'https://picsum.photos/seed/sh11/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh9/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/WZiw_ICBf7c',
     creator: 'RojXO Creator'
   },
@@ -451,7 +457,7 @@ const initialData: MediaItem[] = [
     id: 'sh10',
     type: 'short',
     title: 'Multiverse Explorer 10',
-    thumbnailUrl: 'https://picsum.photos/seed/sh12/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh10/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/5F3aj-m-OVQ',
     creator: 'RojXO Creator'
   },
@@ -459,7 +465,7 @@ const initialData: MediaItem[] = [
     id: 'sh11',
     type: 'short',
     title: 'Multiverse Explorer 11',
-    thumbnailUrl: 'https://picsum.photos/seed/sh13/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh11/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/bPyKxKlmYpk',
     creator: 'RojXO Creator'
   },
@@ -467,9 +473,57 @@ const initialData: MediaItem[] = [
     id: 'sh12',
     type: 'short',
     title: 'Multiverse Explorer 12',
-    thumbnailUrl: 'https://picsum.photos/seed/sh14/400/600',
+    thumbnailUrl: 'https://picsum.photos/seed/sh12/400/600',
     mediaUrl: 'https://www.youtube.com/shorts/lbvv1sVBHJw',
     creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh13',
+    type: 'short',
+    title: 'Multiverse Explorer 13',
+    thumbnailUrl: 'https://picsum.photos/seed/sh13/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/9d1N4c5tHxQ',
+    creator: 'RojXO Creator'
+  },
+  {
+    id: 'sh14',
+    type: 'short',
+    title: 'I Want to Eat Your Pancreas Special',
+    thumbnailUrl: 'https://picsum.photos/seed/sh14/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/CyjfAZxLdt8',
+    creator: 'Anime Archive'
+  },
+  {
+    id: 'sh15',
+    type: 'short',
+    title: 'Garden of Words Moments',
+    thumbnailUrl: 'https://picsum.photos/seed/sh15/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/nm0kCdfOT8Y',
+    creator: 'Anime Archive'
+  },
+  {
+    id: 'sh16',
+    type: 'short',
+    title: 'A Silent Voice Emotional',
+    thumbnailUrl: 'https://picsum.photos/seed/sh16/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/8OvZrHf2CG0',
+    creator: 'Anime Archive'
+  },
+  {
+    id: 'sh17',
+    type: 'short',
+    title: 'Your Name Fantasy',
+    thumbnailUrl: 'https://picsum.photos/seed/sh17/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/wVWIdoXI6Qk',
+    creator: 'Anime Archive'
+  },
+  {
+    id: 'sh18',
+    type: 'short',
+    title: 'Weathering with You Sky',
+    thumbnailUrl: 'https://picsum.photos/seed/sh18/400/600',
+    mediaUrl: 'https://www.youtube.com/shorts/M9XEXSKq25c',
+    creator: 'Anime Archive'
   }
 ];
 

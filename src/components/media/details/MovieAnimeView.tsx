@@ -2,13 +2,15 @@
 "use client";
 
 import { MediaItem, MediaCharacter } from '@/app/types/media';
-import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages, ShieldAlert, User, ChevronRight } from 'lucide-react';
+import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages, ShieldAlert, User, ChevronRight, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { useRouter } from 'next/navigation';
+import { useMedia } from '@/context/MediaContext';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,13 +35,17 @@ interface MovieAnimeViewProps {
 type ViewMode = 'discovery' | 'playing' | 'analysis' | 'hindi-explanation' | 'wikipedia' | 'character-details';
 
 export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose }) => {
+  const router = useRouter();
+  const { library } = useMedia();
   const [mode, setMode] = useState<ViewMode>('discovery');
   const [showMangaConfirm, setShowMangaConfirm] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<MediaCharacter | null>(null);
   const [hoveredChar, setHoveredChar] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Automatically scroll to top when changing modes or characters
+  // Filter related shorts based on the anime item's relatedShortIds
+  const relatedShorts = library.filter(m => item.relatedShortIds?.includes(m.id));
+
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
@@ -84,13 +90,18 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
     setMode('character-details');
   };
 
+  const handleWatchShorts = () => {
+    if (!item.relatedShortIds || item.relatedShortIds.length === 0) return;
+    const idsParam = item.relatedShortIds.join(',');
+    router.push(`/shorts?ids=${idsParam}`);
+  };
+
   const activeBackground = (mode === 'character-details' && selectedCharacter?.background_url) 
     ? selectedCharacter.background_url 
     : item.thumbnailUrl;
 
   return (
     <div className="fixed inset-0 z-[60] bg-background animate-in fade-in duration-500 overflow-hidden h-svh w-screen flex flex-col">
-      {/* Immersive Dynamic Background Container */}
       <div className="absolute inset-0 z-0 h-full w-full overflow-hidden pointer-events-none transition-all duration-1000">
         <Image 
           key={activeBackground}
@@ -173,6 +184,19 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                         )}
                       </div>
                     </div>
+
+                    {relatedShorts.length > 0 && (
+                       <div className="space-y-4 pt-4">
+                         <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 border-b border-white/5 pb-2">Artifacts</h4>
+                         <Button 
+                          onClick={handleWatchShorts}
+                          className="w-full h-14 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs gap-3 group"
+                         >
+                           <Layers size={16} className="text-accent group-hover:rotate-12 transition-transform" />
+                           WATCH RELATED SHORTS
+                         </Button>
+                       </div>
+                    )}
 
                     {item.type === 'anime' && (
                       <div className="space-y-4 pt-4">
@@ -527,7 +551,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
         </div>
       </div>
 
-      {/* Manga Permission Alert Dialog */}
       <AlertDialog open={showMangaConfirm} onOpenChange={setShowMangaConfirm}>
         <AlertDialogContent className="bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2rem] z-[100]">
           <AlertDialogHeader>

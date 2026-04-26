@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useMedia } from '@/context/MediaContext';
@@ -19,7 +20,8 @@ import {
   Instagram,
   Youtube,
   Twitter,
-  Facebook
+  Facebook,
+  ChevronDown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef, Suspense } from 'react';
@@ -110,7 +112,6 @@ const ShortItem = ({
       className="short-item relative flex items-center justify-center bg-black w-full h-full overflow-hidden"
       data-short-id={short.id}
     >
-      {/* PROFOUND AMBIENT GLOW SYSTEM */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
         <div className="absolute inset-0 opacity-80 blur-[120px] scale-[1.8] saturate-[250%] transition-all duration-1000">
            {isActive && (
@@ -145,20 +146,16 @@ const ShortItem = ({
         <div className="absolute inset-0 bg-black/30" />
       </div>
 
-      {/* Main Video Container */}
       <div className={cn(
         "relative z-10 w-full h-full max-w-[360px] aspect-[9/16] bg-black shadow-[0_0_150px_rgba(0,0,0,1)]",
         "flex items-center justify-center sm:rounded-[2.5rem] overflow-hidden border border-white/20 group transition-all duration-500"
       )}>
-        
-        {/* Like Pop Animation Overlay */}
         {showHeartPop && (
           <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none">
             <Heart size={100} fill="currentColor" className="text-pink-500 animate-heart-pop" />
           </div>
         )}
 
-        {/* Flying Comments Overlay */}
         <div className="absolute inset-0 z-40 pointer-events-none overflow-hidden">
           {flyingComments.map(comment => (
             <div 
@@ -209,10 +206,8 @@ const ShortItem = ({
           {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
         </button>
 
-        {/* Interaction Overlays */}
         <div className="absolute inset-0 pointer-events-none flex flex-col justify-end p-6 z-20">
           <div className="flex items-end justify-between w-full">
-            
             <div className="flex-1 pointer-events-auto text-white space-y-3 mb-2 drop-shadow-2xl">
               <div className="flex items-center gap-3">
                 <div className="relative w-10 h-10 rounded-full bg-neutral-800 border-2 border-white/40 overflow-hidden">
@@ -229,9 +224,7 @@ const ShortItem = ({
               </div>
             </div>
 
-            {/* Action Bar */}
             <div className="flex flex-col gap-5 pointer-events-auto mb-2 items-center pl-2 relative">
-              {/* Flying Hearts */}
               {flyingHearts.map(heart => (
                 <div key={heart.id} className="absolute -top-10 text-pink-500 animate-float-up pointer-events-none">
                   <Heart size={20} fill="currentColor" />
@@ -282,7 +275,6 @@ const ShortItem = ({
             </div>
           </div>
           
-          {/* Inline Comment Input */}
           {isCommenting && (
             <form onSubmit={handleSendComment} className="mt-4 flex items-center gap-2 pointer-events-auto animate-in slide-in-from-bottom-2 duration-300">
               <Input 
@@ -302,7 +294,6 @@ const ShortItem = ({
         <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none z-10" />
       </div>
 
-      {/* Share Dialog */}
       <Dialog open={showShare} onOpenChange={setShowShare}>
         <DialogContent className="bg-gradient-to-br from-background via-background/95 to-pink-500/10 backdrop-blur-3xl border-white/10 text-white rounded-[2rem] sm:rounded-[3rem] w-[92vw] max-w-md p-6 sm:p-10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] border overflow-hidden">
           <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
@@ -378,21 +369,25 @@ function ShortsPageContent() {
   const { library, searchTerm } = useMedia();
   const searchParams = useSearchParams();
   const targetId = searchParams.get('id');
+  const idsFilter = searchParams.get('ids'); // Comma-separated list of IDs
+  
   const [isMuted, setIsMuted] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const shorts = library.filter(item => 
-    item.type === 'short' && 
-    (item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-     item.creator?.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Filter shorts based on type, search term, and optional ID list
+  const shorts = library.filter(item => {
+    const isShort = item.type === 'short';
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          item.creator?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesIds = idsFilter ? idsFilter.split(',').includes(item.id) : true;
+    
+    return isShort && matchesSearch && matchesIds;
+  });
 
-  // Handle initial active ID and target ID scrolling
   useEffect(() => {
     if (shorts.length > 0) {
       if (targetId) {
-        // Use a small timeout to ensure the DOM is ready for scrolling
         const timer = setTimeout(() => {
           const element = document.querySelector(`[data-short-id="${targetId}"]`);
           if (element) {
@@ -405,7 +400,7 @@ function ShortsPageContent() {
         setActiveId(shorts[0].id);
       }
     }
-  }, [shorts.length, targetId]);
+  }, [shorts.length, targetId, idsFilter]);
 
   useEffect(() => {
     const observerOptions = {
@@ -455,19 +450,45 @@ function ShortsPageContent() {
         )}
       >
         {shorts.length > 0 ? (
-          shorts.map((short) => (
-            <div 
-              key={short.id} 
-              className="w-full h-full snap-start snap-always"
-            >
-              <ShortItem 
-                short={short} 
-                isActive={activeId === short.id} 
-                isMuted={isMuted}
-                onToggleMute={() => setIsMuted(!isMuted)}
-              />
+          <>
+            {shorts.map((short) => (
+              <div 
+                key={short.id} 
+                className="w-full h-full snap-start snap-always"
+              >
+                <ShortItem 
+                  short={short} 
+                  isActive={activeId === short.id} 
+                  isMuted={isMuted}
+                  onToggleMute={() => setIsMuted(!isMuted)}
+                />
+              </div>
+            ))}
+            {/* End of Multiverse Footer Item */}
+            <div className="w-full h-full snap-start snap-always flex flex-col items-center justify-center p-8 bg-black">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000" />
+                <div className="relative w-32 h-32 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-8 backdrop-blur-3xl shadow-2xl">
+                  <Stars size={48} className="text-white/20 animate-pulse" />
+                </div>
+              </div>
+              <h3 className="text-3xl font-headline font-bold mb-4 text-white text-center tracking-tighter">End of Multiverse</h3>
+              <p className="text-white/40 text-sm max-w-xs font-light text-center leading-relaxed">
+                You have reached the boundary of this archive. No more shorts are available in this collection.
+              </p>
+              <Button 
+                variant="outline" 
+                className="mt-12 rounded-full border-white/10 text-white/40 hover:text-white hover:bg-white/5 gap-3 h-12 px-8 uppercase tracking-widest font-black text-[10px]"
+                onClick={() => {
+                  if (containerRef.current) {
+                    containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+              >
+                Return to Origin <ChevronDown size={14} className="rotate-180" />
+              </Button>
             </div>
-          ))
+          </>
         ) : (
           <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8 text-center pt-32">
             <div className="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-8 border border-white/10">

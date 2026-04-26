@@ -42,4 +42,5 @@ export interface MediaItem {
   youtubeViews?: string;
   publishedAt?: string;
   genre?: string[];
+  relatedShortIds?: string[];
 }
