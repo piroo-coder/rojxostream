@@ -1,8 +1,8 @@
-
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { MediaItem } from '@/app/types/media';
+import { updateAndGetPresence } from '@/app/actions/presence-actions';
 
 interface MediaContextType {
   library: MediaItem[];
@@ -13,6 +13,7 @@ interface MediaContextType {
   setSearchTerm: (term: string) => void;
   userName: string | null;
   setUserName: (name: string | null) => void;
+  onlineUsers: string[];
 }
 
 const initialData: MediaItem[] = [
@@ -137,7 +138,7 @@ const initialData: MediaItem[] = [
         role: "Student / Aspiring Shoemaker",
         description: "A mature and hardworking 15-year-old high schooler who feels out of place among his peers. He skips morning classes on rainy days to design shoes in Shinjuku Gyoen National Garden. His passion for shoemaking is a metaphor for his desire to help people walk forward in life.",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvSfJY6gPhuAoD_krTYcVI3TFL4PWNpooNgr3PCt0JB5h3H29PEmHRcQTtzmrNiPrs4uNoOUsGyWr5S83wbPn9ViW4-D6XsBmGo7FQqYpH&s=10",
-        background_url: "https://wallpapercat.com/w/full/a/6/6/33019-1920x1080-desktop-full-hd-the-garden-of-words-background-photo.jpg"
+        background_url: "https://wallpapercat.Cat.com/w/full/a/6/6/33019-1920x1080-desktop-full-hd-the-garden-of-words-background-photo.jpg"
       },
       {
         name: "Yukari Yukino",
@@ -536,11 +537,33 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentlyPlaying, setCurrentlyPlaying] = useState<MediaItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [userName, setUserNameState] = useState<string | null>(null);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
     const stored = localStorage.getItem('rojxo_user');
-    if (stored) setUserNameState(stored);
+    if (stored) {
+      setUserNameState(stored);
+    }
   }, []);
+
+  const syncPresence = useCallback(async () => {
+    if (userName) {
+      try {
+        const users = await updateAndGetPresence(userName);
+        setOnlineUsers(users);
+      } catch (err) {
+        console.error("Presence sync failed:", err);
+      }
+    }
+  }, [userName]);
+
+  useEffect(() => {
+    if (userName) {
+      syncPresence();
+      const interval = setInterval(syncPresence, 10000); // Sync every 10 seconds
+      return () => clearInterval(interval);
+    }
+  }, [userName, syncPresence]);
 
   const setUserName = (name: string | null) => {
     if (name) {
@@ -564,7 +587,8 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       searchTerm,
       setSearchTerm,
       userName,
-      setUserName
+      setUserName,
+      onlineUsers
     }}>
       {children}
     </MediaContext.Provider>

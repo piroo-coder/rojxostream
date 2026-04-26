@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -72,15 +71,13 @@ const HighlightText = ({ text, highlight }: { text: string; highlight: string })
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { library, searchTerm, setSearchTerm, setCurrentlyPlaying, userName, setUserName } = useMedia();
+  const { library, searchTerm, setSearchTerm, setCurrentlyPlaying, userName, setUserName, onlineUsers } = useMedia();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [localInput, setLocalInput] = useState(searchTerm);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Mock Online Presence (Client Side Only)
-  const mockOnlineUsers = ["Priya", "Abhi", "Guest Soul", "Explorer"];
-  const activeSouls = mockOnlineUsers.filter(u => u !== userName);
+  const activeSouls = onlineUsers.filter(u => u !== userName);
 
   const navLinks = [
     { href: '/', icon: Home, label: 'Explore', activeColor: 'text-accent' },
@@ -231,7 +228,7 @@ export const Navbar: React.FC = () => {
                       <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border border-background animate-pulse" />
                     </div>
                     <span className="text-[10px] font-black uppercase tracking-widest text-white/60 hidden sm:block">
-                      {activeSouls.length + 1} Online
+                      {onlineUsers.length} Online
                     </span>
                   </Button>
                 </PopoverTrigger>
@@ -246,13 +243,16 @@ export const Navbar: React.FC = () => {
                           <p className="text-xs font-bold text-white">{userName} <span className="text-[8px] uppercase tracking-widest text-white/20">(You)</span></p>
                         </div>
                         {activeSouls.map((u, i) => (
-                          <div key={i} className="flex items-center gap-3 opacity-60">
+                          <div key={i} className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                              <User size={14} className="text-white/40" />
+                              <User size={14} className="text-white/60" />
                             </div>
-                            <p className="text-xs font-bold text-white/60">{u}</p>
+                            <p className="text-xs font-bold text-white">{u}</p>
                           </div>
                         ))}
+                        {activeSouls.length === 0 && (
+                          <p className="text-[10px] text-center text-white/20 italic">No other souls nearby...</p>
+                        )}
                      </div>
                    </div>
                 </PopoverContent>
