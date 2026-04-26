@@ -5,8 +5,8 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, User, LogOut, MessageSquare, Lock, ShieldCheck, Sparkles, Wifi, WifiOff, Loader2 } from 'lucide-react';
-import { getChatState, sendMessage, updatePresence, ChatMessage } from '@/app/actions/chat-actions';
+import { Send, User, LogOut, MessageSquare, Lock, ShieldCheck, Sparkles, Wifi, WifiOff, Loader2, PenTool } from 'lucide-react';
+import { getChatState, sendMessage, updatePresence, setTypingStatus, ChatMessage } from '@/app/actions/chat-actions';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -18,34 +18,34 @@ export default function ChatPage() {
   
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isOtherOnline, setIsOtherOnline] = useState(false);
+  const [isOtherTyping, setIsOtherTyping] = useState(false);
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
   
   const scrollRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Sync scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isOtherTyping]);
 
   // Polling for State and Presence
   useEffect(() => {
     if (!user) return;
 
     const syncChat = async () => {
-      // Update our own presence
       await updatePresence(user);
-      
-      // Get global chat state
       const state = await getChatState(user);
       setMessages(state.messages);
       setIsOtherOnline(state.isOtherOnline);
+      setIsOtherTyping(state.isOtherTyping);
     };
 
     syncChat();
-    const interval = setInterval(syncChat, 3000); // Sync every 3 seconds
+    const interval = setInterval(syncChat, 2000); // 2 second sync for typing/presence
     return () => clearInterval(interval);
   }, [user]);
 
@@ -68,7 +68,7 @@ export default function ChatPage() {
       localStorage.setItem('chat_user', 'Priya');
       setLoginError('');
     } else {
-      setLoginError('Invalid dimensional coordinates.');
+      setLoginError('Invalid coordinates.');
     }
   };
 
@@ -77,18 +77,36 @@ export default function ChatPage() {
     localStorage.removeItem('chat_user');
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(e.target.value);
+    
+    if (user) {
+      // Notify server that user is typing
+      setTypingStatus(user, true);
+      
+      // Clear previous timeout
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      
+      // Set timeout to stop typing status
+      typingTimeoutRef.current = setTimeout(() => {
+        setTypingStatus(user, false);
+      }, 2500);
+    }
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim() || !user || isSending || !isOtherOnline) return;
+    if (!inputText.trim() || !user || isSending) return;
 
     setIsSending(true);
     const result = await sendMessage(user, inputText);
     if (result.success) {
       setInputText('');
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      setTypingStatus(user, false);
+      
       const state = await getChatState(user);
       setMessages(state.messages);
-    } else if (result.error) {
-      alert(result.error);
     }
     setIsSending(false);
   };
@@ -97,7 +115,6 @@ export default function ChatPage() {
     return (
       <main className="min-h-screen bg-background relative flex items-center justify-center p-6 overflow-hidden">
         <Navbar />
-        
         <div className="absolute inset-0 z-0">
           <Image 
             src="https://images8.alphacoders.com/744/thumb-1920-744721.png"
@@ -117,41 +134,29 @@ export default function ChatPage() {
                   <Lock className="text-primary" size={32} />
                 </div>
                 <h2 className="text-3xl font-headline font-bold text-white tracking-tighter">Secure Portal</h2>
-                <p className="text-white/40 text-xs font-black uppercase tracking-widest">Identify Yourself to Enter</p>
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">Identify Yourself</p>
               </div>
 
               <form onSubmit={handleLogin} className="space-y-6">
                 <div className="space-y-4">
-                  <div className="relative group">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-accent transition-colors" size={18} />
-                    <Input 
-                      placeholder="Username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className="h-14 pl-12 bg-white/5 border-white/10 rounded-2xl focus:bg-white/10 transition-all placeholder:text-white/20"
-                      required
-                    />
-                  </div>
-                  <div className="relative group">
-                    <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-accent transition-colors" size={18} />
-                    <Input 
-                      type="password"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="h-14 pl-12 bg-white/5 border-white/10 rounded-2xl focus:bg-white/10 transition-all placeholder:text-white/20"
-                      required
-                    />
-                  </div>
+                  <Input 
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="h-14 bg-white/5 border-white/10 rounded-2xl focus:bg-white/10 transition-all placeholder:text-white/20"
+                    required
+                  />
+                  <Input 
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="h-14 bg-white/5 border-white/10 rounded-2xl focus:bg-white/10 transition-all placeholder:text-white/20"
+                    required
+                  />
                 </div>
-
-                {loginError && (
-                  <p className="text-destructive text-xs font-bold text-center uppercase tracking-widest bg-destructive/10 py-2 rounded-xl border border-destructive/20">
-                    {loginError}
-                  </p>
-                )}
-
-                <Button type="submit" className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 font-bold text-lg shadow-2xl transition-all active:scale-95">
+                {loginError && <p className="text-destructive text-center text-xs font-bold uppercase">{loginError}</p>}
+                <Button type="submit" className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 font-bold text-lg shadow-2xl">
                   Access Live Session
                 </Button>
               </form>
@@ -165,7 +170,6 @@ export default function ChatPage() {
   return (
     <main className="h-screen bg-background relative flex flex-col pt-16 md:pt-20 overflow-hidden">
       <Navbar />
-      
       <div className="absolute inset-0 z-0">
         <Image 
           src="https://images8.alphacoders.com/744/thumb-1920-744721.png"
@@ -174,12 +178,11 @@ export default function ChatPage() {
           className="object-cover opacity-50"
           unoptimized
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col max-w-5xl w-full mx-auto p-4 md:p-8 overflow-hidden">
-        {/* Chat Header with Online Status */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-6 p-4 md:p-6 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-[2rem] shadow-2xl">
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -195,95 +198,68 @@ export default function ChatPage() {
               <h3 className="text-xl font-headline font-bold text-white tracking-tight flex items-center gap-2">
                 {user} <Sparkles className="text-accent" size={14} />
               </h3>
-              <div className="flex items-center gap-1.5">
-                {isOtherOnline ? (
-                  <span className="flex items-center gap-1 text-[9px] uppercase font-black tracking-widest text-emerald-400">
-                    <Wifi size={10} /> {user === 'Abhi' ? 'Priya' : 'Abhi'} is Online
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 text-[9px] uppercase font-black tracking-widest text-white/30">
-                    <WifiOff size={10} /> Waiting for {user === 'Abhi' ? 'Priya' : 'Abhi'}...
-                  </span>
-                )}
-              </div>
+              <p className="text-[9px] uppercase font-black tracking-widest text-white/40">
+                {isOtherOnline ? `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Online` : 'Other user is offline'}
+              </p>
             </div>
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={handleLogout}
-            className="rounded-full h-12 w-12 hover:bg-destructive/20 hover:text-destructive text-white/40"
-          >
+          <Button variant="ghost" size="icon" onClick={handleLogout} className="rounded-full h-12 w-12 hover:bg-destructive/20 text-white/40">
             <LogOut size={20} />
           </Button>
         </div>
 
-        {/* Messages Area / Offline State */}
-        {!isOtherOnline ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 animate-in fade-in duration-700">
-            <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-pulse">
-              <Loader2 size={48} className="text-white/20 animate-spin" />
-            </div>
-            <div className="space-y-2">
-              <h4 className="text-2xl font-headline font-bold text-white">Searching for Connection</h4>
-              <p className="text-white/40 text-sm max-w-xs mx-auto italic">
-                "Real-time session is only active when both souls are present in the portal."
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div 
-            ref={scrollRef}
-            className="flex-1 overflow-y-auto pr-2 space-y-4 mb-6 scroll-smooth scrollbar-hide mask-fade-top"
-          >
-            {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-30">
-                <MessageSquare size={48} className="text-white" />
-                <p className="text-sm font-black uppercase tracking-[0.4em] text-white">Session Started</p>
+        {/* Messages */}
+        <div 
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto pr-2 space-y-4 mb-4 scroll-smooth scrollbar-hide"
+        >
+          {messages.map((msg) => (
+            <div 
+              key={msg.id}
+              className={cn(
+                "flex flex-col max-w-[80%] md:max-w-[70%] animate-in slide-in-from-bottom-2 duration-300",
+                msg.sender === user ? "ml-auto items-end" : "mr-auto items-start"
+              )}
+            >
+              <div className={cn(
+                "px-6 py-4 rounded-[1.75rem] text-sm md:text-base shadow-xl",
+                msg.sender === user 
+                  ? "bg-primary text-white rounded-tr-sm" 
+                  : "bg-white/10 backdrop-blur-3xl text-white border border-white/10 rounded-tl-sm"
+              )}>
+                {msg.text}
               </div>
-            ) : (
-              messages.map((msg) => (
-                <div 
-                  key={msg.id}
-                  className={cn(
-                    "flex flex-col max-w-[80%] md:max-w-[70%] animate-in slide-in-from-bottom-2 duration-300",
-                    msg.sender === user ? "ml-auto items-end" : "mr-auto items-start"
-                  )}
-                >
-                  <div className={cn(
-                    "px-6 py-4 rounded-[1.75rem] text-sm md:text-base shadow-xl",
-                    msg.sender === user 
-                      ? "bg-primary text-white rounded-tr-sm" 
-                      : "bg-white/10 backdrop-blur-3xl text-white border border-white/10 rounded-tl-sm"
-                  )}>
-                    {msg.text}
-                  </div>
-                  <span className="text-[9px] uppercase font-black tracking-widest text-white/20 mt-1.5 px-2">
-                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
-        )}
+              <span className="text-[9px] uppercase font-black tracking-widest text-white/20 mt-1.5 px-2">
+                {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            </div>
+          ))}
+          
+          {/* Typing Indicator */}
+          {isOtherTyping && (
+            <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl w-fit animate-pulse">
+              <PenTool size={12} className="text-accent" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/60">
+                {user === 'Abhi' ? 'Priya' : 'Abhi'} is typing...
+              </span>
+            </div>
+          )}
+        </div>
 
-        {/* Input Area (Disabled when offline) */}
-        <form onSubmit={handleSendMessage} className={cn(
-          "p-2 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-3xl flex items-center gap-2 shadow-2xl transition-all duration-500",
-          !isOtherOnline && "opacity-20 pointer-events-none grayscale"
-        )}>
+        {/* Input */}
+        <form onSubmit={handleSendMessage} className="p-2 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-3xl flex items-center gap-2 shadow-2xl">
           <Input 
-            placeholder={isOtherOnline ? "Whisper to the soul..." : "Establishing link..."}
+            placeholder="Type a message..."
             value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            disabled={isSending || !isOtherOnline}
-            className="flex-1 h-14 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-white/20 text-base"
+            onChange={handleInputChange}
+            disabled={isSending}
+            className="flex-1 h-14 bg-transparent border-0 focus-visible:ring-0 text-white placeholder:text-white/20 text-base"
           />
           <Button 
             type="submit" 
             size="icon" 
-            disabled={isSending || !inputText.trim() || !isOtherOnline}
-            className="h-12 w-12 rounded-2xl bg-accent hover:bg-accent/80 text-background transition-all active:scale-90 shadow-xl"
+            disabled={isSending || !inputText.trim()}
+            className="h-12 w-12 rounded-2xl bg-accent hover:bg-accent/80 text-background shadow-xl"
           >
             <Send size={20} />
           </Button>
