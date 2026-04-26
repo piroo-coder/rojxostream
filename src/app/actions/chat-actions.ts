@@ -2,12 +2,25 @@
 'use server';
 
 /**
- * @fileOverview Robust Chat Actions with singleton persistence.
- * Designed to survive Vercel's ephemeral environments as much as possible.
+ * @fileOverview Firestore-backed Chat Actions.
+ * Implements permanent persistence with automatic 100-message cleanup.
  */
 
-import fs from 'fs';
-import path from 'path';
+import { db } from '@/lib/firebase';
+import { 
+  collection, 
+  addDoc, 
+  query, 
+  orderBy, 
+  limit, 
+  getDocs, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  deleteDoc,
+  Timestamp,
+  where
+} from 'firebase/firestore';
 
 export interface ChatMessage {
   id: string;
@@ -16,133 +29,121 @@ export interface ChatMessage {
   timestamp: number;
 }
 
-const CHAT_STORE_KEY = 'ROJXO_CHAT_STORE_STABLE_V10';
+const MESSAGES_COLLECTION = 'messages';
+const PRESENCE_COLLECTION = 'presence';
 const MAX_HISTORY = 100;
-const ONLINE_THRESHOLD = 10000;
-const TYPING_THRESHOLD = 4000;
-
-interface GlobalStore {
-  messages: ChatMessage[];
-  presence: Record<string, number>;
-  typingStatus: Record<string, number>;
-  initialized: boolean;
-}
+const ONLINE_THRESHOLD = 15000; // 15 seconds
 
 /**
- * Gets the global store, ensuring it exists as a singleton in the Node.js process.
+ * Fetches the 100 most recent messages and checks partner presence.
  */
-function getStore(): GlobalStore {
-  const g = global as any;
-  if (!g[CHAT_STORE_KEY]) {
-    g[CHAT_STORE_KEY] = {
-      messages: [],
-      presence: {},
-      typingStatus: {},
-      initialized: false,
-    };
-  }
-  return g[CHAT_STORE_KEY];
-}
-
-const getFilePath = () => path.join(process.cwd(), 'src/app/lib/messages.json');
-
-/**
- * Loads history from the project file.
- * NOTE: On Vercel, this file represents the state at the time of your last GitHub deploy.
- */
-function syncStore() {
-  const store = getStore();
-  
-  if (store.initialized) return;
-
-  try {
-    const filePath = getFilePath();
-    if (fs.existsSync(filePath)) {
-      const content = fs.readFileSync(filePath, 'utf8');
-      const parsed = JSON.parse(content || '[]');
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        // Only load into memory if memory is currently empty to prevent wiping live data
-        if (store.messages.length === 0) {
-          store.messages = parsed.slice(-MAX_HISTORY);
-        }
-      }
-    }
-  } catch (e) {
-    // Fail silently - Filesystem might be restricted
-  } finally {
-    store.initialized = true;
-  }
-}
-
-/**
- * Best-effort persistence to the project file.
- * NOTE: On Vercel production, this is temporary and will reset on server restart.
- */
-function saveToDisk() {
-  const store = getStore();
-  try {
-    const filePath = getFilePath();
-    const dir = path.dirname(filePath);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    
-    const limitedHistory = store.messages.slice(-MAX_HISTORY);
-    fs.writeFileSync(filePath, JSON.stringify(limitedHistory, null, 2));
-  } catch (e) {
-    // Fail silently
-  }
-}
-
 export async function getChatState(currentUser: 'Abhi' | 'Priya') {
-  syncStore(); 
-  const store = getStore();
   const now = Date.now();
   
-  // Update presence heartbeat
-  store.presence[currentUser] = now;
-  
-  const otherUser = currentUser === 'Abhi' ? 'Priya' : 'Abhi';
-  const isOtherOnline = (now - (store.presence[otherUser] || 0)) < ONLINE_THRESHOLD;
-  const isOtherTyping = (now - (store.typingStatus[otherUser] || 0)) < TYPING_THRESHOLD;
+  // 1. Update Current User Presence
+  try {
+    const presenceRef = doc(db, PRESENCE_COLLECTION, currentUser);
+    await setDoc(presenceRef, {
+      lastSeen: now,
+      isTyping: false // Default to false unless explicitly set
+    }, { merge: true });
+  } catch (e) {
+    console.error("Presence update failed", e);
+  }
 
-  // Return a fresh clone to the client
+  // 2. Fetch History (Limit 100)
+  let messages: ChatMessage[] = [];
+  try {
+    const q = query(
+      collection(db, MESSAGES_COLLECTION),
+      orderBy('timestamp', 'desc'),
+      limit(MAX_HISTORY)
+    );
+    const snapshot = await getDocs(q);
+    messages = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as ChatMessage)).reverse();
+  } catch (e) {
+    console.error("Fetch messages failed", e);
+  }
+
+  // 3. Check Partner Status
+  const otherUser = currentUser === 'Abhi' ? 'Priya' : 'Abhi';
+  let isOtherOnline = false;
+  let isOtherTyping = false;
+
+  try {
+    const otherPresenceRef = doc(db, PRESENCE_COLLECTION, otherUser);
+    const otherPresenceSnap = await getDoc(otherPresenceRef);
+    if (otherPresenceSnap.exists()) {
+      const data = otherPresenceSnap.data();
+      isOtherOnline = (now - (data.lastSeen || 0)) < ONLINE_THRESHOLD;
+      isOtherTyping = !!data.isTyping && isOtherOnline;
+    }
+  } catch (e) {
+    console.error("Partner status fetch failed", e);
+  }
+
   return {
-    messages: JSON.parse(JSON.stringify(store.messages)),
+    messages,
     isOtherOnline,
     isOtherTyping
   };
 }
 
-export async function sendMessage(sender: 'Abhi' | 'Priya', text: string, id?: string) {
-  syncStore();
-  const store = getStore();
-  
-  const newMessage: ChatMessage = {
-    id: id || (Math.random().toString(36).substring(2, 11) + Date.now().toString()),
-    sender,
-    text,
-    timestamp: Date.now(),
-  };
+/**
+ * Sends a message and triggers cleanup of anything beyond the 100th most recent.
+ */
+export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
+  try {
+    // 1. Add New Message
+    await addDoc(collection(db, MESSAGES_COLLECTION), {
+      sender,
+      text,
+      timestamp: Date.now(),
+    });
 
-  // Prevent duplicate additions
-  const exists = store.messages.some(m => m.id === newMessage.id);
-  if (!exists) {
-    store.messages.push(newMessage);
-    // Maintain strict 100 message limit for speed and space
-    if (store.messages.length > MAX_HISTORY) {
-      store.messages = store.messages.slice(-MAX_HISTORY);
+    // 2. Cleanup Background (Lightweight maintenance)
+    // We fetch more than MAX_HISTORY to find candidates for deletion
+    const q = query(
+      collection(db, MESSAGES_COLLECTION),
+      orderBy('timestamp', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.size > MAX_HISTORY) {
+      const docsToDelete = snapshot.docs.slice(MAX_HISTORY);
+      const deletePromises = docsToDelete.map(d => deleteDoc(d.ref));
+      await Promise.all(deletePromises);
     }
-    saveToDisk();
+
+    // 3. Update presence on send
+    const presenceRef = doc(db, PRESENCE_COLLECTION, sender);
+    await setDoc(presenceRef, {
+      lastSeen: Date.now(),
+      isTyping: false
+    }, { merge: true });
+
+    return { success: true };
+  } catch (err) {
+    console.error("Send message failed", err);
+    return { success: false };
   }
-
-  // Clear typing and update presence
-  store.typingStatus[sender] = 0;
-  store.presence[sender] = Date.now();
-
-  return { success: true };
 }
 
+/**
+ * Updates typing status in Firestore.
+ */
 export async function setTypingStatus(user: 'Abhi' | 'Priya', isTyping: boolean) {
-  const store = getStore();
-  store.typingStatus[user] = isTyping ? Date.now() : 0;
-  return { success: true };
+  try {
+    const presenceRef = doc(db, PRESENCE_COLLECTION, user);
+    await setDoc(presenceRef, {
+      lastSeen: Date.now(),
+      isTyping
+    }, { merge: true });
+    return { success: true };
+  } catch (err) {
+    return { success: false };
+  }
 }

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -36,42 +37,32 @@ export default function ChatPage() {
     }
   };
 
-  // Synchronize state with server
   const sync = useCallback(async () => {
     if (!user) return;
     try {
       const state = await getChatState(user);
-      
       setIsOtherOnline(state.isOtherOnline);
       setIsOtherTyping(state.isOtherTyping);
       
-      // Atomic Merge: Combine local and server state by ID to prevent flicker/deletion
-      setMessages(prev => {
-        const combined = [...prev, ...state.messages];
-        const unique = Array.from(new Map(combined.map(m => [m.id, m])).values());
-        // Sort by timestamp and keep only last 100
-        const sorted = unique.sort((a, b) => a.timestamp - b.timestamp);
-        return sorted.slice(-100);
-      });
+      // Atomic Sync: Filter duplicates and sort
+      setMessages(state.messages);
     } catch (err) {
-      // Silence sync errors
+      // Polling error silently handled
     }
   }, [user]);
 
-  // Sync effect: Polls the server for the current state
   useEffect(() => {
     if (!user) return;
 
     sync();
-    pollingRef.current = setInterval(sync, 1500);
+    pollingRef.current = setInterval(sync, 2500); // Polling interval
 
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
-      setTypingStatus(user, false);
+      if (user) setTypingStatus(user, false);
     };
   }, [user, sync]);
 
-  // Handle scroll on new messages
   useEffect(() => {
     scrollToBottom('smooth');
   }, [messages.length, isOtherTyping]);
@@ -83,10 +74,10 @@ export default function ChatPage() {
 
     if (uname === 'priyu_abhi' && pword === 'abhi') {
       setUser('Abhi');
-      toast({ title: "Portal Established", description: "Logged in as Abhi." });
+      toast({ title: "Portal Established", description: "Welcome back, Abhi." });
     } else if (uname === 'priyu_abhi' && pword === 'priya_kaur') {
       setUser('Priya');
-      toast({ title: "Portal Established", description: "Logged in as Priya." });
+      toast({ title: "Portal Established", description: "Welcome back, Priya." });
     } else {
       setLoginError('Portal access denied. Check coordinates.');
     }
@@ -98,7 +89,6 @@ export default function ChatPage() {
     setMessages([]);
     setUsername('');
     setPassword('');
-    setLoginError('');
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,7 +99,7 @@ export default function ChatPage() {
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
       setTypingStatus(user, false);
-    }, 2000);
+    }, 3000);
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -117,11 +107,10 @@ export default function ChatPage() {
     const text = inputText.trim();
     if (!text || !user || isSending) return;
 
-    const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
-    
-    // Optimistic Update: Add locally immediately
+    // Optimistic Update
+    const tempId = `temp-${Date.now()}`;
     const optimisticMsg: ChatMessage = {
-      id: messageId,
+      id: tempId,
       sender: user,
       text: text,
       timestamp: Date.now()
@@ -132,18 +121,16 @@ export default function ChatPage() {
     setIsSending(true);
 
     try {
-      const res = await sendMessage(user, text, messageId);
+      const res = await sendMessage(user, text);
       if (!res.success) throw new Error();
-      // Sync immediately after sending to confirm
-      sync();
+      sync(); // Refresh after send
     } catch (err) {
       toast({ 
         title: "Transmission Failed", 
         description: "Message could not reach the archive.", 
         variant: "destructive" 
       });
-      // Rollback optimistic update
-      setMessages(prev => prev.filter(m => m.id !== messageId));
+      setMessages(prev => prev.filter(m => m.id !== tempId));
       setInputText(text);
     } finally {
       setIsSending(false);
@@ -253,10 +240,10 @@ export default function ChatPage() {
           ref={scrollRef}
           className="flex-1 overflow-y-auto pr-2 space-y-4 mb-4 scroll-smooth scrollbar-hide"
         >
-          {messages.length === 0 && (
+          {messages.length === 0 && !isSending && (
             <div className="h-full flex flex-col items-center justify-center opacity-20 select-none">
               <Sparkles size={64} className="mb-4" />
-              <p className="text-xs uppercase font-black tracking-[0.5em]">Establishing archive...</p>
+              <p className="text-xs uppercase font-black tracking-[0.5em]">No archive found yet...</p>
             </div>
           )}
           {messages.map((msg) => (
