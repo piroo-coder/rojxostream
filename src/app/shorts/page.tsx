@@ -371,13 +371,12 @@ function ShortsPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const targetId = searchParams.get('id');
-  const idsFilter = searchParams.get('ids'); // Comma-separated list of IDs
+  const idsFilter = searchParams.get('ids'); 
   
   const [isMuted, setIsMuted] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Filter shorts based on type, search term, and optional ID list
   const shorts = library.filter(item => {
     const isShort = item.type === 'short';
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -429,6 +428,40 @@ function ShortsPageContent() {
     };
   }, [shorts]);
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+      e.preventDefault();
+
+      const currentIndex = shorts.findIndex(s => s.id === activeId);
+      let targetIndex = currentIndex;
+
+      if (e.key === 'ArrowDown') {
+        targetIndex = currentIndex + 1;
+      } else if (e.key === 'ArrowUp') {
+        targetIndex = currentIndex - 1;
+      }
+
+      if (targetIndex >= 0 && targetIndex < shorts.length) {
+        const targetId = shorts[targetIndex].id;
+        const element = document.querySelector(`[data-short-id="${targetId}"]`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else if (targetIndex === shorts.length && e.key === 'ArrowDown') {
+        // Scroll to "End of Multiverse" footer
+        const footer = containerRef.current?.querySelector('.end-of-multiverse');
+        if (footer) {
+          footer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [shorts, activeId]);
+
   return (
     <main className="h-svh bg-black overflow-hidden relative">
       <Navbar />
@@ -443,7 +476,6 @@ function ShortsPageContent() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80rem] h-[80rem] bg-white/5 rounded-full blur-[200px] animate-pulse-slow" />
       </div>
 
-      {/* Exit Button for Related Shorts */}
       {idsFilter && (
         <div className="fixed top-20 left-4 md:left-10 z-[40] animate-in slide-in-from-left-4 duration-500">
           <Button 
@@ -480,8 +512,7 @@ function ShortsPageContent() {
                 />
               </div>
             ))}
-            {/* End of Multiverse Footer Item */}
-            <div className="w-full h-full snap-start snap-always flex flex-col items-center justify-center p-8 bg-black">
+            <div className="end-of-multiverse w-full h-full snap-start snap-always flex flex-col items-center justify-center p-8 bg-black">
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000" />
                 <div className="relative w-32 h-32 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-8 backdrop-blur-3xl shadow-2xl">
