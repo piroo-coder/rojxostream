@@ -1,8 +1,7 @@
-
 "use client";
 
 import Link from 'next/link';
-import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, FileQuestion } from 'lucide-react';
+import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, FileQuestion, MessageSquare } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
@@ -77,6 +76,7 @@ export const Navbar: React.FC = () => {
   const navLinks = [
     { href: '/', icon: Home, label: 'Explore', activeColor: 'text-accent' },
     { href: '/shorts', icon: Layers, label: 'Shorts', activeColor: 'text-accent' },
+    { href: '/chat', icon: MessageSquare, label: 'Chat', activeColor: 'text-primary' },
     { href: '/about', icon: Heart, label: 'About', activeColor: 'text-pink-400' },
   ];
 
@@ -91,12 +91,11 @@ export const Navbar: React.FC = () => {
     
     const query = localInput.toLowerCase();
     
-    // Filter library based on page context: In Shorts section, only search for shorts
+    // Filter library based on page context
     const searchableLibrary = pathname === '/shorts' 
       ? library.filter(item => item.type === 'short')
       : library;
     
-    // 1. Direct matches (includes)
     const directMatches = searchableLibrary.filter(item => 
       item.title.toLowerCase().includes(query) ||
       item.type.toLowerCase().includes(query)
@@ -104,13 +103,9 @@ export const Navbar: React.FC = () => {
 
     if (directMatches.length > 0) return directMatches.slice(0, 6);
 
-    // 2. Fuzzy matches (typo tolerance)
     const fuzzyMatches = searchableLibrary.filter(item => {
       const title = item.title.toLowerCase();
-      // Allow typos based on query length (up to 3 for longer queries)
       const maxDistance = query.length < 4 ? 1 : query.length < 7 ? 2 : 3;
-      
-      // Check distance for any part of the title
       const titleWords = title.split(' ');
       return titleWords.some(word => getLevenshteinDistance(query, word.substring(0, query.length)) <= maxDistance);
     });
@@ -153,7 +148,7 @@ export const Navbar: React.FC = () => {
     setSearchTerm("");
     setShowSuggestions(false);
     
-    if (pathname !== '/shorts' && pathname !== '/') {
+    if (pathname !== '/shorts' && pathname !== '/' && pathname !== '/chat') {
       router.push('/');
     } else if (pathname === '/') {
       requestAnimationFrame(() => {
@@ -166,7 +161,6 @@ export const Navbar: React.FC = () => {
     if (e.key === 'Enter' && localInput.trim()) {
       setSearchTerm(localInput);
       setShowSuggestions(false);
-      // Default to Home if we are not already on Home/Shorts properly
       if (pathname !== '/' && pathname !== '/shorts') {
         router.push('/');
       }
@@ -174,18 +168,14 @@ export const Navbar: React.FC = () => {
   };
 
   const handleSuggestionClick = (item: MediaItem) => {
-    // Clear the search inputs immediately
     setLocalInput("");
     setSearchTerm("");
     setShowSuggestions(false);
     
     if (item.type === 'short') {
-      // Navigate to shorts page with a specific target ID
       router.push(`/shorts?id=${item.id}`);
     } else {
-      // For non-shorts, directly open the player modal
       setCurrentlyPlaying(item);
-      
       if (pathname !== '/') {
         router.push('/');
       } else {
