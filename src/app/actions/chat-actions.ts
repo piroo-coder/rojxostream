@@ -15,7 +15,7 @@ export interface ChatMessage {
   timestamp: number;
 }
 
-const CHAT_STORE_KEY = 'ROJXO_CHAT_STORE_STABLE_V4';
+const CHAT_STORE_KEY = 'ROJXO_CHAT_STORE_STABLE_V5';
 const MAX_HISTORY = 100;
 const ONLINE_THRESHOLD = 8000;
 const TYPING_THRESHOLD = 3000;

@@ -52,7 +52,8 @@ export default function ChatPage() {
     };
 
     sync();
-    pollingRef.current = setInterval(sync, 2500);
+    // Faster polling for better "real-time" experience
+    pollingRef.current = setInterval(sync, 1500);
 
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
@@ -71,7 +72,6 @@ export default function ChatPage() {
     const uname = username.trim();
     const pword = password.trim();
 
-    // Specific logic for the two users
     if (uname === 'priyu_abhi' && pword === 'abhi') {
       setUser('Abhi');
       toast({ title: "Portal Established", description: "Logged in as Abhi." });
@@ -110,7 +110,7 @@ export default function ChatPage() {
     setIsSending(true);
     setInputText('');
 
-    // Optimistic Update
+    // Optimistic Update for immediate feedback
     const tempId = `optimistic-${Date.now()}`;
     const optimisticMsg: ChatMessage = {
       id: tempId,
@@ -130,6 +130,7 @@ export default function ChatPage() {
         description: "Message could not reach the archive.", 
         variant: "destructive" 
       });
+      // Rollback optimistic update on failure
       setMessages(prev => prev.filter(m => m.id !== tempId));
       setInputText(text);
     } finally {
