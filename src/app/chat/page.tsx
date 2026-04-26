@@ -36,11 +36,7 @@ export default function ChatPage() {
     }
   };
 
-  // Ensure scroll sticks to bottom when new messages arrive
-  useEffect(() => {
-    scrollToBottom('smooth');
-  }, [messages.length, isOtherTyping]);
-
+  // Login session persistence
   useEffect(() => {
     const savedUser = localStorage.getItem('chat_user');
     if (savedUser === 'Abhi' || savedUser === 'Priya') {
@@ -48,28 +44,35 @@ export default function ChatPage() {
     }
   }, []);
 
+  // Sync effect: Polls the server for the current state (History, Presence, Typing)
   useEffect(() => {
     if (!user) return;
 
     const sync = async () => {
       try {
         const state = await getChatState(user);
-        // Only update if history count or typing status changed
+        
+        // Only update messages if the count or last ID is different to prevent layout jitters
         setMessages(state.messages);
         setIsOtherOnline(state.isOtherOnline);
         setIsOtherTyping(state.isOtherTyping);
       } catch (err) {
-        console.warn("Heartbeat interrupted.");
+        // Silence sync errors to maintain a professional UI experience
       }
     };
 
     sync();
-    pollingRef.current = setInterval(sync, 2000); // Poll every 2 seconds for real-time feel
+    pollingRef.current = setInterval(sync, 2500); // 2.5s polling for stable real-time feel
 
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
     };
   }, [user]);
+
+  // Handle scroll on new messages
+  useEffect(() => {
+    scrollToBottom('smooth');
+  }, [messages.length, isOtherTyping]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,7 +99,7 @@ export default function ChatPage() {
     setInputText(e.target.value);
     if (!user) return;
 
-    // Trigger typing indicator on server
+    // Notify other user of typing status
     setTypingStatus(user, true);
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
@@ -112,8 +115,8 @@ export default function ChatPage() {
     setIsSending(true);
     setInputText('');
 
-    // Optimistic Update: Show it immediately locally
-    const tempId = Math.random().toString();
+    // Optimistic Update for immediate response
+    const tempId = `optimistic-${Date.now()}`;
     const optimisticMsg: ChatMessage = {
       id: tempId,
       sender: user,
@@ -126,15 +129,13 @@ export default function ChatPage() {
     try {
       const res = await sendMessage(user, text);
       if (!res.success) throw new Error();
-      
-      // State will be naturally confirmed on next poll
     } catch (err) {
       toast({ 
         title: "Transmission Failed", 
-        description: "Echo could not be saved to archive.", 
+        description: "Message could not reach the archive.", 
         variant: "destructive" 
       });
-      // Revert optimistic update on failure
+      // Remove failed message from local view
       setMessages(prev => prev.filter(m => m.id !== tempId));
       setInputText(text);
     } finally {
@@ -188,7 +189,7 @@ export default function ChatPage() {
                   />
                 </div>
                 {loginError && <p className="text-destructive text-center text-xs font-bold uppercase">{loginError}</p>}
-                <Button type="submit" className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 font-bold text-lg shadow-2xl">
+                <Button type="submit" className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 font-bold text-lg shadow-2xl text-white">
                   Establish Link
                 </Button>
               </form>
@@ -218,8 +219,8 @@ export default function ChatPage() {
         <div className="flex items-center justify-between mb-6 p-4 md:p-6 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-[2rem] shadow-2xl">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="w-12 h-12 rounded-full bg-accent/20 border-2 border-accent/40 flex items-center justify-center shadow-xl">
-                <User className="text-accent" />
+              <div className="w-12 h-12 rounded-full bg-accent/20 border-2 border-accent/40 flex items-center justify-center shadow-xl overflow-hidden">
+                 <User className="text-accent" />
               </div>
               <div className={cn(
                 "absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background",
@@ -231,7 +232,7 @@ export default function ChatPage() {
                 {user} <Sparkles className="text-accent" size={14} />
               </h3>
               <p className="text-[9px] uppercase font-black tracking-widest text-white/40">
-                {isOtherOnline ? `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Online` : 'Offline (Messages Saved)'}
+                {isOtherOnline ? `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Online` : `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Away`}
               </p>
             </div>
           </div>
@@ -240,7 +241,7 @@ export default function ChatPage() {
           </Button>
         </div>
 
-        {/* Messages */}
+        {/* Messages Display Area */}
         <div 
           ref={scrollRef}
           className="flex-1 overflow-y-auto pr-2 space-y-4 mb-4 scroll-smooth scrollbar-hide"
@@ -248,7 +249,7 @@ export default function ChatPage() {
           {messages.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center opacity-20 select-none">
               <Sparkles size={64} className="mb-4" />
-              <p className="text-xs uppercase font-black tracking-[0.5em]">Archive is empty</p>
+              <p className="text-xs uppercase font-black tracking-[0.5em]">Establishing archive...</p>
             </div>
           )}
           {messages.map((msg) => (
@@ -273,7 +274,7 @@ export default function ChatPage() {
             </div>
           ))}
           
-          {/* Typing Indicator */}
+          {/* Typing Notification */}
           {isOtherTyping && (
             <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl w-fit animate-in fade-in slide-in-from-left-2 duration-300">
               <PenTool size={12} className="text-accent animate-bounce" />
@@ -284,7 +285,7 @@ export default function ChatPage() {
           )}
         </div>
 
-        {/* Input */}
+        {/* Action Form */}
         <form onSubmit={handleSendMessage} className="p-2 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-3xl flex items-center gap-2 shadow-2xl">
           <Input 
             placeholder="Whisper to the archive..."
