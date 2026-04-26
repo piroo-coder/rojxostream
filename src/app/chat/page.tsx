@@ -36,14 +36,6 @@ export default function ChatPage() {
     }
   };
 
-  // Login session persistence
-  useEffect(() => {
-    const savedUser = localStorage.getItem('chat_user');
-    if (savedUser === 'Abhi' || savedUser === 'Priya') {
-      setUser(savedUser as 'Abhi' | 'Priya');
-    }
-  }, []);
-
   // Sync effect: Polls the server for the current state (History, Presence, Typing)
   useEffect(() => {
     if (!user) return;
@@ -51,21 +43,21 @@ export default function ChatPage() {
     const sync = async () => {
       try {
         const state = await getChatState(user);
-        
-        // Only update messages if the count or last ID is different to prevent layout jitters
         setMessages(state.messages);
         setIsOtherOnline(state.isOtherOnline);
         setIsOtherTyping(state.isOtherTyping);
       } catch (err) {
-        // Silence sync errors to maintain a professional UI experience
+        // Silence sync errors
       }
     };
 
     sync();
-    pollingRef.current = setInterval(sync, 2500); // 2.5s polling for stable real-time feel
+    pollingRef.current = setInterval(sync, 2500);
 
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
+      // Clean up typing status when leaving
+      setTypingStatus(user, false);
     };
   }, [user]);
 
@@ -79,27 +71,30 @@ export default function ChatPage() {
     const uname = username.trim();
     const pword = password.trim();
 
+    // Specific logic for the two users
     if (uname === 'priyu_abhi' && pword === 'abhi') {
       setUser('Abhi');
-      localStorage.setItem('chat_user', 'Abhi');
+      toast({ title: "Portal Established", description: "Logged in as Abhi." });
     } else if (uname === 'priyu_abhi' && pword === 'priya_kaur') {
       setUser('Priya');
-      localStorage.setItem('chat_user', 'Priya');
+      toast({ title: "Portal Established", description: "Logged in as Priya." });
     } else {
       setLoginError('Portal access denied. Check coordinates.');
     }
   };
 
   const handleLogout = () => {
+    if (user) setTypingStatus(user, false);
     setUser(null);
-    localStorage.removeItem('chat_user');
+    setUsername('');
+    setPassword('');
+    setLoginError('');
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
     if (!user) return;
 
-    // Notify other user of typing status
     setTypingStatus(user, true);
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
@@ -115,7 +110,7 @@ export default function ChatPage() {
     setIsSending(true);
     setInputText('');
 
-    // Optimistic Update for immediate response
+    // Optimistic Update
     const tempId = `optimistic-${Date.now()}`;
     const optimisticMsg: ChatMessage = {
       id: tempId,
@@ -135,7 +130,6 @@ export default function ChatPage() {
         description: "Message could not reach the archive.", 
         variant: "destructive" 
       });
-      // Remove failed message from local view
       setMessages(prev => prev.filter(m => m.id !== tempId));
       setInputText(text);
     } finally {
