@@ -1,8 +1,8 @@
+
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { MediaItem } from '@/app/types/media';
-import { updateAndGetPresence } from '@/app/actions/presence-actions';
 
 interface MediaContextType {
   library: MediaItem[];
@@ -15,6 +15,21 @@ interface MediaContextType {
   setUserName: (name: string | null) => void;
   onlineUsers: string[];
 }
+
+const DUMMY_SOULS = [
+  "Suzume Iwato",
+  "Souta Munakata",
+  "Sakura Yamauchi",
+  "Haruki Shiga",
+  "Takao Akizuki",
+  "Yukari Yukino",
+  "Shoya Ishida",
+  "Shoko Nishimiya",
+  "Taki Tachibana",
+  "Mitsuha Miyamizu",
+  "Hodaka Morishima",
+  "Hina Amano"
+];
 
 const initialData: MediaItem[] = [
   {
@@ -544,26 +559,12 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (stored) {
       setUserNameState(stored);
     }
+
+    // Simulate dummy anime characters being online
+    const randomCount = Math.floor(Math.random() * 4) + 3; // 3 to 6 souls
+    const shuffled = [...DUMMY_SOULS].sort(() => 0.5 - Math.random());
+    setOnlineUsers(shuffled.slice(0, randomCount));
   }, []);
-
-  const syncPresence = useCallback(async () => {
-    if (userName) {
-      try {
-        const users = await updateAndGetPresence(userName);
-        setOnlineUsers(users);
-      } catch (err) {
-        console.error("Presence sync failed:", err);
-      }
-    }
-  }, [userName]);
-
-  useEffect(() => {
-    if (userName) {
-      syncPresence();
-      const interval = setInterval(syncPresence, 10000); // Sync every 10 seconds
-      return () => clearInterval(interval);
-    }
-  }, [userName, syncPresence]);
 
   const setUserName = (name: string | null) => {
     if (name) {

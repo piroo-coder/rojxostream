@@ -1,7 +1,8 @@
+
 "use client";
 
 import Link from 'next/link';
-import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, FileQuestion, User, Users, LogOut } from 'lucide-react';
+import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, User, Users, LogOut, Stars } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
@@ -76,8 +77,6 @@ export const Navbar: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [localInput, setLocalInput] = useState(searchTerm);
   const searchRef = useRef<HTMLDivElement>(null);
-
-  const activeSouls = onlineUsers.filter(u => u !== userName);
 
   const navLinks = [
     { href: '/', icon: Home, label: 'Explore', activeColor: 'text-accent' },
@@ -164,7 +163,7 @@ export const Navbar: React.FC = () => {
             <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
               <Play fill="currentColor" size={14} className="text-white ml-0.5" />
             </div>
-            <span className="text-base md:text-xl font-headline font-bold tracking-tighter block">
+            <span className="text-base md:text-xl font-headline font-bold tracking-tighter block text-white">
               RojXO<span className="text-primary">Stream</span>
             </span>
           </Link>
@@ -198,7 +197,7 @@ export const Navbar: React.FC = () => {
                 if (e.target.value === "") handleClearSearch();
               }}
               onKeyDown={handleKeyDown}
-              className="w-full pl-12 h-10 bg-white/5 border-white/10 rounded-full backdrop-blur-xl"
+              className="w-full pl-12 h-10 bg-white/5 border-white/10 rounded-full backdrop-blur-xl text-white placeholder:text-white/20"
             />
             {showSuggestions && localInput.length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-background/95 backdrop-blur-3xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl z-[100]">
@@ -228,13 +227,16 @@ export const Navbar: React.FC = () => {
                       <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border border-background animate-pulse" />
                     </div>
                     <span className="text-[10px] font-black uppercase tracking-widest text-white/60 hidden sm:block">
-                      {onlineUsers.length} Online
+                      {onlineUsers.length + 1} Souls Active
                     </span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-64 bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2rem] p-6 shadow-2xl z-[100]">
                    <div className="space-y-6">
-                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-accent border-b border-white/5 pb-2">Active Souls</h4>
+                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-accent border-b border-white/5 pb-2 flex items-center gap-2">
+                        <Stars size={12} className="animate-spin-slow" />
+                        Active in Multiverse
+                     </h4>
                      <div className="space-y-4">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
@@ -242,17 +244,14 @@ export const Navbar: React.FC = () => {
                           </div>
                           <p className="text-xs font-bold text-white">{userName} <span className="text-[8px] uppercase tracking-widest text-white/20">(You)</span></p>
                         </div>
-                        {activeSouls.map((u, i) => (
-                          <div key={i} className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-                              <User size={14} className="text-white/60" />
+                        {onlineUsers.map((u, i) => (
+                          <div key={i} className="flex items-center gap-3 group/soul">
+                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover/soul:border-accent/30 transition-all">
+                              <User size={14} className="text-white/60 group-hover/soul:text-accent transition-colors" />
                             </div>
-                            <p className="text-xs font-bold text-white">{u}</p>
+                            <p className="text-xs font-bold text-white/80 group-hover/soul:text-white transition-colors">{u}</p>
                           </div>
                         ))}
-                        {activeSouls.length === 0 && (
-                          <p className="text-[10px] text-center text-white/20 italic">No other souls nearby...</p>
-                        )}
                      </div>
                    </div>
                 </PopoverContent>
@@ -281,7 +280,7 @@ export const Navbar: React.FC = () => {
               </SheetTrigger>
               <SheetContent side="right" className="bg-background/95 backdrop-blur-2xl border-white/10 text-white w-[280px]">
                 <SheetHeader className="text-left mb-8">
-                  <SheetTitle className="text-2xl font-headline font-bold">Navigation</SheetTitle>
+                  <SheetTitle className="text-2xl font-headline font-bold text-white">Navigation</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6">
                   {navLinks.map((link) => (
