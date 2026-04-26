@@ -45,7 +45,7 @@ const initialData: MediaItem[] = [
         role: "The Closer",
         description: "A mysterious young man who travels Japan as a 'Closer,' shutting doors that threaten the safety of the human world. He is a teacher-in-training with a deep sense of responsibility. During the story, he is cursed and transformed into a three-legged wooden chair, relying on Suzume to help him fulfill his duty.",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkJb7HiZNRg5og-WOFj1kdoacn2WZuN9Z3qseWZxbuyjVpbhrLIjSPSOi2eZWn7sLb2jck7L4dwLTC-1BOz73C_1CIOOzYah-rbnomjLigUg&s=10",
-        background_url: "https://i.pximg.net/img-master/img/2022/12/30/22/33/24/104055492_p0_master1200.jpg"
+        background_url: "https://images6.alphacoders.com/137/1375520.jpg"
       }
     ],
     criticalAnalysis: {
@@ -76,7 +76,7 @@ const initialData: MediaItem[] = [
     wikipediaUrl: 'https://en.wikipedia.org/wiki/I_Want_to_Eat_Your_Pancreas_(film)',
     mangaUrl: 'https://www.scribd.com/document/672961829/I-Want-to-Eat-Your-Pancreas-Omnibus-2019-Digital-Danke-Empire-1',
     imdbRating: '8.0',
-    summary: 'An aloof high school student finds the diary of his popular classmate and learns she is dying from a pancreatic disease.',
+    summary: 'An aloof high student student finds the diary of his popular classmate and learns she is dying from a pancreatic disease.',
     moral: 'Live every day to the fullest, for life is fragile and beautiful.',
     genre: ['Drama', 'Romance'],
     characters: [
@@ -139,7 +139,7 @@ const initialData: MediaItem[] = [
         role: "Literature Teacher",
         description: "A 27-year-old literature teacher who has become emotionally paralyzed by professional bullying and personal isolation. She has lost her sense of taste—except for chocolate and beer—and spends rainy mornings in the garden to avoid the pain of her reality.",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIbS1zOmnpnPkUJlslhgA1KogTnAADPCkNfw&s",
-        background_url: "https://static.wikia.nocookie.net/makotoshinkai/images/2/25/Yukari_Yukino.jpg/revision/latest?cb=20180816013124"
+        background_url: "https://static.wikia.nocookie.net/makotoshinkai/images/a/a2/Yukino_in_her_new_school.jpg/revision/latest?cb=20180819140239"
       }
     ],
     criticalAnalysis: {
@@ -273,14 +273,14 @@ const initialData: MediaItem[] = [
         role: "Runaway Teenager",
         description: "A 16-year-old high school student who runs away from his isolated island home to the rain-soaked streets of Tokyo. He is determined to find a sense of freedom and belonging, eventually finding it with Hina and a small publishing company. His love for Hina drives him to challenge the laws of nature itself.",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkL8svqXCyX9peFJkQgPmBWQeRVNIvOqd0iruYOU8o_OPFwLlDlI_TV2zYitbFrRlMkyjHIpYQGFRfC-Y4vFFq4eABGioqbW4FA4c2HguD7g&s=10",
-        background_url: "https://static.wikia.nocookie.net/tenkinoko1663/images/4/48/Hodaka_Morishima_2024.png/revision/latest?cb=20201110205152"
+        background_url: "https://wallpapercave.com/wp/wp7123135.png"
       },
       {
         name: "Hina Amano",
         role: "The Sunshine Girl",
         description: "A kind and resilient young girl living alone with her younger brother in Tokyo. She possesses the supernatural ability to stop the rain and bring out the sun through prayer. Despite the physical toll her powers take on her, she uses them to bring happiness to others until the cost becomes too great to ignore.",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS67Vz5hpqaOf-r51CBaKFkX-PxGrUZ49VfUTBFrk631sMAPbCTXwWw6_nm34gSnH3I0vlcRsEYE3QqfGQ7941LZBQaw6nXo7WJEeiMkL5ouQ&s=10",
-        background_url: "https://static.wikia.nocookie.net/tenkinoko1663/images/6/67/Hina_Amano_2024.png/revision/latest?cb=20201110205649"
+        background_url: "https://wallpapercave.com/wp/wp4726386.jpg"
       }
     ],
     criticalAnalysis: {
