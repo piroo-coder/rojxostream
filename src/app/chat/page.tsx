@@ -5,8 +5,8 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, User, LogOut, MessageSquare, Lock, ShieldCheck, Sparkles } from 'lucide-react';
-import { getMessages, sendMessage, ChatMessage } from '@/app/actions/chat-actions';
+import { Send, User, LogOut, MessageSquare, Lock, ShieldCheck, Sparkles, Wifi, WifiOff, Loader2 } from 'lucide-react';
+import { getChatState, sendMessage, updatePresence, ChatMessage } from '@/app/actions/chat-actions';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
@@ -15,9 +15,12 @@ export default function ChatPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isOtherOnline, setIsOtherOnline] = useState(false);
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
+  
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Sync scroll to bottom
@@ -27,17 +30,22 @@ export default function ChatPage() {
     }
   }, [messages]);
 
-  // Polling for new messages
+  // Polling for State and Presence
   useEffect(() => {
     if (!user) return;
 
-    const fetchMessages = async () => {
-      const data = await getMessages();
-      setMessages(data);
+    const syncChat = async () => {
+      // Update our own presence
+      await updatePresence(user);
+      
+      // Get global chat state
+      const state = await getChatState(user);
+      setMessages(state.messages);
+      setIsOtherOnline(state.isOtherOnline);
     };
 
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 2000); // Poll every 2 seconds
+    syncChat();
+    const interval = setInterval(syncChat, 3000); // Sync every 3 seconds
     return () => clearInterval(interval);
   }, [user]);
 
@@ -71,14 +79,16 @@ export default function ChatPage() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim() || !user || isSending) return;
+    if (!inputText.trim() || !user || isSending || !isOtherOnline) return;
 
     setIsSending(true);
     const result = await sendMessage(user, inputText);
     if (result.success) {
       setInputText('');
-      const data = await getMessages();
-      setMessages(data);
+      const state = await getChatState(user);
+      setMessages(state.messages);
+    } else if (result.error) {
+      alert(result.error);
     }
     setIsSending(false);
   };
@@ -88,7 +98,6 @@ export default function ChatPage() {
       <main className="min-h-screen bg-background relative flex items-center justify-center p-6 overflow-hidden">
         <Navbar />
         
-        {/* Background Image Layer */}
         <div className="absolute inset-0 z-0">
           <Image 
             src="https://images8.alphacoders.com/744/thumb-1920-744721.png"
@@ -137,13 +146,13 @@ export default function ChatPage() {
                 </div>
 
                 {loginError && (
-                  <p className="text-destructive text-xs font-bold text-center uppercase tracking-widest bg-destructive/10 py-2 rounded-xl border border-destructive/20 animate-shake">
+                  <p className="text-destructive text-xs font-bold text-center uppercase tracking-widest bg-destructive/10 py-2 rounded-xl border border-destructive/20">
                     {loginError}
                   </p>
                 )}
 
-                <Button type="submit" className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 font-bold text-lg shadow-2xl shadow-primary/20 transition-all active:scale-95">
-                  Access Multiverse
+                <Button type="submit" className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 font-bold text-lg shadow-2xl transition-all active:scale-95">
+                  Access Live Session
                 </Button>
               </form>
             </CardContent>
@@ -157,7 +166,6 @@ export default function ChatPage() {
     <main className="h-screen bg-background relative flex flex-col pt-16 md:pt-20 overflow-hidden">
       <Navbar />
       
-      {/* Background Image Layer */}
       <div className="absolute inset-0 z-0">
         <Image 
           src="https://images8.alphacoders.com/744/thumb-1920-744721.png"
@@ -171,77 +179,110 @@ export default function ChatPage() {
       </div>
 
       <div className="relative z-10 flex-1 flex flex-col max-w-5xl w-full mx-auto p-4 md:p-8 overflow-hidden">
-        {/* Chat Header */}
+        {/* Chat Header with Online Status */}
         <div className="flex items-center justify-between mb-6 p-4 md:p-6 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-[2rem] shadow-2xl">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-accent/20 border-2 border-accent/40 flex items-center justify-center shadow-xl">
-              <User className="text-accent" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-full bg-accent/20 border-2 border-accent/40 flex items-center justify-center shadow-xl">
+                <User className="text-accent" />
+              </div>
+              <div className={cn(
+                "absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-background",
+                isOtherOnline ? "bg-emerald-500 animate-pulse" : "bg-neutral-600"
+              )} />
             </div>
             <div>
               <h3 className="text-xl font-headline font-bold text-white tracking-tight flex items-center gap-2">
                 {user} <Sparkles className="text-accent" size={14} />
               </h3>
-              <p className="text-[10px] uppercase font-black tracking-widest text-white/40">Secured Dimensional Link</p>
+              <div className="flex items-center gap-1.5">
+                {isOtherOnline ? (
+                  <span className="flex items-center gap-1 text-[9px] uppercase font-black tracking-widest text-emerald-400">
+                    <Wifi size={10} /> {user === 'Abhi' ? 'Priya' : 'Abhi'} is Online
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-[9px] uppercase font-black tracking-widest text-white/30">
+                    <WifiOff size={10} /> Waiting for {user === 'Abhi' ? 'Priya' : 'Abhi'}...
+                  </span>
+                )}
+              </div>
             </div>
           </div>
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={handleLogout}
-            className="rounded-full h-12 w-12 hover:bg-destructive/20 hover:text-destructive text-white/40 transition-all"
+            className="rounded-full h-12 w-12 hover:bg-destructive/20 hover:text-destructive text-white/40"
           >
             <LogOut size={20} />
           </Button>
         </div>
 
-        {/* Messages Area */}
-        <div 
-          ref={scrollRef}
-          className="flex-1 overflow-y-auto pr-2 space-y-4 mb-6 scroll-smooth scrollbar-hide mask-fade-top"
-        >
-          {messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-30">
-              <MessageSquare size={48} className="text-white" />
-              <p className="text-sm font-black uppercase tracking-[0.4em] text-white">No communications yet</p>
+        {/* Messages Area / Offline State */}
+        {!isOtherOnline ? (
+          <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 animate-in fade-in duration-700">
+            <div className="w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center animate-pulse">
+              <Loader2 size={48} className="text-white/20 animate-spin" />
             </div>
-          ) : (
-            messages.map((msg) => (
-              <div 
-                key={msg.id}
-                className={cn(
-                  "flex flex-col max-w-[80%] md:max-w-[70%] animate-in slide-in-from-bottom-2 duration-300",
-                  msg.sender === user ? "ml-auto items-end" : "mr-auto items-start"
-                )}
-              >
-                <div className={cn(
-                  "px-6 py-4 rounded-[1.75rem] text-sm md:text-base leading-relaxed shadow-xl",
-                  msg.sender === user 
-                    ? "bg-primary text-white rounded-tr-sm" 
-                    : "bg-white/10 backdrop-blur-3xl text-white border border-white/10 rounded-tl-sm"
-                )}>
-                  {msg.text}
-                </div>
-                <span className="text-[9px] uppercase font-black tracking-widest text-white/20 mt-1.5 px-2">
-                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
+            <div className="space-y-2">
+              <h4 className="text-2xl font-headline font-bold text-white">Searching for Connection</h4>
+              <p className="text-white/40 text-sm max-w-xs mx-auto italic">
+                "Real-time session is only active when both souls are present in the portal."
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div 
+            ref={scrollRef}
+            className="flex-1 overflow-y-auto pr-2 space-y-4 mb-6 scroll-smooth scrollbar-hide mask-fade-top"
+          >
+            {messages.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-30">
+                <MessageSquare size={48} className="text-white" />
+                <p className="text-sm font-black uppercase tracking-[0.4em] text-white">Session Started</p>
               </div>
-            ))
-          )}
-        </div>
+            ) : (
+              messages.map((msg) => (
+                <div 
+                  key={msg.id}
+                  className={cn(
+                    "flex flex-col max-w-[80%] md:max-w-[70%] animate-in slide-in-from-bottom-2 duration-300",
+                    msg.sender === user ? "ml-auto items-end" : "mr-auto items-start"
+                  )}
+                >
+                  <div className={cn(
+                    "px-6 py-4 rounded-[1.75rem] text-sm md:text-base shadow-xl",
+                    msg.sender === user 
+                      ? "bg-primary text-white rounded-tr-sm" 
+                      : "bg-white/10 backdrop-blur-3xl text-white border border-white/10 rounded-tl-sm"
+                  )}>
+                    {msg.text}
+                  </div>
+                  <span className="text-[9px] uppercase font-black tracking-widest text-white/20 mt-1.5 px-2">
+                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        )}
 
-        {/* Input Area */}
-        <form onSubmit={handleSendMessage} className="p-2 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-3xl flex items-center gap-2 shadow-2xl">
+        {/* Input Area (Disabled when offline) */}
+        <form onSubmit={handleSendMessage} className={cn(
+          "p-2 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-3xl flex items-center gap-2 shadow-2xl transition-all duration-500",
+          !isOtherOnline && "opacity-20 pointer-events-none grayscale"
+        )}>
           <Input 
-            placeholder="Whisper to the soul..."
+            placeholder={isOtherOnline ? "Whisper to the soul..." : "Establishing link..."}
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            disabled={isSending}
+            disabled={isSending || !isOtherOnline}
             className="flex-1 h-14 bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-white placeholder:text-white/20 text-base"
           />
           <Button 
             type="submit" 
             size="icon" 
-            disabled={isSending || !inputText.trim()}
+            disabled={isSending || !inputText.trim() || !isOtherOnline}
             className="h-12 w-12 rounded-2xl bg-accent hover:bg-accent/80 text-background transition-all active:scale-90 shadow-xl"
           >
             <Send size={20} />
