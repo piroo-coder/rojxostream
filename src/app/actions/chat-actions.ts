@@ -1,8 +1,8 @@
 'use server';
 
 /**
- * @fileOverview Refined Chat Actions with Stable Global Persistence
- * Implements a robust memory store with a file-system backup.
+ * @fileOverview Robust Chat Actions with singleton persistence.
+ * Ensures 100 messages are maintained and shared between users.
  */
 
 import fs from 'fs';
@@ -15,7 +15,7 @@ export interface ChatMessage {
   timestamp: number;
 }
 
-const CHAT_STORE_KEY = 'ROJXO_CHAT_STORE_V2';
+const CHAT_STORE_KEY = 'ROJXO_CHAT_STORE_STABLE_V3';
 const MAX_HISTORY = 100;
 const ONLINE_THRESHOLD = 10000;
 const TYPING_THRESHOLD = 3000;
@@ -27,7 +27,7 @@ interface GlobalStore {
   initialized: boolean;
 }
 
-// Access the global store securely using a stable key
+// Global reference for serverless environments (best effort persistence)
 function getStore(): GlobalStore {
   const g = global as any;
   if (!g[CHAT_STORE_KEY]) {
@@ -43,32 +43,33 @@ function getStore(): GlobalStore {
 
 const getFilePath = () => path.join(process.cwd(), 'src/app/lib/messages.json');
 
-// Ensure history is loaded from disk into memory
+// Improved Sync: Only loads once and never clears existing memory
 function syncStore() {
   const store = getStore();
   
-  // If memory is already initialized, we just ensure it's not empty if the file has content
-  // This is a "singleton" initialization pattern
-  if (store.initialized && store.messages.length > 0) return;
+  // If already initialized, we trust the memory store (source of truth)
+  if (store.initialized) return;
 
   try {
     const filePath = getFilePath();
     if (fs.existsSync(filePath)) {
       const content = fs.readFileSync(filePath, 'utf8');
       const parsed = JSON.parse(content || '[]');
-      if (Array.isArray(parsed)) {
-        // Load only the most recent 100
-        store.messages = parsed.slice(-MAX_HISTORY);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Only load if memory is empty and file has content
+        if (store.messages.length === 0) {
+          store.messages = parsed.slice(-MAX_HISTORY);
+        }
       }
     }
   } catch (e) {
-    console.warn("Note: File persistence check occurred. Memory store remains active source of truth.");
+    console.warn("Persistence sync warning: Proceeding with memory-only store.");
   } finally {
     store.initialized = true;
   }
 }
 
-// Best-effort save to disk to survive server restarts (local)
+// Best-effort save to disk (works in local environments)
 function saveToDisk() {
   const store = getStore();
   try {
@@ -80,12 +81,12 @@ function saveToDisk() {
     const limitedHistory = store.messages.slice(-MAX_HISTORY);
     fs.writeFileSync(filePath, JSON.stringify(limitedHistory, null, 2));
   } catch (e) {
-    // Silence error on serverless environments like Vercel which are read-only
+    // Silence error on read-only environments (Vercel)
   }
 }
 
 export async function getChatState(currentUser: 'Abhi' | 'Priya') {
-  syncStore(); // Ensure memory is populated from archive
+  syncStore(); 
   const store = getStore();
   const now = Date.now();
   
@@ -96,9 +97,8 @@ export async function getChatState(currentUser: 'Abhi' | 'Priya') {
   const isOtherOnline = (now - (store.presence[otherUser] || 0)) < ONLINE_THRESHOLD;
   const isOtherTyping = (now - (store.typingStatus[otherUser] || 0)) < TYPING_THRESHOLD;
 
-  // Return a fresh copy of the archive
   return {
-    messages: [...store.messages],
+    messages: [...store.messages], // Return a snapshot of the archive
     isOtherOnline,
     isOtherTyping
   };
@@ -115,14 +115,15 @@ export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
     timestamp: Date.now(),
   };
 
+  // Add message to global archive
   store.messages.push(newMessage);
   
-  // Enforce strict 100 message limit
+  // Maintain strict 100 message limit
   if (store.messages.length > MAX_HISTORY) {
     store.messages = store.messages.slice(-MAX_HISTORY);
   }
 
-  // Clear typing status and update presence
+  // Activity updates
   store.typingStatus[sender] = 0;
   store.presence[sender] = Date.now();
 

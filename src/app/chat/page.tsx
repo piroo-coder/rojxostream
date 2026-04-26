@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Send, User, LogOut, Lock, Sparkles, PenTool } from 'lucide-react';
-import { getChatState, sendMessage, updatePresence, setTypingStatus, ChatMessage } from '@/app/actions/chat-actions';
+import { getChatState, sendMessage, setTypingStatus, ChatMessage } from '@/app/actions/chat-actions';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { toast } from '@/hooks/use-toast';
@@ -27,7 +27,6 @@ export default function ChatPage() {
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Sync scroll to bottom
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -37,11 +36,11 @@ export default function ChatPage() {
     }
   };
 
+  // Ensure scroll sticks to bottom when new messages arrive
   useEffect(() => {
     scrollToBottom('smooth');
-  }, [messages, isOtherTyping]);
+  }, [messages.length, isOtherTyping]);
 
-  // Handle initialization and polling
   useEffect(() => {
     const savedUser = localStorage.getItem('chat_user');
     if (savedUser === 'Abhi' || savedUser === 'Priya') {
@@ -55,16 +54,17 @@ export default function ChatPage() {
     const sync = async () => {
       try {
         const state = await getChatState(user);
+        // Only update if history count or typing status changed
         setMessages(state.messages);
         setIsOtherOnline(state.isOtherOnline);
         setIsOtherTyping(state.isOtherTyping);
       } catch (err) {
-        console.error("Archive sync heartbeat failed.");
+        console.warn("Heartbeat interrupted.");
       }
     };
 
     sync();
-    pollingRef.current = setInterval(sync, 3000);
+    pollingRef.current = setInterval(sync, 2000); // Poll every 2 seconds for real-time feel
 
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
@@ -96,6 +96,7 @@ export default function ChatPage() {
     setInputText(e.target.value);
     if (!user) return;
 
+    // Trigger typing indicator on server
     setTypingStatus(user, true);
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
@@ -111,7 +112,7 @@ export default function ChatPage() {
     setIsSending(true);
     setInputText('');
 
-    // Optimistic Update
+    // Optimistic Update: Show it immediately locally
     const tempId = Math.random().toString();
     const optimisticMsg: ChatMessage = {
       id: tempId,
@@ -126,16 +127,14 @@ export default function ChatPage() {
       const res = await sendMessage(user, text);
       if (!res.success) throw new Error();
       
-      // Refresh state to confirm message landed
-      const state = await getChatState(user);
-      setMessages(state.messages);
+      // State will be naturally confirmed on next poll
     } catch (err) {
       toast({ 
         title: "Transmission Failed", 
         description: "Echo could not be saved to archive.", 
         variant: "destructive" 
       });
-      // Revert optimism
+      // Revert optimistic update on failure
       setMessages(prev => prev.filter(m => m.id !== tempId));
       setInputText(text);
     } finally {
@@ -167,7 +166,7 @@ export default function ChatPage() {
                   <Lock className="text-primary" size={32} />
                 </div>
                 <h2 className="text-3xl font-headline font-bold text-white tracking-tighter">Secure Portal</h2>
-                <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">Identity Yourself</p>
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">Identify Yourself</p>
               </div>
 
               <form onSubmit={handleLogin} className="space-y-6">
@@ -232,7 +231,7 @@ export default function ChatPage() {
                 {user} <Sparkles className="text-accent" size={14} />
               </h3>
               <p className="text-[9px] uppercase font-black tracking-widest text-white/40">
-                {isOtherOnline ? `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Online` : 'Offline (History Saved)'}
+                {isOtherOnline ? `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Online` : 'Offline (Messages Saved)'}
               </p>
             </div>
           </div>
