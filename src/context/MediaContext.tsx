@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { MediaItem } from '@/app/types/media';
 
 interface MediaContextType {
@@ -11,6 +11,8 @@ interface MediaContextType {
   addToLibrary: (item: MediaItem) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  userName: string | null;
+  setUserName: (name: string | null) => void;
 }
 
 const initialData: MediaItem[] = [
@@ -533,6 +535,21 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [library, setLibrary] = useState<MediaItem[]>(initialData);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<MediaItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [userName, setUserNameState] = useState<string | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('rojxo_user');
+    if (stored) setUserNameState(stored);
+  }, []);
+
+  const setUserName = (name: string | null) => {
+    if (name) {
+      localStorage.setItem('rojxo_user', name);
+    } else {
+      localStorage.removeItem('rojxo_user');
+    }
+    setUserNameState(name);
+  };
 
   const addToLibrary = (item: MediaItem) => {
     setLibrary((prev) => [item, ...prev]);
@@ -545,7 +562,9 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setCurrentlyPlaying, 
       addToLibrary,
       searchTerm,
-      setSearchTerm
+      setSearchTerm,
+      userName,
+      setUserName
     }}>
       {children}
     </MediaContext.Provider>

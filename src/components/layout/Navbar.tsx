@@ -1,7 +1,8 @@
+
 "use client";
 
 import Link from 'next/link';
-import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, FileQuestion, MessageSquare } from 'lucide-react';
+import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, FileQuestion, User, Users, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
@@ -17,8 +18,12 @@ import {
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { MediaItem } from '@/app/types/media';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
-// Simple Levenshtein distance for fuzzy matching
 const getLevenshteinDistance = (a: string, b: string): number => {
   const matrix = Array.from({ length: a.length + 1 }, () =>
     Array.from({ length: b.length + 1 }, () => 0)
@@ -67,49 +72,43 @@ const HighlightText = ({ text, highlight }: { text: string; highlight: string })
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { library, searchTerm, setSearchTerm, setCurrentlyPlaying } = useMedia();
+  const { library, searchTerm, setSearchTerm, setCurrentlyPlaying, userName, setUserName } = useMedia();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [localInput, setLocalInput] = useState(searchTerm);
   const searchRef = useRef<HTMLDivElement>(null);
 
+  // Mock Online Presence (Client Side Only)
+  const mockOnlineUsers = ["Priya", "Abhi", "Guest Soul", "Explorer"];
+  const activeSouls = mockOnlineUsers.filter(u => u !== userName);
+
   const navLinks = [
     { href: '/', icon: Home, label: 'Explore', activeColor: 'text-accent' },
     { href: '/shorts', icon: Layers, label: 'Shorts', activeColor: 'text-accent' },
-    { href: '/chat', icon: MessageSquare, label: 'Chat', activeColor: 'text-primary' },
     { href: '/about', icon: Heart, label: 'About', activeColor: 'text-pink-400' },
   ];
 
-  // Sync local input with global search term if it changes externally
   useEffect(() => {
     setLocalInput(searchTerm);
   }, [searchTerm]);
 
-  // Advanced Filtering with Fuzzy Matching
   const getSuggestions = () => {
     if (localInput.length === 0) return [];
-    
     const query = localInput.toLowerCase();
-    
-    // Filter library based on page context
     const searchableLibrary = pathname === '/shorts' 
       ? library.filter(item => item.type === 'short')
       : library;
-    
     const directMatches = searchableLibrary.filter(item => 
       item.title.toLowerCase().includes(query) ||
       item.type.toLowerCase().includes(query)
     );
-
     if (directMatches.length > 0) return directMatches.slice(0, 6);
-
     const fuzzyMatches = searchableLibrary.filter(item => {
       const title = item.title.toLowerCase();
       const maxDistance = query.length < 4 ? 1 : query.length < 7 ? 2 : 3;
       const titleWords = title.split(' ');
       return titleWords.some(word => getLevenshteinDistance(query, word.substring(0, query.length)) <= maxDistance);
     });
-
     return fuzzyMatches.slice(0, 6);
   };
 
@@ -125,35 +124,12 @@ export const Navbar: React.FC = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const scrollToTop = () => {
-    const main = document.getElementById('home-main-container');
-    if (main) {
-      main.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const handleSearchChange = (value: string) => {
-    setLocalInput(value);
-    setShowSuggestions(true);
-    
-    if (value === "") {
-      handleClearSearch();
-    }
-  };
-
   const handleClearSearch = () => {
     setLocalInput("");
     setSearchTerm("");
     setShowSuggestions(false);
-    
-    if (pathname !== '/shorts' && pathname !== '/' && pathname !== '/chat') {
+    if (pathname !== '/shorts' && pathname !== '/') {
       router.push('/');
-    } else if (pathname === '/') {
-      requestAnimationFrame(() => {
-        scrollToTop();
-      });
     }
   };
 
@@ -171,18 +147,11 @@ export const Navbar: React.FC = () => {
     setLocalInput("");
     setSearchTerm("");
     setShowSuggestions(false);
-    
     if (item.type === 'short') {
       router.push(`/shorts?id=${item.id}`);
     } else {
       setCurrentlyPlaying(item);
-      if (pathname !== '/') {
-        router.push('/');
-      } else {
-        requestAnimationFrame(() => {
-          scrollToTop();
-        });
-      }
+      if (pathname !== '/') router.push('/');
     }
   };
 
@@ -193,9 +162,8 @@ export const Navbar: React.FC = () => {
       "hover:bg-background/60"
     )}>
       <div className="container mx-auto flex items-center justify-between gap-4">
-        {/* Logo */}
         <div className={cn("flex items-center gap-2 flex-shrink-0 transition-all duration-300", isSearchOpen && "scale-0 w-0 opacity-0 overflow-hidden sm:scale-100 sm:w-auto sm:opacity-100")}>
-          <Link href="/" className="flex items-center gap-2 group" onClick={() => handleClearSearch()}>
+          <Link href="/" className="flex items-center gap-2 group" onClick={handleClearSearch}>
             <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
               <Play fill="currentColor" size={14} className="text-white ml-0.5" />
             </div>
@@ -205,7 +173,6 @@ export const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
         <div className="hidden lg:flex items-center gap-8 text-[10px] font-black tracking-[0.25em] uppercase">
           {navLinks.map((link) => (
             <Link 
@@ -221,148 +188,90 @@ export const Navbar: React.FC = () => {
           ))}
         </div>
 
-        {/* Search & Suggestions */}
         <div className="flex items-center gap-2 md:gap-4 flex-1 justify-end" ref={searchRef}>
-          <div className="relative group flex items-center w-full max-w-sm sm:max-w-md">
-            {/* Desktop Search UI */}
-            <div className="hidden sm:flex relative items-center w-full">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400/40 group-focus-within:text-accent transition-colors duration-300" size={18} />
-              <Input 
-                placeholder={pathname === '/shorts' ? "Find shorts..." : "Find universe..."}
-                value={localInput}
-                onFocus={() => setShowSuggestions(true)}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className={cn(
-                  "w-full pl-12 h-10 bg-white/5 border-white/10 focus:bg-white/10",
-                  "focus-visible:ring-1 focus-visible:ring-purple-400/20 rounded-full backdrop-blur-xl",
-                  "placeholder:text-white/20 text-sm transition-all duration-500",
-                  "shadow-2xl group-hover:border-white/20",
-                  "font-medium"
-                )}
-              />
-              {localInput && (
-                <button 
-                  onClick={handleClearSearch}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors"
-                >
-                  <X size={14} />
-                </button>
-              )}
-
-              {/* Suggestions Dropdown (Desktop) */}
-              {showSuggestions && localInput.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-background/95 backdrop-blur-3xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-top-2 duration-300 z-[100]">
-                  <div className="py-2">
-                    {suggestions.length > 0 ? (
-                      suggestions.map((item) => (
-                        <button
-                          key={item.id}
-                          onClick={() => handleSuggestionClick(item)}
-                          className="w-full flex items-center gap-4 px-4 py-3 hover:bg-white/5 transition-colors text-left group/item"
-                        >
-                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-muted flex-shrink-0 border border-white/5">
-                            <Image 
-                              src={item.thumbnailUrl} 
-                              alt="" 
-                              width={48} 
-                              height={48} 
-                              className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500" 
-                              unoptimized
-                            />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold text-white truncate">
-                              <HighlightText text={item.title} highlight={localInput} />
-                            </p>
-                            <p className="text-[10px] text-white/40 uppercase tracking-widest font-black">{item.type}</p>
-                          </div>
-                          <ChevronRight size={14} className="text-white/10 group-hover/item:text-accent transition-colors" />
-                        </button>
-                      ))
-                    ) : (
-                      <div className="px-6 py-8 text-center space-y-2">
-                        <FileQuestion className="mx-auto text-white/10" size={32} />
-                        <p className="text-sm font-bold text-white/40 uppercase tracking-widest">No results found</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Mobile Search Button & Mobile Dropdown */}
-            <div className={cn("flex sm:hidden items-center transition-all duration-300 w-full", isSearchOpen ? "flex-1" : "w-10")}>
-              {isSearchOpen ? (
-                <div className="flex items-center w-full gap-2 animate-in slide-in-from-right-4 duration-300 relative">
-                  <Input 
-                    autoFocus
-                    placeholder="Search..." 
-                    value={localInput}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    onFocus={() => setShowSuggestions(true)}
-                    className="h-10 bg-white/5 border-white/10 rounded-full pl-10 pr-10 focus:bg-white/10 w-full"
-                  />
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-accent" size={16} />
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8 rounded-full text-white/40" 
-                    onClick={() => {
-                      setIsSearchOpen(false);
-                      handleClearSearch();
-                    }}
-                  >
-                    <X size={16} />
-                  </Button>
-
-                  {/* Suggestions Dropdown (Mobile) */}
-                  {showSuggestions && localInput.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-background/95 backdrop-blur-3xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-[100]">
-                      {suggestions.length > 0 ? (
-                        suggestions.map((item) => (
-                          <button
-                            key={item.id}
-                            onClick={() => {
-                              handleSuggestionClick(item);
-                              setIsSearchOpen(false);
-                            }}
-                            className="w-full flex items-center gap-3 px-3 py-3 border-b border-white/5 last:border-0"
-                          >
-                            <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
-                              <Image src={item.thumbnailUrl} alt="" width={40} height={40} className="w-full h-full object-cover" unoptimized />
-                            </div>
-                            <div className="flex-1 min-w-0 text-left">
-                              <p className="text-xs font-bold text-white truncate">
-                                <HighlightText text={item.title} highlight={localInput} />
-                              </p>
-                              <p className="text-[8px] text-white/40 uppercase font-black">{item.type}</p>
-                            </div>
-                          </button>
-                        ))
-                      ) : (
-                        <div className="p-6 text-center text-white/40 text-[10px] font-black uppercase tracking-widest">
-                          No matches
-                        </div>
-                      )}
+          <div className="hidden sm:flex relative items-center w-full max-w-sm">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400/40" size={18} />
+            <Input 
+              placeholder="Find universe..."
+              value={localInput}
+              onFocus={() => setShowSuggestions(true)}
+              onChange={(e) => {
+                setLocalInput(e.target.value);
+                setShowSuggestions(true);
+                if (e.target.value === "") handleClearSearch();
+              }}
+              onKeyDown={handleKeyDown}
+              className="w-full pl-12 h-10 bg-white/5 border-white/10 rounded-full backdrop-blur-xl"
+            />
+            {showSuggestions && localInput.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-background/95 backdrop-blur-3xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl z-[100]">
+                {suggestions.map((item) => (
+                  <button key={item.id} onClick={() => handleSuggestionClick(item)} className="w-full flex items-center gap-4 px-4 py-3 hover:bg-white/5 text-left">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-muted flex-shrink-0">
+                      <Image src={item.thumbnailUrl} alt="" width={40} height={40} className="w-full h-full object-cover" unoptimized />
                     </div>
-                  )}
-                </div>
-              ) : (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-10 w-10 rounded-full bg-white/5 border border-white/10 text-white hover:text-accent"
-                  onClick={() => setIsSearchOpen(true)}
-                >
-                  <Search size={20} />
-                </Button>
-              )}
-            </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-white truncate"><HighlightText text={item.title} highlight={localInput} /></p>
+                      <p className="text-[10px] text-white/40 uppercase font-black">{item.type}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Mobile Navigation Trigger */}
+          {/* User Presence & Identity */}
+          {userName && (
+            <div className="flex items-center gap-3">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" className="h-10 px-3 md:px-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 flex items-center gap-2 group transition-all">
+                    <div className="relative">
+                      <Users size={16} className="text-accent group-hover:scale-110 transition-transform" />
+                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border border-background animate-pulse" />
+                    </div>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/60 hidden sm:block">
+                      {activeSouls.length + 1} Online
+                    </span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2rem] p-6 shadow-2xl z-[100]">
+                   <div className="space-y-6">
+                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-accent border-b border-white/5 pb-2">Active Souls</h4>
+                     <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
+                            <User size={14} className="text-primary" />
+                          </div>
+                          <p className="text-xs font-bold text-white">{userName} <span className="text-[8px] uppercase tracking-widest text-white/20">(You)</span></p>
+                        </div>
+                        {activeSouls.map((u, i) => (
+                          <div key={i} className="flex items-center gap-3 opacity-60">
+                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                              <User size={14} className="text-white/40" />
+                            </div>
+                            <p className="text-xs font-bold text-white/60">{u}</p>
+                          </div>
+                        ))}
+                     </div>
+                   </div>
+                </PopoverContent>
+              </Popover>
+
+              <div className="hidden md:flex items-center gap-3 pl-2 border-l border-white/10">
+                <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center border border-accent/40 shadow-lg">
+                  <User size={14} className="text-accent" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white">{userName}</span>
+                  <button onClick={() => setUserName(null)} className="text-[8px] uppercase font-black tracking-widest text-white/20 hover:text-destructive transition-colors text-left flex items-center gap-1">
+                    <LogOut size={8} /> Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="lg:hidden flex-shrink-0">
             <Sheet>
               <SheetTrigger asChild>
@@ -370,23 +279,21 @@ export const Navbar: React.FC = () => {
                   <Menu size={24} />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="bg-background/95 backdrop-blur-2xl border-white/10 text-white w-[280px] sm:w-[350px]">
+              <SheetContent side="right" className="bg-background/95 backdrop-blur-2xl border-white/10 text-white w-[280px]">
                 <SheetHeader className="text-left mb-8">
                   <SheetTitle className="text-2xl font-headline font-bold">Navigation</SheetTitle>
                 </SheetHeader>
                 <div className="flex flex-col gap-6">
                   {navLinks.map((link) => (
-                    <Link 
-                      key={link.href}
-                      href={link.href} 
-                      className={cn(
-                        "flex items-center gap-4 text-xl font-headline font-bold tracking-tight py-3 px-4 rounded-2xl transition-all",
-                        pathname === link.href ? "bg-white/10 " + link.activeColor : "text-white/60 hover:bg-white/5"
-                      )}
-                    >
+                    <Link key={link.href} href={link.href} className={cn("flex items-center gap-4 text-xl font-headline font-bold py-3 px-4 rounded-2xl", pathname === link.href ? "bg-white/10 " + link.activeColor : "text-white/60")}>
                       <link.icon size={24} /> {link.label}
                     </Link>
                   ))}
+                  {userName && (
+                    <button onClick={() => setUserName(null)} className="flex items-center gap-4 text-xl font-headline font-bold py-3 px-4 rounded-2xl text-destructive/60">
+                      <LogOut size={24} /> Logout
+                    </button>
+                  )}
                 </div>
               </SheetContent>
             </Sheet>

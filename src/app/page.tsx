@@ -5,9 +5,10 @@ import { useMedia } from '@/context/MediaContext';
 import { Navbar } from '@/components/layout/Navbar';
 import { MediaCard } from '@/components/media/MediaCard';
 import { MediaDetails } from '@/components/media/MediaDetails';
-import { ChevronDown, Play, Info, Sparkles, Search } from 'lucide-react';
+import { ChevronDown, Play, Info, Sparkles, Search, User, Lock, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import {
@@ -16,9 +17,29 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function HomePage() {
-  const { library, setCurrentlyPlaying, searchTerm } = useMedia();
+  const { library, setCurrentlyPlaying, searchTerm, userName, setUserName } = useMedia();
+  const [nameInput, setNameInput] = useState('');
+  const [showGate, setShowGate] = useState(false);
+
+  useEffect(() => {
+    // Delay showing gate slightly for a smooth fade in
+    if (!userName) {
+      const timer = setTimeout(() => setShowGate(true), 500);
+      return () => clearTimeout(timer);
+    } else {
+      setShowGate(false);
+    }
+  }, [userName]);
+
+  const handleGateSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (nameInput.trim()) {
+      setUserName(nameInput.trim());
+    }
+  };
 
   const filteredLibrary = library.filter(item => 
     item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -36,6 +57,52 @@ export default function HomePage() {
     <main id="home-main-container" className="h-svh overflow-y-scroll snap-y snap-mandatory bg-background relative scroll-smooth scrollbar-hide">
       <Navbar />
       
+      {/* Identity Verification Gate Overlay */}
+      {showGate && (
+        <div className="fixed inset-0 z-[100] bg-background flex items-center justify-center p-6 animate-in fade-in duration-1000">
+           <div className="absolute inset-0 z-0">
+            <Image 
+              src="https://images8.alphacoders.com/744/thumb-1920-744721.png"
+              alt=""
+              fill
+              className="object-cover opacity-20 blur-xl scale-110"
+              unoptimized
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+          </div>
+
+          <div className="relative z-10 w-full max-w-md animate-in zoom-in-95 duration-700">
+            <Card className="bg-white/5 border-white/10 backdrop-blur-3xl rounded-[3rem] shadow-2xl overflow-hidden border">
+              <CardContent className="p-12 space-y-10">
+                <div className="text-center space-y-4">
+                  <div className="w-24 h-24 rounded-full bg-primary/20 border-2 border-primary/30 flex items-center justify-center mx-auto shadow-2xl">
+                    <Lock className="text-primary" size={32} />
+                  </div>
+                  <h2 className="text-3xl font-headline font-bold text-white tracking-tighter">Enter the Multiverse</h2>
+                  <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.4em]">Identify Yourself</p>
+                </div>
+
+                <form onSubmit={handleGateSubmit} className="space-y-6">
+                  <div className="space-y-4">
+                    <Input 
+                      placeholder="Enter your name..."
+                      value={nameInput}
+                      onChange={(e) => setNameInput(e.target.value)}
+                      className="h-16 bg-white/5 border-white/10 rounded-2xl focus:bg-white/10 transition-all placeholder:text-white/20 text-center text-lg font-bold"
+                      required
+                      autoFocus
+                    />
+                  </div>
+                  <Button type="submit" className="w-full h-16 rounded-2xl bg-primary hover:bg-primary/90 font-black text-lg shadow-2xl group">
+                    Begin Journey <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
+      
       {!searchTerm && allAnime.length > 0 && (
         <section className="h-svh w-full snap-start relative overflow-hidden bg-black">
           <Carousel 
@@ -51,7 +118,6 @@ export default function HomePage() {
             <CarouselContent className="h-full ml-0">
               {allAnime.map((item) => (
                 <CarouselItem key={item.id} className="h-full w-full pl-0 relative flex flex-col justify-end pb-12 sm:pb-20 md:pb-24 px-6 sm:px-12 md:px-20 lg:px-24 overflow-hidden">
-                  {/* Immersive Background Image - Fully Responsive Fill */}
                   <div className="absolute inset-0 z-0 h-full w-full">
                     <Image 
                       src={item.thumbnailUrl} 
@@ -62,13 +128,11 @@ export default function HomePage() {
                       priority
                       unoptimized
                     />
-                    {/* Multi-layered Gradients for Visibility */}
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
                     <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-transparent to-transparent hidden md:block" />
                     <div className="absolute inset-0 bg-black/40 md:hidden" />
                   </div>
                   
-                  {/* Slide Content Overlay */}
                   <div className="relative z-10 max-w-4xl w-full animate-in fade-in slide-in-from-bottom-8 duration-1000 pt-32">
                     <div className="flex items-center gap-2 mb-3 md:mb-4">
                       <div className="bg-primary/20 backdrop-blur-xl px-2.5 py-1 rounded-full flex items-center gap-2 border border-primary/30 shadow-2xl">
@@ -105,14 +169,12 @@ export default function HomePage() {
             </CarouselContent>
           </Carousel>
 
-          {/* Centered Scroll Indicator */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce opacity-30 z-20 pointer-events-none hidden md:block">
             <ChevronDown size={24} className="text-white" />
           </div>
         </section>
       )}
 
-      {/* Content Sections Container */}
       <div className={cn("px-4 sm:px-8 md:px-16", searchTerm ? "pt-24 md:pt-32" : "")}>
         
         {anime.length > 0 && (
@@ -177,10 +239,7 @@ export default function HomePage() {
         )}
       </div>
 
-      {/* Persistent Components */}
       <MediaDetails />
-      
-      {/* Footer spacer */}
       <div className="h-16 md:h-20" /> 
     </main>
   );
