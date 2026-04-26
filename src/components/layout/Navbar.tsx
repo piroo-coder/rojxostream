@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, User, Users, LogOut, Stars } from 'lucide-react';
+import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, User, LogOut, Stars, Smile } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
@@ -23,6 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const getLevenshteinDistance = (a: string, b: string): number => {
   const matrix = Array.from({ length: a.length + 1 }, () =>
@@ -72,7 +73,7 @@ const HighlightText = ({ text, highlight }: { text: string; highlight: string })
 export const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const { library, searchTerm, setSearchTerm, setCurrentlyPlaying, userName, setUserName, onlineUsers } = useMedia();
+  const { library, searchTerm, setSearchTerm, setCurrentlyPlaying, userName, setUserName } = useMedia();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [localInput, setLocalInput] = useState(searchTerm);
@@ -151,6 +152,34 @@ export const Navbar: React.FC = () => {
     }
   };
 
+  // Manual categorization based on analysis of the library
+  const moods = [
+    {
+      name: "Heartfelt & Emotional",
+      icon: "💖",
+      description: "Stories that touch your soul and stay with you forever.",
+      items: library.filter(m => ['Suzume', 'I Want to Eat Your Pancreas', 'A Silent Voice'].includes(m.title))
+    },
+    {
+      name: "Romantic & Ethereal",
+      icon: "✨",
+      description: "Lose yourself in magical connections and beautiful fate.",
+      items: library.filter(m => ['Your Name', 'Weathering with You', 'Half Girlfriend'].includes(m.title))
+    },
+    {
+      name: "Calm & Melancholic",
+      icon: "🌧️",
+      description: "Quiet moments for deep reflection and peaceful vibes.",
+      items: library.filter(m => ['The Garden of Words'].includes(m.title))
+    },
+    {
+      name: "Funny & Nostalgic",
+      icon: "🎓",
+      description: "Laughter, friendship, and the best days of your life.",
+      items: library.filter(m => ['Chhichhore', 'Oh My God'].includes(m.title))
+    }
+  ];
+
   return (
     <nav className={cn(
       "fixed top-0 left-0 right-0 z-50 transition-all duration-500 flex items-center px-4 md:px-10 h-16 md:h-20",
@@ -216,57 +245,71 @@ export const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* User Presence & Identity */}
-          {userName && (
-            <div className="flex items-center gap-3">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="ghost" className="h-10 px-3 md:px-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 flex items-center gap-2 group transition-all">
-                    <div className="relative">
-                      <Users size={16} className="text-accent group-hover:scale-110 transition-transform" />
-                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-500 rounded-full border border-background animate-pulse" />
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-white/60 hidden sm:block">
-                      {onlineUsers.length + 1} Souls Active
-                    </span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64 bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2rem] p-6 shadow-2xl z-[100]">
-                   <div className="space-y-6">
-                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-accent border-b border-white/5 pb-2 flex items-center gap-2">
-                        <Stars size={12} className="animate-spin-slow" />
-                        Active in Multiverse
-                     </h4>
-                     <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
-                            <User size={14} className="text-primary" />
-                          </div>
-                          <p className="text-xs font-bold text-white">{userName} <span className="text-[8px] uppercase tracking-widest text-white/20">(You)</span></p>
+          {/* Mood Portal */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" className="h-10 px-3 md:px-4 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 flex items-center gap-2 group transition-all shadow-xl">
+                <Smile size={16} className="text-accent group-hover:animate-bounce" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/60 hidden sm:block">
+                  Your Mood
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 sm:w-96 bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2.5rem] p-0 shadow-2xl z-[100] overflow-hidden border">
+              <div className="p-6 bg-gradient-to-br from-primary/10 to-accent/10 border-b border-white/5">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-accent mb-2">Universe Selector</h4>
+                <p className="text-sm font-headline font-bold text-white tracking-tight">How are you feeling today?</p>
+              </div>
+              <ScrollArea className="h-[400px]">
+                <div className="p-4 space-y-4">
+                  {moods.map((mood) => (
+                    <div key={mood.name} className="space-y-3">
+                      <div className="flex items-center gap-2 px-2">
+                        <span className="text-lg">{mood.icon}</span>
+                        <div className="flex flex-col">
+                          <h5 className="text-[10px] font-black uppercase tracking-widest text-white/80">{mood.name}</h5>
+                          <p className="text-[8px] text-white/30 italic">{mood.description}</p>
                         </div>
-                        {onlineUsers.map((u, i) => (
-                          <div key={i} className="flex items-center gap-3 group/soul">
-                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover/soul:border-accent/30 transition-all">
-                              <User size={14} className="text-white/60 group-hover/soul:text-accent transition-colors" />
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {mood.items.map((item) => (
+                          <button
+                            key={item.id}
+                            onClick={() => handleSuggestionClick(item)}
+                            className="flex items-center gap-3 p-2 rounded-2xl bg-white/5 border border-white/5 hover:border-accent/30 hover:bg-white/10 transition-all text-left group/item"
+                          >
+                            <div className="w-10 h-10 rounded-xl overflow-hidden bg-muted flex-shrink-0 relative">
+                              <Image src={item.thumbnailUrl} alt="" fill className="object-cover group-hover/item:scale-110 transition-transform" unoptimized />
                             </div>
-                            <p className="text-xs font-bold text-white/80 group-hover/soul:text-white transition-colors">{u}</p>
-                          </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-bold text-white truncate group-hover/item:text-accent transition-colors">{item.title}</p>
+                              <p className="text-[8px] text-white/30 uppercase tracking-widest">{item.creator}</p>
+                            </div>
+                            <ChevronRight size={14} className="text-white/10 group-hover/item:text-accent transition-colors" />
+                          </button>
                         ))}
-                     </div>
-                   </div>
-                </PopoverContent>
-              </Popover>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+              <div className="p-4 bg-black/40 text-center">
+                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/20">The Multiverse Awaits</p>
+              </div>
+            </PopoverContent>
+          </Popover>
 
-              <div className="hidden md:flex items-center gap-3 pl-2 border-l border-white/10">
-                <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center border border-accent/40 shadow-lg">
-                  <User size={14} className="text-accent" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white">{userName}</span>
-                  <button onClick={() => setUserName(null)} className="text-[8px] uppercase font-black tracking-widest text-white/20 hover:text-destructive transition-colors text-left flex items-center gap-1">
-                    <LogOut size={8} /> Logout
-                  </button>
-                </div>
+          {/* User Identity */}
+          {userName && (
+            <div className="hidden md:flex items-center gap-3 pl-2 border-l border-white/10">
+              <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center border border-accent/40 shadow-lg">
+                <User size={14} className="text-accent" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white">{userName}</span>
+                <button onClick={() => setUserName(null)} className="text-[8px] uppercase font-black tracking-widest text-white/20 hover:text-destructive transition-colors text-left flex items-center gap-1">
+                  <LogOut size={8} /> Logout
+                </button>
               </div>
             </div>
           )}

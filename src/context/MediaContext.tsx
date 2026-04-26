@@ -13,23 +13,7 @@ interface MediaContextType {
   setSearchTerm: (term: string) => void;
   userName: string | null;
   setUserName: (name: string | null) => void;
-  onlineUsers: string[];
 }
-
-const DUMMY_SOULS = [
-  "Suzume Iwato",
-  "Souta Munakata",
-  "Sakura Yamauchi",
-  "Haruki Shiga",
-  "Takao Akizuki",
-  "Yukari Yukino",
-  "Shoya Ishida",
-  "Shoko Nishimiya",
-  "Taki Tachibana",
-  "Mitsuha Miyamizu",
-  "Hodaka Morishima",
-  "Hina Amano"
-];
 
 const initialData: MediaItem[] = [
   {
@@ -552,18 +536,12 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentlyPlaying, setCurrentlyPlaying] = useState<MediaItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [userName, setUserNameState] = useState<string | null>(null);
-  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
     const stored = localStorage.getItem('rojxo_user');
     if (stored) {
       setUserNameState(stored);
     }
-
-    // Simulate dummy anime characters being online
-    const randomCount = Math.floor(Math.random() * 4) + 3; // 3 to 6 souls
-    const shuffled = [...DUMMY_SOULS].sort(() => 0.5 - Math.random());
-    setOnlineUsers(shuffled.slice(0, randomCount));
   }, []);
 
   const setUserName = (name: string | null) => {
@@ -588,8 +566,7 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       searchTerm,
       setSearchTerm,
       userName,
-      setUserName,
-      onlineUsers
+      setUserName
     }}>
       {children}
     </MediaContext.Provider>
