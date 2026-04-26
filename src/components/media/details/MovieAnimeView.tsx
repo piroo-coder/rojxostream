@@ -84,14 +84,23 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
     setMode('character-details');
   };
 
+  const activeBackground = (mode === 'character-details' && selectedCharacter?.background_url) 
+    ? selectedCharacter.background_url 
+    : item.thumbnailUrl;
+
   return (
     <div className="fixed inset-0 z-[60] bg-background animate-in fade-in duration-500 overflow-hidden h-svh w-screen flex flex-col">
-      <div className="absolute inset-0 z-0 h-full w-full overflow-hidden pointer-events-none">
+      {/* Immersive Dynamic Background Container */}
+      <div className="absolute inset-0 z-0 h-full w-full overflow-hidden pointer-events-none transition-all duration-1000">
         <Image 
-          src={item.thumbnailUrl} 
+          key={activeBackground}
+          src={activeBackground} 
           alt=""
           fill
-          className="object-cover opacity-30 scale-110 blur-2xl"
+          className={cn(
+            "object-cover transition-all duration-1000",
+            mode === 'character-details' ? "opacity-50 scale-105 blur-lg" : "opacity-30 scale-110 blur-2xl"
+          )}
           unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />

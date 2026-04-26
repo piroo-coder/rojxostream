@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
@@ -36,13 +37,15 @@ const initialData: MediaItem[] = [
         name: "Suzume Iwato",
         role: "Main Protagonist",
         description: "A determined 17-year-old girl living in a quiet town in Kyushu. After a chance encounter with Souta, she embarks on a journey across Japan to close the 'doors' that release disasters. Her bravery stems from a hidden past and her desire to protect the beauty of the world she inhabits.",
-        image_url: "https://cdn.anisearch.com/images/character/cover/121/121822_400.webp"
+        image_url: "https://cdn.anisearch.com/images/character/cover/121/121822_400.webp",
+        background_url: "https://images.wallpapersden.com/image/download/suzume-iwato-by-shijo-art_bmZmZWeUmZqaraWkpJRobWllrWZrZmw.jpg"
       },
       {
         name: "Souta Munakata",
         role: "The Closer",
         description: "A mysterious young man who travels Japan as a 'Closer,' shutting doors that threaten the safety of the human world. He is a teacher-in-training with a deep sense of responsibility. During the story, he is cursed and transformed into a three-legged wooden chair, relying on Suzume to help him fulfill his duty.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkJb7HiZNRg5og-WOFj1kdoacn2WZuN9Z3qseWZxbuyjVpbhrLIjSPSOi2eZWn7sLb2jck7L4dwLTC-1BOz73C_1CIOOzYah-rbnomjLigUg&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkJb7HiZNRg5og-WOFj1kdoacn2WZuN9Z3qseWZxbuyjVpbhrLIjSPSOi2eZWn7sLb2jck7L4dwLTC-1BOz73C_1CIOOzYah-rbnomjLigUg&s=10",
+        background_url: "https://i.pximg.net/img-master/img/2022/12/30/22/33/24/104055492_p0_master1200.jpg"
       }
     ],
     criticalAnalysis: {
@@ -81,13 +84,15 @@ const initialData: MediaItem[] = [
         name: "Haruki Shiga",
         role: "Protagonist",
         description: "An introverted and socially detached high school student who prefers books over people. He believes that others have no interest in him, so he has no interest in them. His life changes when he finds Sakura's 'Living with Dying' journal, forcing him to engage with the reality of human connection.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjUzF9ookHnecPPfp3i10_dZWsynMm06-5CjCeJ-PFiA2GLtiNWASabYTkJ8WwV6JAHZ4pwqzDwPCZ1mGaHXx9w8rqlSXmVLRfdByV6PVZ&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjUzF9ookHnecPPfp3i10_dZWsynMm06-5CjCeJ-PFiA2GLtiNWASabYTkJ8WwV6JAHZ4pwqzDwPCZ1mGaHXx9w8rqlSXmVLRfdByV6PVZ&s=10",
+        background_url: "https://images.alphacoders.com/137/thumb-1920-1373558.png"
       },
       {
         name: "Sakura Yamauchi",
         role: "Female Lead",
         description: "A cheerful and popular girl who suffers from a terminal pancreatic illness. Despite her grim prognosis, she remains vibrant and chooses to live her remaining days to the fullest. She seeks out Haruki's companionship because he is the only person outside her family who knows her secret and treats her normally.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIgIc88ZiIvCSPRK2Y__7CRgve5MQXLoqhJpJSuuzINoPax28tF6xohYYqxTVSTbmZf9R_-cXEQCgicaRBCzsOUAL5AIQX3Py-kKenxQL&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIgIc88ZiIvCSPRK2Y__7CRgve5MQXLoqhJpJSuuzINoPax28tF6xohYYqxTVSTbmZf9R_-cXEQCgicaRBCzsOUAL5AIQX3Py-kKenxQL&s=10",
+        background_url: "https://wallpapercave.com/wp/wp4089781.png"
       }
     ],
     criticalAnalysis: {
@@ -126,13 +131,15 @@ const initialData: MediaItem[] = [
         name: "Takao Akizuki",
         role: "Student / Aspiring Shoemaker",
         description: "A mature and hardworking 15-year-old high schooler who feels out of place among his peers. He skips morning classes on rainy days to design shoes in Shinjuku Gyoen National Garden. His passion for shoemaking is a metaphor for his desire to help people walk forward in life.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvSfJY6gPhuAoD_krTYcVI3TFL4PWNpooNgr3PCt0JB5h3H29PEmHRcQTtzmrNiPrs4uNoOUsGyWr5S83wbPn9ViW4-D6XsBmGo7FQqYpH&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvSfJY6gPhuAoD_krTYcVI3TFL4PWNpooNgr3PCt0JB5h3H29PEmHRcQTtzmrNiPrs4uNoOUsGyWr5S83wbPn9ViW4-D6XsBmGo7FQqYpH&s=10",
+        background_url: "https://wallpapercat.com/w/full/a/6/6/33019-1920x1080-desktop-full-hd-the-garden-of-words-background-photo.jpg"
       },
       {
         name: "Yukari Yukino",
         role: "Literature Teacher",
         description: "A 27-year-old literature teacher who has become emotionally paralyzed by professional bullying and personal isolation. She has lost her sense of taste—except for chocolate and beer—and spends rainy mornings in the garden to avoid the pain of her reality.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIbS1zOmnpnPkUJlslhgA1KogTnAADPCkNfw&s"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIbS1zOmnpnPkUJlslhgA1KogTnAADPCkNfw&s",
+        background_url: "https://static.wikia.nocookie.net/makotoshinkai/images/2/25/Yukari_Yukino.jpg/revision/latest?cb=20180816013124"
       }
     ],
     criticalAnalysis: {
@@ -171,13 +178,15 @@ const initialData: MediaItem[] = [
         name: "Shoya Ishida",
         role: "Redemption Seeker",
         description: "A young man carrying the heavy burden of his elementary school days when he was a cruel bully. After being ostracized himself, he becomes socially anxious and suicidal. He spends his high school years trying to redeem himself by learning sign language and seeking out Shoko to apologize.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd9IugSfXH5tvuUP0rL3S2R3-9eniMsVr-Ka3CuYMLn1_BYL4OY34C0jAjMRBYum9uNqlK47dF5dRQA2Zv-idqHvjmwzZAF60iFjtgr4yT8g&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRd9IugSfXH5tvuUP0rL3S2R3-9eniMsVr-Ka3CuYMLn1_BYL4OY34C0jAjMRBYum9uNqlK47dF5dRQA2Zv-idqHvjmwzZAF60iFjtgr4yT8g&s=10",
+        background_url: "https://wallpapercave.com/wp/wp9065446.jpg"
       },
       {
         name: "Shoko Nishimiya",
         role: "Deaf Protagonist",
         description: "A compassionate and resilient girl who was bullied in childhood due to her hearing impairment. She struggles with deep-seated feelings of self-hatred and worthlessness, believing her existence is a burden to those around her. Her journey is one of learning to love herself and accept help.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTduf3cc61Q1zWeRhXeUVnxa4zU2sTpLegMvXxoIPUYTrzieoSdiZEEQUQdlkovNJTElGQXkd_hIXxGCVsKf_NgliRTOsaQbfhZEVSeVq9y&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTduf3cc61Q1zWeRhXeUVnxa4zU2sTpLegMvXxoIPUYTrzieoSdiZEEQUQdlkovNJTElGQXkd_hIXxGCVsKf_NgliRTOsaQbfhZEVSeVq9y&s=10",
+        background_url: "https://a.storyblok.com/f/178900/1777x958/1694fb88f5/f97bccfb6867da83702656437fa37f951596235047_main.jpg/m/filters:quality(95)format(webp)"
       }
     ],
     criticalAnalysis: {
@@ -216,13 +225,15 @@ const initialData: MediaItem[] = [
         name: "Taki Tachibana",
         role: "Tokyo High Schooler",
         description: "A hardworking and impulsive high school boy living in the bustling city of Tokyo. He spends his days at school and his nights working at an Italian restaurant. When he starts swapping bodies with Mitsuha, he develops a protective and deep-rooted bond with a girl he has never physically met.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8JKCdjiJ0iXhi2WC7yOrE5q8yCyA66HZxH9QcwQNdK7snLkmoNU7iy4OzkiOVkg5HXtugGgX2jvrO8Ye30-B8-H419GBJojRP_ZvTKI2u&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8JKCdjiJ0iXhi2WC7yOrE5q8yCyA66HZxH9QcwQNdK7snLkmoNU7iy4OzkiOVkg5HXtugGgX2jvrO8Ye30-B8-H419GBJojRP_ZvTKI2u&s=10",
+        background_url: "https://images4.alphacoders.com/773/thumb-1920-773256.png"
       },
       {
         name: "Mitsuha Miyamizu",
         role: "Shrine Maiden",
         description: "A teenage girl living in the rural town of Itomori. As part of a traditional family, she serves as a shrine maiden, though she longs for the life of a boy in Tokyo. She is responsible and deeply connected to her family's heritage, which plays a crucial role in the supernatural events of the film.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4CkuUsXgYLlB420EJvf8b9pZSE-fbob-2kjRSO97t17M8LvlqBYfZPJWR-Ig1_o0yNqlSNDb3iQIcY9BXGO-KyoL7DjfT7pdu8u_kCOCl&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ4CkuUsXgYLlB420EJvf8b9pZSE-fbob-2kjRSO97t17M8LvlqBYfZPJWR-Ig1_o0yNqlSNDb3iQIcY9BXGO-KyoL7DjfT7pdu8u_kCOCl&s=10",
+        background_url: "https://images2.alphacoders.com/829/thumb-1920-829298.png"
       }
     ],
     criticalAnalysis: {
@@ -261,13 +272,15 @@ const initialData: MediaItem[] = [
         name: "Hodaka Morishima",
         role: "Runaway Teenager",
         description: "A 16-year-old high school student who runs away from his isolated island home to the rain-soaked streets of Tokyo. He is determined to find a sense of freedom and belonging, eventually finding it with Hina and a small publishing company. His love for Hina drives him to challenge the laws of nature itself.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkL8svqXCyX9peFJkQgPmBWQeRVNIvOqd0iruYOU8o_OPFwLlDlI_TV2zYitbFrRlMkyjHIpYQGFRfC-Y4vFFq4eABGioqbW4FA4c2HguD7g&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkL8svqXCyX9peFJkQgPmBWQeRVNIvOqd0iruYOU8o_OPFwLlDlI_TV2zYitbFrRlMkyjHIpYQGFRfC-Y4vFFq4eABGioqbW4FA4c2HguD7g&s=10",
+        background_url: "https://static.wikia.nocookie.net/tenkinoko1663/images/4/48/Hodaka_Morishima_2024.png/revision/latest?cb=20201110205152"
       },
       {
         name: "Hina Amano",
         role: "The Sunshine Girl",
         description: "A kind and resilient young girl living alone with her younger brother in Tokyo. She possesses the supernatural ability to stop the rain and bring out the sun through prayer. Despite the physical toll her powers take on her, she uses them to bring happiness to others until the cost becomes too great to ignore.",
-        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS67Vz5hpqaOf-r51CBaKFkX-PxGrUZ49VfUTBFrk631sMAPbCTXwWw6_nm34gSnH3I0vlcRsEYE3QqfGQ7941LZBQaw6nXo7WJEeiMkL5ouQ&s=10"
+        image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS67Vz5hpqaOf-r51CBaKFkX-PxGrUZ49VfUTBFrk631sMAPbCTXwWw6_nm34gSnH3I0vlcRsEYE3QqfGQ7941LZBQaw6nXo7WJEeiMkL5ouQ&s=10",
+        background_url: "https://static.wikia.nocookie.net/tenkinoko1663/images/6/67/Hina_Amano_2024.png/revision/latest?cb=20201110205649"
       }
     ],
     criticalAnalysis: {

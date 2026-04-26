@@ -1,6 +1,8 @@
+
 export interface MediaCharacter {
   name: string;
   image_url: string;
+  background_url?: string;
   role?: string;
   description?: string;
 }
