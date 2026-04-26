@@ -152,7 +152,6 @@ export const Navbar: React.FC = () => {
     }
   };
 
-  // Manual categorization based on analysis of the library
   const moods = [
     {
       name: "Heartfelt & Emotional",
@@ -255,37 +254,43 @@ export const Navbar: React.FC = () => {
                 </span>
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 sm:w-96 bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2.5rem] p-0 shadow-2xl z-[100] overflow-hidden border">
-              <div className="p-6 bg-gradient-to-br from-primary/10 to-accent/10 border-b border-white/5">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-accent mb-2">Universe Selector</h4>
-                <p className="text-sm font-headline font-bold text-white tracking-tight">How are you feeling today?</p>
+            <PopoverContent className="w-80 sm:w-96 bg-background/40 backdrop-blur-3xl border-white/10 rounded-[2.5rem] p-0 shadow-[0_32px_128px_rgba(0,0,0,0.5)] z-[100] overflow-hidden border animate-in zoom-in-95 duration-200">
+              <div className="p-8 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 border-b border-white/5">
+                <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-2 drop-shadow-sm">Mood Selector</h4>
+                <p className="text-lg md:text-xl font-headline font-bold text-white tracking-tight leading-none">How are you feeling?</p>
               </div>
-              <ScrollArea className="h-[400px]">
-                <div className="p-4 space-y-4">
+              <ScrollArea className="h-[450px]">
+                <div className="p-6 space-y-8">
                   {moods.map((mood) => (
-                    <div key={mood.name} className="space-y-3">
-                      <div className="flex items-center gap-2 px-2">
-                        <span className="text-lg">{mood.icon}</span>
+                    <div key={mood.name} className="space-y-4">
+                      <div className="flex items-center gap-3 px-1">
+                        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 shadow-lg">
+                          <span className="text-base">{mood.icon}</span>
+                        </div>
                         <div className="flex flex-col">
-                          <h5 className="text-[10px] font-black uppercase tracking-widest text-white/80">{mood.name}</h5>
-                          <p className="text-[8px] text-white/30 italic">{mood.description}</p>
+                          <h5 className="text-[11px] font-black uppercase tracking-widest text-white">{mood.name}</h5>
+                          <p className="text-[9px] text-white/30 italic font-medium">{mood.description}</p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 gap-2">
+                      <div className="grid grid-cols-1 gap-2.5">
                         {mood.items.map((item) => (
                           <button
                             key={item.id}
                             onClick={() => handleSuggestionClick(item)}
-                            className="flex items-center gap-3 p-2 rounded-2xl bg-white/5 border border-white/5 hover:border-accent/30 hover:bg-white/10 transition-all text-left group/item"
+                            className="flex items-center gap-4 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-accent/40 hover:bg-white/10 transition-all text-left group/item relative overflow-hidden"
                           >
-                            <div className="w-10 h-10 rounded-xl overflow-hidden bg-muted flex-shrink-0 relative">
-                              <Image src={item.thumbnailUrl} alt="" fill className="object-cover group-hover/item:scale-110 transition-transform" unoptimized />
+                            <div className="absolute inset-0 bg-gradient-to-r from-accent/0 via-accent/5 to-accent/0 opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                            <div className="w-12 h-12 rounded-xl overflow-hidden bg-muted flex-shrink-0 relative border border-white/10 shadow-lg">
+                              <Image src={item.thumbnailUrl} alt="" fill className="object-cover group-hover/item:scale-110 transition-transform duration-500" unoptimized />
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs font-bold text-white truncate group-hover/item:text-accent transition-colors">{item.title}</p>
-                              <p className="text-[8px] text-white/30 uppercase tracking-widest">{item.creator}</p>
+                            <div className="flex-1 min-w-0 relative z-10">
+                              <p className="text-sm font-bold text-white truncate group-hover/item:text-accent transition-colors duration-300">{item.title}</p>
+                              <p className="text-[9px] text-white/40 uppercase tracking-widest font-black flex items-center gap-1.5">
+                                <Sparkles size={8} className="text-accent/50" />
+                                {item.creator}
+                              </p>
                             </div>
-                            <ChevronRight size={14} className="text-white/10 group-hover/item:text-accent transition-colors" />
+                            <ChevronRight size={16} className="text-white/10 group-hover/item:text-accent transition-all duration-300 group-hover/item:translate-x-1" />
                           </button>
                         ))}
                       </div>
@@ -293,8 +298,8 @@ export const Navbar: React.FC = () => {
                   ))}
                 </div>
               </ScrollArea>
-              <div className="p-4 bg-black/40 text-center">
-                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/20">The Multiverse Awaits</p>
+              <div className="p-4 bg-black/40 text-center border-t border-white/5">
+                <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/10">Tailored to your Soul</p>
               </div>
             </PopoverContent>
           </Popover>
