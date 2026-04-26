@@ -154,6 +154,12 @@ const nextConfig: NextConfig = {
         hostname: 'i.pximg.net',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'gdm-universal-media.b-cdn.net',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

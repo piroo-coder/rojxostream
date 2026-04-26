@@ -139,7 +139,7 @@ const initialData: MediaItem[] = [
         role: "Literature Teacher",
         description: "A 27-year-old literature teacher who has become emotionally paralyzed by professional bullying and personal isolation. She has lost her sense of taste—except for chocolate and beer—and spends rainy mornings in the garden to avoid the pain of her reality.",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIbS1zOmnpnPkUJlslhgA1KogTnAADPCkNfw&s",
-        background_url: "https://static.wikia.nocookie.net/makotoshinkai/images/a/a2/Yukino_in_her_new_school.jpg/revision/latest?cb=20180819140239"
+        background_url: "https://static.wikia.nocookie.net/kiminonawa/images/b/b7/Garden_Yukino.png/revision/latest?cb=20180131080743"
       }
     ],
     criticalAnalysis: {
@@ -280,7 +280,7 @@ const initialData: MediaItem[] = [
         role: "The Sunshine Girl",
         description: "A kind and resilient young girl living alone with her younger brother in Tokyo. She possesses the supernatural ability to stop the rain and bring out the sun through prayer. Despite the physical toll her powers take on her, she uses them to bring happiness to others until the cost becomes too great to ignore.",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS67Vz5hpqaOf-r51CBaKFkX-PxGrUZ49VfUTBFrk631sMAPbCTXwWw6_nm34gSnH3I0vlcRsEYE3QqfGQ7941LZBQaw6nXo7WJEeiMkL5ouQ&s=10",
-        background_url: "https://wallpapercave.com/wp/wp4726386.jpg"
+        background_url: "https://gdm-universal-media.b-cdn.net/epicstream/848008dd6c31cc64bda73f738edd43729ceffcf7-1280x720.jpg?width=1600&height=840"
       }
     ],
     criticalAnalysis: {
