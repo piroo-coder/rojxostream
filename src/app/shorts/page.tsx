@@ -21,7 +21,8 @@ import {
   Youtube,
   Twitter,
   Facebook,
-  ChevronDown
+  ChevronDown,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef, Suspense } from 'react';
@@ -30,7 +31,7 @@ import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const ShortItem = ({ 
   short, 
@@ -368,6 +369,7 @@ const ShortItem = ({
 function ShortsPageContent() {
   const { library, searchTerm } = useMedia();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const targetId = searchParams.get('id');
   const idsFilter = searchParams.get('ids'); // Comma-separated list of IDs
   
@@ -440,6 +442,20 @@ function ShortsPageContent() {
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80rem] h-[80rem] bg-white/5 rounded-full blur-[200px] animate-pulse-slow" />
       </div>
+
+      {/* Exit Button for Related Shorts */}
+      {idsFilter && (
+        <div className="fixed top-20 left-4 md:left-10 z-[40] animate-in slide-in-from-left-4 duration-500">
+          <Button 
+            variant="ghost" 
+            onClick={() => router.back()}
+            className="h-12 px-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-3xl text-white/70 hover:text-white hover:bg-white/10 flex items-center gap-3 group shadow-2xl"
+          >
+            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+            <span className="text-[10px] font-black uppercase tracking-widest">Back to Universe</span>
+          </Button>
+        </div>
+      )}
       
       <div 
         ref={containerRef} 
@@ -476,17 +492,28 @@ function ShortsPageContent() {
               <p className="text-white/40 text-sm max-w-xs font-light text-center leading-relaxed">
                 You have reached the boundary of this archive. No more shorts are available in this collection.
               </p>
-              <Button 
-                variant="outline" 
-                className="mt-12 rounded-full border-white/10 text-white/40 hover:text-white hover:bg-white/5 gap-3 h-12 px-8 uppercase tracking-widest font-black text-[10px]"
-                onClick={() => {
-                  if (containerRef.current) {
-                    containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-                  }
-                }}
-              >
-                Return to Origin <ChevronDown size={14} className="rotate-180" />
-              </Button>
+              <div className="mt-12 flex flex-col items-center gap-4">
+                <Button 
+                  variant="outline" 
+                  className="rounded-full border-white/10 text-white/40 hover:text-white hover:bg-white/5 gap-3 h-12 px-8 uppercase tracking-widest font-black text-[10px]"
+                  onClick={() => {
+                    if (containerRef.current) {
+                      containerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                >
+                  Return to Origin <ChevronDown size={14} className="rotate-180" />
+                </Button>
+                {idsFilter && (
+                   <Button 
+                    variant="ghost" 
+                    onClick={() => router.back()}
+                    className="text-accent hover:text-accent/80 font-black text-[10px] uppercase tracking-[0.2em]"
+                  >
+                    Back to Universe
+                  </Button>
+                )}
+              </div>
             </div>
           </>
         ) : (
@@ -496,6 +523,15 @@ function ShortsPageContent() {
             </div>
             <h3 className="text-2xl font-headline font-bold mb-2 text-white">No Shorts Found</h3>
             <p className="text-sm max-w-xs font-light">The multiverse is quiet. Try another search!</p>
+            {idsFilter && (
+              <Button 
+                variant="link" 
+                onClick={() => router.back()}
+                className="mt-6 text-accent"
+              >
+                Back to Universe
+              </Button>
+            )}
           </div>
         )}
       </div>
