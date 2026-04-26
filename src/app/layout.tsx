@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   title: 'RojXOStream - Immersive Media Experience',
   description: 'Your premium destination for Anime, Movies, Songs, and Shorts.',
   icons: {
-    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s',
-    shortcut: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s',
-    apple: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s',
+    icon: 'https://i.pinimg.com/736x/d7/6c/4e/d76c4e13c6766763bf26c1695099d571.jpg',
+    shortcut: 'https://i.pinimg.com/736x/d7/6c/4e/d76c4e13c6766763bf26c1695099d571.jpg',
+    apple: 'https://i.pinimg.com/736x/d7/6c/4e/d76c4e13c6766763bf26c1695099d571.jpg',
   },
   openGraph: {
     title: 'RojXOStream',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     siteName: 'RojXOStream',
     images: [
       {
-        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s',
+        url: 'https://i.pinimg.com/736x/d7/6c/4e/d76c4e13c6766763bf26c1695099d571.jpg',
         width: 800,
         height: 600,
       },
@@ -38,9 +38,9 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         {/* Explicit Favicon Links to override any defaults */}
-        <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s" />
-        <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s" />
-        <link rel="apple-touch-icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR07L1dwQOJklF2j82g6Oh-gA1Np0S2Js_c3Q&s" />
+        <link rel="icon" href="https://i.pinimg.com/736x/d7/6c/4e/d76c4e13c6766763bf26c1695099d571.jpg" />
+        <link rel="shortcut icon" href="https://i.pinimg.com/736x/d7/6c/4e/d76c4e13c6766763bf26c1695099d571.jpg" />
+        <link rel="apple-touch-icon" href="https://i.pinimg.com/736x/d7/6c/4e/d76c4e13c6766763bf26c1695099d571.jpg" />
         
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
