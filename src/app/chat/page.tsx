@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,31 +36,40 @@ export default function ChatPage() {
     }
   };
 
-  // Sync effect: Polls the server for the current state (History, Presence, Typing)
+  // Synchronize state with server
+  const sync = useCallback(async () => {
+    if (!user) return;
+    try {
+      const state = await getChatState(user);
+      
+      setIsOtherOnline(state.isOtherOnline);
+      setIsOtherTyping(state.isOtherTyping);
+      
+      // Atomic Merge: Combine local and server state by ID to prevent flicker/deletion
+      setMessages(prev => {
+        const combined = [...prev, ...state.messages];
+        const unique = Array.from(new Map(combined.map(m => [m.id, m])).values());
+        // Sort by timestamp and keep only last 100
+        const sorted = unique.sort((a, b) => a.timestamp - b.timestamp);
+        return sorted.slice(-100);
+      });
+    } catch (err) {
+      // Silence sync errors
+    }
+  }, [user]);
+
+  // Sync effect: Polls the server for the current state
   useEffect(() => {
     if (!user) return;
 
-    const sync = async () => {
-      try {
-        const state = await getChatState(user);
-        setMessages(state.messages);
-        setIsOtherOnline(state.isOtherOnline);
-        setIsOtherTyping(state.isOtherTyping);
-      } catch (err) {
-        // Silence sync errors
-      }
-    };
-
     sync();
-    // Faster polling for better "real-time" experience
     pollingRef.current = setInterval(sync, 1500);
 
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
-      // Clean up typing status when leaving
       setTypingStatus(user, false);
     };
-  }, [user]);
+  }, [user, sync]);
 
   // Handle scroll on new messages
   useEffect(() => {
@@ -86,6 +95,7 @@ export default function ChatPage() {
   const handleLogout = () => {
     if (user) setTypingStatus(user, false);
     setUser(null);
+    setMessages([]);
     setUsername('');
     setPassword('');
     setLoginError('');
@@ -107,31 +117,33 @@ export default function ChatPage() {
     const text = inputText.trim();
     if (!text || !user || isSending) return;
 
-    setIsSending(true);
-    setInputText('');
-
-    // Optimistic Update for immediate feedback
-    const tempId = `optimistic-${Date.now()}`;
+    const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    
+    // Optimistic Update: Add locally immediately
     const optimisticMsg: ChatMessage = {
-      id: tempId,
+      id: messageId,
       sender: user,
       text: text,
       timestamp: Date.now()
     };
     
     setMessages(prev => [...prev, optimisticMsg]);
+    setInputText('');
+    setIsSending(true);
 
     try {
-      const res = await sendMessage(user, text);
+      const res = await sendMessage(user, text, messageId);
       if (!res.success) throw new Error();
+      // Sync immediately after sending to confirm
+      sync();
     } catch (err) {
       toast({ 
         title: "Transmission Failed", 
         description: "Message could not reach the archive.", 
         variant: "destructive" 
       });
-      // Rollback optimistic update on failure
-      setMessages(prev => prev.filter(m => m.id !== tempId));
+      // Rollback optimistic update
+      setMessages(prev => prev.filter(m => m.id !== messageId));
       setInputText(text);
     } finally {
       setIsSending(false);
