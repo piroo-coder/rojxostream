@@ -44,11 +44,26 @@ export default function ChatPage() {
       setIsOtherTyping(state.isOtherTyping);
       
       setMessages(prev => {
-        // Only update if data has actually changed to preserve smooth scrolling
-        if (JSON.stringify(state.messages) === JSON.stringify(prev)) {
+        // Intelligent Merging: Ensure we don't lose local optimistic updates
+        const incoming = state.messages;
+        const merged = [...prev];
+        
+        incoming.forEach(msg => {
+          if (!merged.find(m => m.id === msg.id)) {
+            merged.push(msg);
+          }
+        });
+
+        // Sort by timestamp and keep only 100
+        const result = merged
+          .sort((a, b) => a.timestamp - b.timestamp)
+          .slice(-100);
+
+        // Only update state if something actually changed to avoid scroll glitches
+        if (JSON.stringify(result) === JSON.stringify(prev)) {
           return prev;
         }
-        return state.messages;
+        return result;
       });
     } catch (err) {
       // Silent background sync
@@ -139,12 +154,18 @@ export default function ChatPage() {
 
     try {
       const res = await sendMessage(user, text);
-      if (!res.success) throw new Error("Local write failure");
+      if (!res.success) {
+        toast({ 
+          title: "Archive Issue", 
+          description: "Message sent but archive is read-only.", 
+          variant: "destructive" 
+        });
+      }
       await sync(); // Refresh state immediately
     } catch (err) {
       toast({ 
         title: "Link Error", 
-        description: "Message could not be archived.", 
+        description: "Message could not be transmitted.", 
         variant: "destructive" 
       });
       setMessages(prev => prev.filter(m => m.id !== tempId));

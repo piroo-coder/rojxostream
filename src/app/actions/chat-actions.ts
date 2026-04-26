@@ -18,8 +18,21 @@ export interface ChatMessage {
 const MESSAGES_FILE = path.join(process.cwd(), 'src/app/lib/messages.json');
 const MAX_HISTORY = 100;
 
+// Simple in-memory cache to speed up reads during a single session
+let messagesCache: ChatMessage[] | null = null;
+
 // Ephemeral in-memory presence for the current server instance
 const presenceStore: Record<string, { lastSeen: number, isTyping: boolean }> = {};
+
+function ensureFile() {
+  const dir = path.dirname(MESSAGES_FILE);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  if (!fs.existsSync(MESSAGES_FILE)) {
+    fs.writeFileSync(MESSAGES_FILE, JSON.stringify([], null, 2));
+  }
+}
 
 /**
  * Fetches history from the local repository file and checks partner status.
@@ -34,17 +47,14 @@ export async function getChatState(currentUser: 'Abhi' | 'Priya') {
   };
 
   try {
-    // 1. Read History from messages.json
-    let messages: ChatMessage[] = [];
-    if (fs.existsSync(MESSAGES_FILE)) {
-      const data = fs.readFileSync(MESSAGES_FILE, 'utf8');
-      messages = JSON.parse(data || '[]');
-    } else {
-      // Ensure file exists
-      fs.writeFileSync(MESSAGES_FILE, JSON.stringify([], null, 2));
-    }
+    ensureFile();
+    
+    // Read History from messages.json
+    const data = fs.readFileSync(MESSAGES_FILE, 'utf8');
+    const messages = JSON.parse(data || '[]');
+    messagesCache = messages;
 
-    // 2. Check Partner Status
+    // Check Partner Status
     const otherUser = currentUser === 'Abhi' ? 'Priya' : 'Abhi';
     const otherPresence = presenceStore[otherUser];
     const isOtherOnline = otherPresence ? (now - otherPresence.lastSeen < 15000) : false;
@@ -58,7 +68,7 @@ export async function getChatState(currentUser: 'Abhi' | 'Priya') {
   } catch (e) {
     console.error("Local archive read failure:", e);
     return {
-      messages: [],
+      messages: messagesCache || [],
       isOtherOnline: false,
       isOtherTyping: false
     };
@@ -70,6 +80,8 @@ export async function getChatState(currentUser: 'Abhi' | 'Priya') {
  */
 export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
   try {
+    ensureFile();
+    
     const timestamp = Date.now();
     const newMessage: ChatMessage = {
       id: Math.random().toString(36).substr(2, 9),
@@ -79,11 +91,8 @@ export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
     };
 
     // 1. Read existing
-    let messages: ChatMessage[] = [];
-    if (fs.existsSync(MESSAGES_FILE)) {
-      const data = fs.readFileSync(MESSAGES_FILE, 'utf8');
-      messages = JSON.parse(data || '[]');
-    }
+    const data = fs.readFileSync(MESSAGES_FILE, 'utf8');
+    let messages = JSON.parse(data || '[]');
 
     // 2. Update and Trim
     messages.push(newMessage);
@@ -93,6 +102,7 @@ export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
 
     // 3. Write back to repository file
     fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
+    messagesCache = messages;
 
     // 4. Reset Presence
     if (presenceStore[sender]) {
@@ -103,7 +113,7 @@ export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
     return { success: true, id: newMessage.id };
   } catch (err) {
     console.error("Local write error:", err);
-    return { success: false, error: "Archive write failed." };
+    return { success: false, error: "Archive write failed. The environment might be read-only." };
   }
 }
 
