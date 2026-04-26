@@ -99,11 +99,11 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
           fill
           className={cn(
             "object-cover transition-all duration-1000",
-            mode === 'character-details' ? "opacity-50 scale-105 blur-lg" : "opacity-30 scale-110 blur-2xl"
+            mode === 'character-details' ? "opacity-40 scale-100" : "opacity-30 scale-110 blur-2xl"
           )}
           unoptimized
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
         <div className="absolute top-[20%] left-[10%] w-[40rem] h-[40rem] bg-primary/5 rounded-full blur-[120px] animate-pulse-slow" />
         <div className="absolute bottom-[20%] right-[10%] w-[50rem] h-[50rem] bg-accent/5 rounded-full blur-[150px] animate-pulse-slow delay-1000" />
       </div>
