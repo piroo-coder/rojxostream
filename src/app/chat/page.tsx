@@ -44,14 +44,16 @@ export default function ChatPage() {
       setIsOtherOnline(state.isOtherOnline);
       setIsOtherTyping(state.isOtherTyping);
       
-      // Update messages only if they changed or we are initializing
       setMessages(prev => {
-        // Simple comparison to prevent unnecessary re-renders
-        if (JSON.stringify(prev) === JSON.stringify(state.messages)) return prev;
+        // Prevent unnecessary state updates to maintain scroll position and smoothness
+        if (state.messages.length === prev.length && 
+            state.messages[state.messages.length - 1]?.id === prev[prev.length - 1]?.id) {
+          return prev;
+        }
         return state.messages;
       });
     } catch (err) {
-      // Polling error silently handled to prevent UI disruption
+      // Background sync errors are non-blocking
     }
   }, [user]);
 
@@ -59,8 +61,8 @@ export default function ChatPage() {
     if (!user) return;
 
     sync();
-    // Use a slightly more conservative polling rate for Vercel/Firestore efficiency
-    pollingRef.current = setInterval(sync, 3000); 
+    // Faster polling for more responsive feel
+    pollingRef.current = setInterval(sync, 2500); 
 
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
@@ -112,7 +114,6 @@ export default function ChatPage() {
     const text = inputText.trim();
     if (!text || !user || isSending) return;
 
-    // 1. Optimistic Update (Immediate Feedback)
     const tempId = `temp-${Date.now()}`;
     const optimisticMsg: ChatMessage = {
       id: tempId,
@@ -121,28 +122,29 @@ export default function ChatPage() {
       timestamp: Date.now()
     };
     
+    // 1. Optimistic UI update
     setMessages(prev => [...prev, optimisticMsg]);
     setInputText('');
     setIsSending(true);
 
     try {
       const res = await sendMessage(user, text);
-      if (!res.success) throw new Error("Server denied transmission");
+      if (!res.success) throw new Error("Transmission failed");
       
-      // 2. Confirm and Sync
+      // 2. Refresh local state immediately after success
       await sync(); 
     } catch (err) {
       toast({ 
-        title: "Transmission Failed", 
+        title: "Transmission Error", 
         description: "Message could not reach the archive.", 
         variant: "destructive" 
       });
-      // Rollback optimistic update on error
+      // Rollback optimistic update
       setMessages(prev => prev.filter(m => m.id !== tempId));
       setInputText(text);
     } finally {
       setIsSending(false);
-      setTypingStatus(user, false);
+      if (user) setTypingStatus(user, false);
     }
   };
 
@@ -162,7 +164,7 @@ export default function ChatPage() {
         </div>
 
         <div className="relative z-10 w-full max-w-md animate-in fade-in zoom-in-95 duration-700">
-          <Card className="bg-white/5 border-white/10 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden">
+          <Card className="bg-white/5 border-white/10 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden border">
             <CardContent className="p-10 space-y-8">
               <div className="text-center space-y-2">
                 <div className="w-20 h-20 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center mx-auto mb-6 shadow-2xl">
