@@ -2,7 +2,7 @@
 "use client";
 
 import { MediaItem, MediaCharacter } from '@/app/types/media';
-import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages, ShieldAlert, User } from 'lucide-react';
+import { X, Info, Play, BookOpen, Sparkles, Users, BrainCircuit, Quote, Heart, ArrowLeft, Languages, ShieldAlert, User, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
@@ -19,6 +19,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface MovieAnimeViewProps {
   item: MediaItem;
@@ -31,6 +36,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
   const [mode, setMode] = useState<ViewMode>('discovery');
   const [showMangaConfirm, setShowMangaConfirm] = useState(false);
   const [selectedCharacter, setSelectedCharacter] = useState<MediaCharacter | null>(null);
+  const [hoveredChar, setHoveredChar] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Automatically scroll to top when changing modes or characters
@@ -102,7 +108,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
         <X size={24} />
       </Button>
 
-      {/* Using a standard div with ref for reliable scroll control */}
       <div ref={scrollRef} className="flex-1 w-full relative z-10 overflow-y-auto scroll-smooth scrollbar-hide">
         <div className="container mx-auto max-w-6xl px-4 py-20 md:py-32 flex flex-col items-center">
           
@@ -205,19 +210,52 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {item.characters.map((char, i) => (
-                          <div 
-                            key={i} 
-                            onClick={() => handleCharacterClick(char)}
-                            className="flex items-center gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 hover:border-accent/50 hover:bg-white/10 transition-all group/char cursor-pointer"
-                          >
-                            <Avatar className="h-14 w-14 border-2 border-white/10 group-hover/char:border-accent/50 transition-all">
-                              <AvatarImage src={char.image_url} alt={char.name} className="object-cover" />
-                              <AvatarFallback><Users className="text-white/20" /></AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-black text-white group-hover/char:text-accent transition-colors">{char.name}</p>
-                              <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">{char.role || "Main Character"}</p>
-                            </div>
+                          <div key={i} className="relative group">
+                            <Popover open={hoveredChar === char.name} onOpenChange={(open) => setHoveredChar(open ? char.name : null)}>
+                              <PopoverTrigger asChild>
+                                <div 
+                                  className="flex items-center gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 hover:border-accent/50 hover:bg-white/10 transition-all group/char cursor-pointer"
+                                  onMouseEnter={() => setHoveredChar(char.name)}
+                                  onMouseLeave={() => setHoveredChar(null)}
+                                >
+                                  <Avatar className="h-14 w-14 border-2 border-white/10 group-hover/char:border-accent/50 transition-all">
+                                    <AvatarImage src={char.image_url} alt={char.name} className="object-cover" />
+                                    <AvatarFallback><Users className="text-white/20" /></AvatarFallback>
+                                  </Avatar>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-black text-white group-hover/char:text-accent transition-colors">{char.name}</p>
+                                    <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">{char.role || "Main Character"}</p>
+                                  </div>
+                                </div>
+                              </PopoverTrigger>
+                              <PopoverContent 
+                                className="w-80 bg-background/95 backdrop-blur-3xl border-white/10 rounded-[2rem] p-6 shadow-2xl z-[100] animate-in fade-in zoom-in-95 duration-200"
+                                onMouseEnter={() => setHoveredChar(char.name)}
+                                onMouseLeave={() => setHoveredChar(null)}
+                              >
+                                <div className="space-y-4">
+                                  <div className="flex items-center gap-4">
+                                    <Avatar className="h-16 w-16 border-2 border-primary/30">
+                                      <AvatarImage src={char.image_url} alt={char.name} className="object-cover" />
+                                      <AvatarFallback><User /></AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1 min-w-0">
+                                      <h4 className="text-lg font-bold text-white truncate">{char.name}</h4>
+                                      <p className="text-[10px] text-primary uppercase font-black tracking-widest">{char.role}</p>
+                                    </div>
+                                  </div>
+                                  <p className="text-xs text-white/60 line-clamp-3 leading-relaxed italic">
+                                    {char.description || "Witness the journey of this essential soul through the archives."}
+                                  </p>
+                                  <Button 
+                                    onClick={() => handleCharacterClick(char)}
+                                    className="w-full h-10 rounded-xl bg-accent hover:bg-accent/90 text-background font-bold text-[10px] uppercase tracking-widest group/btn"
+                                  >
+                                    Read More <ChevronRight size={12} className="ml-1 group-hover/btn:translate-x-1 transition-transform" />
+                                  </Button>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
                           </div>
                         ))}
                       </div>
@@ -409,7 +447,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
             <div className="w-full flex flex-col items-center gap-12 animate-in zoom-in-95 duration-1000">
                <div className="text-center space-y-4">
                  <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/30 px-4 py-1.5 rounded-full backdrop-blur-3xl">
-                    <Languages size={14} className="text-accent" />
+                    <Languages size={14} />
                     <span className="text-[10px] font-black uppercase tracking-widest text-accent">Hindi Narrative Summary</span>
                  </div>
                  <h2 className="text-3xl md:text-5xl font-headline font-bold text-white drop-shadow-2xl">{item.title}</h2>
