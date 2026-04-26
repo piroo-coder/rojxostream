@@ -27,7 +27,7 @@ interface GlobalStore {
   initialized: boolean;
 }
 
-// Access the global store securely
+// Access the global store securely using a stable key
 function getStore(): GlobalStore {
   const g = global as any;
   if (!g[CHAT_STORE_KEY]) {
@@ -43,10 +43,13 @@ function getStore(): GlobalStore {
 
 const getFilePath = () => path.join(process.cwd(), 'src/app/lib/messages.json');
 
-// Ensure history is loaded from disk if memory is empty
+// Ensure history is loaded from disk into memory
 function syncStore() {
   const store = getStore();
-  if (store.initialized) return;
+  
+  // If memory is already initialized, we just ensure it's not empty if the file has content
+  // This is a "singleton" initialization pattern
+  if (store.initialized && store.messages.length > 0) return;
 
   try {
     const filePath = getFilePath();
@@ -54,31 +57,35 @@ function syncStore() {
       const content = fs.readFileSync(filePath, 'utf8');
       const parsed = JSON.parse(content || '[]');
       if (Array.isArray(parsed)) {
+        // Load only the most recent 100
         store.messages = parsed.slice(-MAX_HISTORY);
       }
     }
   } catch (e) {
-    console.warn("Note: File persistence skipped (likely read-only environment). Memory store remains active.");
+    console.warn("Note: File persistence check occurred. Memory store remains active source of truth.");
   } finally {
     store.initialized = true;
   }
 }
 
-// Best-effort save to disk
+// Best-effort save to disk to survive server restarts (local)
 function saveToDisk() {
   const store = getStore();
   try {
     const filePath = getFilePath();
     const dir = path.dirname(filePath);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(filePath, JSON.stringify(store.messages, null, 2));
+    
+    // Always keep only the last 100
+    const limitedHistory = store.messages.slice(-MAX_HISTORY);
+    fs.writeFileSync(filePath, JSON.stringify(limitedHistory, null, 2));
   } catch (e) {
-    // Silence error on serverless environments
+    // Silence error on serverless environments like Vercel which are read-only
   }
 }
 
 export async function getChatState(currentUser: 'Abhi' | 'Priya') {
-  syncStore();
+  syncStore(); // Ensure memory is populated from archive
   const store = getStore();
   const now = Date.now();
   
@@ -89,6 +96,7 @@ export async function getChatState(currentUser: 'Abhi' | 'Priya') {
   const isOtherOnline = (now - (store.presence[otherUser] || 0)) < ONLINE_THRESHOLD;
   const isOtherTyping = (now - (store.typingStatus[otherUser] || 0)) < TYPING_THRESHOLD;
 
+  // Return a fresh copy of the archive
   return {
     messages: [...store.messages],
     isOtherOnline,
@@ -109,12 +117,12 @@ export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
 
   store.messages.push(newMessage);
   
-  // Enforce 100 message limit
+  // Enforce strict 100 message limit
   if (store.messages.length > MAX_HISTORY) {
     store.messages = store.messages.slice(-MAX_HISTORY);
   }
 
-  // Update sender state
+  // Clear typing status and update presence
   store.typingStatus[sender] = 0;
   store.presence[sender] = Date.now();
 
