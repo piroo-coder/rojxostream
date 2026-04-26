@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -45,15 +44,14 @@ export default function ChatPage() {
       setIsOtherTyping(state.isOtherTyping);
       
       setMessages(prev => {
-        // Prevent unnecessary state updates to maintain scroll position and smoothness
-        if (state.messages.length === prev.length && 
-            state.messages[state.messages.length - 1]?.id === prev[prev.length - 1]?.id) {
+        // Only update if data has actually changed to preserve smooth scrolling
+        if (JSON.stringify(state.messages) === JSON.stringify(prev)) {
           return prev;
         }
         return state.messages;
       });
     } catch (err) {
-      // Background sync errors are non-blocking
+      // Silent background sync
     }
   }, [user]);
 
@@ -61,14 +59,26 @@ export default function ChatPage() {
     if (!user) return;
 
     sync();
-    // Faster polling for more responsive feel
-    pollingRef.current = setInterval(sync, 2500); 
+    // High-frequency polling for snappy local feel
+    pollingRef.current = setInterval(sync, 1500); 
 
+    // Automatic Logout on Leave
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
-      if (user) setTypingStatus(user, false);
+      if (user) {
+        setTypingStatus(user, false);
+      }
     };
   }, [user, sync]);
+
+  // Ensure logout when navigating away
+  useEffect(() => {
+    const handleUnload = () => {
+      if (user) setTypingStatus(user, false);
+    };
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
+  }, [user]);
 
   useEffect(() => {
     scrollToBottom('smooth');
@@ -86,17 +96,17 @@ export default function ChatPage() {
       setUser('Priya');
       toast({ title: "Portal Established", description: "Welcome back, Priya." });
     } else {
-      setLoginError('Portal access denied. Check coordinates.');
+      setLoginError('Portal access denied.');
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     if (user) setTypingStatus(user, false);
     setUser(null);
     setMessages([]);
     setUsername('');
     setPassword('');
-  };
+  }, [user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
@@ -106,7 +116,7 @@ export default function ChatPage() {
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
       setTypingStatus(user, false);
-    }, 3000);
+    }, 2000);
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -114,6 +124,7 @@ export default function ChatPage() {
     const text = inputText.trim();
     if (!text || !user || isSending) return;
 
+    // Optimistic Update for zero-latency feel
     const tempId = `temp-${Date.now()}`;
     const optimisticMsg: ChatMessage = {
       id: tempId,
@@ -122,24 +133,20 @@ export default function ChatPage() {
       timestamp: Date.now()
     };
     
-    // 1. Optimistic UI update
     setMessages(prev => [...prev, optimisticMsg]);
     setInputText('');
     setIsSending(true);
 
     try {
       const res = await sendMessage(user, text);
-      if (!res.success) throw new Error("Transmission failed");
-      
-      // 2. Refresh local state immediately after success
-      await sync(); 
+      if (!res.success) throw new Error("Local write failure");
+      await sync(); // Refresh state immediately
     } catch (err) {
       toast({ 
-        title: "Transmission Error", 
-        description: "Message could not reach the archive.", 
+        title: "Link Error", 
+        description: "Message could not be archived.", 
         variant: "destructive" 
       });
-      // Rollback optimistic update
       setMessages(prev => prev.filter(m => m.id !== tempId));
       setInputText(text);
     } finally {
@@ -253,7 +260,7 @@ export default function ChatPage() {
           {messages.length === 0 && !isSending && (
             <div className="h-full flex flex-col items-center justify-center opacity-20 select-none">
               <Sparkles size={64} className="mb-4" />
-              <p className="text-xs uppercase font-black tracking-[0.5em]">No archive found yet...</p>
+              <p className="text-xs uppercase font-black tracking-[0.5em]">Archive Empty</p>
             </div>
           )}
           {messages.map((msg) => (
@@ -278,7 +285,6 @@ export default function ChatPage() {
             </div>
           ))}
           
-          {/* Typing Notification */}
           {isOtherTyping && (
             <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl w-fit animate-in fade-in slide-in-from-left-2 duration-300">
               <PenTool size={12} className="text-accent animate-bounce" />

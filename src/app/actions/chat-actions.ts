@@ -1,25 +1,12 @@
-
 'use server';
 
 /**
- * @fileOverview Firestore-backed Chat Actions.
- * Optimized for high performance and reliable 100-message persistence.
+ * @fileOverview Local File-Backed Chat Actions.
+ * Optimized for maximum speed and repository-level persistence.
  */
 
-import { db } from '@/lib/firebase';
-import { 
-  collection, 
-  addDoc, 
-  query, 
-  orderBy, 
-  limit, 
-  getDocs, 
-  doc, 
-  setDoc, 
-  getDoc, 
-  writeBatch,
-  Timestamp
-} from 'firebase/firestore';
+import fs from 'fs';
+import path from 'path';
 
 export interface ChatMessage {
   id: string;
@@ -28,65 +15,40 @@ export interface ChatMessage {
   timestamp: number;
 }
 
-const MESSAGES_COLLECTION = 'messages';
-const PRESENCE_COLLECTION = 'presence';
+const MESSAGES_FILE = path.join(process.cwd(), 'src/app/lib/messages.json');
 const MAX_HISTORY = 100;
-const ONLINE_THRESHOLD = 30000; // 30 seconds for stable presence
+
+// Ephemeral in-memory presence for the current server instance
+const presenceStore: Record<string, { lastSeen: number, isTyping: boolean }> = {};
 
 /**
- * Fetches the 100 most recent messages and checks partner presence.
- * Optimized for minimal data transfer.
+ * Fetches history from the local repository file and checks partner status.
  */
 export async function getChatState(currentUser: 'Abhi' | 'Priya') {
   const now = Date.now();
   
+  // Update Current User Presence
+  presenceStore[currentUser] = {
+    lastSeen: now,
+    isTyping: presenceStore[currentUser]?.isTyping || false
+  };
+
   try {
-    // 1. Update Current User Presence (Background/Fire-and-forget)
-    const presenceRef = doc(db, PRESENCE_COLLECTION, currentUser);
-    setDoc(presenceRef, {
-      lastSeen: now,
-      isTyping: false 
-    }, { merge: true }).catch(() => {});
-
-    // 2. Fetch History (Strict 100 Limit)
-    const q = query(
-      collection(db, MESSAGES_COLLECTION),
-      orderBy('timestamp', 'desc'),
-      limit(MAX_HISTORY)
-    );
-    
-    const snapshot = await getDocs(q);
-    const messages: ChatMessage[] = snapshot.docs.map(doc => {
-      const data = doc.data();
-      let ts = now;
-      
-      // Robust timestamp parsing
-      if (data.timestamp instanceof Timestamp) {
-        ts = data.timestamp.toMillis();
-      } else if (typeof data.timestamp === 'number') {
-        ts = data.timestamp;
-      }
-      
-      return {
-        id: doc.id,
-        sender: data.sender,
-        text: data.text,
-        timestamp: ts
-      };
-    }).reverse();
-
-    // 3. Check Partner Status
-    const otherUser = currentUser === 'Abhi' ? 'Priya' : 'Abhi';
-    const otherPresenceSnap = await getDoc(doc(db, PRESENCE_COLLECTION, otherUser));
-    
-    let isOtherOnline = false;
-    let isOtherTyping = false;
-    
-    if (otherPresenceSnap.exists()) {
-      const data = otherPresenceSnap.data();
-      isOtherOnline = (now - (data.lastSeen || 0)) < ONLINE_THRESHOLD;
-      isOtherTyping = !!data.isTyping && isOtherOnline;
+    // 1. Read History from messages.json
+    let messages: ChatMessage[] = [];
+    if (fs.existsSync(MESSAGES_FILE)) {
+      const data = fs.readFileSync(MESSAGES_FILE, 'utf8');
+      messages = JSON.parse(data || '[]');
+    } else {
+      // Ensure file exists
+      fs.writeFileSync(MESSAGES_FILE, JSON.stringify([], null, 2));
     }
+
+    // 2. Check Partner Status
+    const otherUser = currentUser === 'Abhi' ? 'Priya' : 'Abhi';
+    const otherPresence = presenceStore[otherUser];
+    const isOtherOnline = otherPresence ? (now - otherPresence.lastSeen < 15000) : false;
+    const isOtherTyping = otherPresence ? (otherPresence.isTyping && isOtherOnline) : false;
 
     return {
       messages,
@@ -94,7 +56,7 @@ export async function getChatState(currentUser: 'Abhi' | 'Priya') {
       isOtherTyping
     };
   } catch (e) {
-    console.error("Portal sync failure:", e);
+    console.error("Local archive read failure:", e);
     return {
       messages: [],
       isOtherOnline: false,
@@ -104,60 +66,55 @@ export async function getChatState(currentUser: 'Abhi' | 'Priya') {
 }
 
 /**
- * Sends a message and performs optimized background cleanup.
+ * Appends a message to the local repository file and performs instant cleanup.
  */
 export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
   try {
     const timestamp = Date.now();
-    
-    // 1. Direct Commit
-    const newMessageRef = await addDoc(collection(db, MESSAGES_COLLECTION), {
+    const newMessage: ChatMessage = {
+      id: Math.random().toString(36).substr(2, 9),
       sender,
       text,
       timestamp,
-    });
+    };
 
-    // 2. Instant Presence Reset
-    await setDoc(doc(db, PRESENCE_COLLECTION, sender), {
-      lastSeen: Date.now(),
-      isTyping: false
-    }, { merge: true });
-
-    // 3. Optimized Cleanup (Only if needed, using a batch for speed)
-    // We check for a slightly higher buffer to avoid cleaning on every single send
-    const q = query(
-      collection(db, MESSAGES_COLLECTION), 
-      orderBy('timestamp', 'desc'), 
-      limit(MAX_HISTORY + 10) 
-    );
-    
-    const snapshot = await getDocs(q);
-    if (snapshot.size > MAX_HISTORY) {
-      const batch = writeBatch(db);
-      const docsToDelete = snapshot.docs.slice(MAX_HISTORY);
-      docsToDelete.forEach(d => batch.delete(d.ref));
-      await batch.commit();
+    // 1. Read existing
+    let messages: ChatMessage[] = [];
+    if (fs.existsSync(MESSAGES_FILE)) {
+      const data = fs.readFileSync(MESSAGES_FILE, 'utf8');
+      messages = JSON.parse(data || '[]');
     }
 
-    return { success: true, id: newMessageRef.id };
+    // 2. Update and Trim
+    messages.push(newMessage);
+    if (messages.length > MAX_HISTORY) {
+      messages = messages.slice(-MAX_HISTORY);
+    }
+
+    // 3. Write back to repository file
+    fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
+
+    // 4. Reset Presence
+    if (presenceStore[sender]) {
+      presenceStore[sender].isTyping = false;
+      presenceStore[sender].lastSeen = Date.now();
+    }
+
+    return { success: true, id: newMessage.id };
   } catch (err) {
-    console.error("Transmission error:", err);
-    return { success: false, error: "Link unstable." };
+    console.error("Local write error:", err);
+    return { success: false, error: "Archive write failed." };
   }
 }
 
 /**
- * Updates typing status in Firestore.
+ * Updates typing status in memory.
  */
 export async function setTypingStatus(user: 'Abhi' | 'Priya', isTyping: boolean) {
-  try {
-    const presenceRef = doc(db, PRESENCE_COLLECTION, user);
-    await setDoc(presenceRef, {
-      lastSeen: Date.now(),
-      isTyping
-    }, { merge: true });
-    return { success: true };
-  } catch (err) {
-    return { success: false };
+  if (!presenceStore[user]) {
+    presenceStore[user] = { lastSeen: Date.now(), isTyping: false };
   }
+  presenceStore[user].isTyping = isTyping;
+  presenceStore[user].lastSeen = Date.now();
+  return { success: true };
 }
