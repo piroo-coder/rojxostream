@@ -44,10 +44,14 @@ export default function ChatPage() {
       setIsOtherOnline(state.isOtherOnline);
       setIsOtherTyping(state.isOtherTyping);
       
-      // Atomic Sync: Filter duplicates and sort
-      setMessages(state.messages);
+      // Update messages only if they changed or we are initializing
+      setMessages(prev => {
+        // Simple comparison to prevent unnecessary re-renders
+        if (JSON.stringify(prev) === JSON.stringify(state.messages)) return prev;
+        return state.messages;
+      });
     } catch (err) {
-      // Polling error silently handled
+      // Polling error silently handled to prevent UI disruption
     }
   }, [user]);
 
@@ -55,7 +59,8 @@ export default function ChatPage() {
     if (!user) return;
 
     sync();
-    pollingRef.current = setInterval(sync, 2500); // Polling interval
+    // Use a slightly more conservative polling rate for Vercel/Firestore efficiency
+    pollingRef.current = setInterval(sync, 3000); 
 
     return () => {
       if (pollingRef.current) clearInterval(pollingRef.current);
@@ -107,7 +112,7 @@ export default function ChatPage() {
     const text = inputText.trim();
     if (!text || !user || isSending) return;
 
-    // Optimistic Update
+    // 1. Optimistic Update (Immediate Feedback)
     const tempId = `temp-${Date.now()}`;
     const optimisticMsg: ChatMessage = {
       id: tempId,
@@ -122,14 +127,17 @@ export default function ChatPage() {
 
     try {
       const res = await sendMessage(user, text);
-      if (!res.success) throw new Error();
-      sync(); // Refresh after send
+      if (!res.success) throw new Error("Server denied transmission");
+      
+      // 2. Confirm and Sync
+      await sync(); 
     } catch (err) {
       toast({ 
         title: "Transmission Failed", 
         description: "Message could not reach the archive.", 
         variant: "destructive" 
       });
+      // Rollback optimistic update on error
       setMessages(prev => prev.filter(m => m.id !== tempId));
       setInputText(text);
     } finally {
@@ -295,7 +303,7 @@ export default function ChatPage() {
             disabled={isSending || !inputText.trim()}
             className="h-12 w-12 rounded-2xl bg-accent hover:bg-accent/80 text-background shadow-xl transition-all active:scale-90"
           >
-            <Send size={20} />
+            {isSending ? <div className="animate-spin h-5 w-5 border-2 border-background border-t-transparent rounded-full" /> : <Send size={20} />}
           </Button>
         </form>
       </div>
