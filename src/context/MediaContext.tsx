@@ -139,7 +139,7 @@ const initialData: MediaItem[] = [
         role: "Literature Teacher",
         description: "A 27-year-old literature teacher who has become emotionally paralyzed by professional bullying and personal isolation. She has lost her sense of taste—except for chocolate and beer—and spends rainy mornings in the garden to avoid the pain of her reality.",
         image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIbS1zOmnpnPkUJlslhgA1KogTnAADPCkNfw&s",
-        background_url: "https://static.wikia.nocookie.net/kiminonawa/images/b/b7/Garden_Yukino.png/revision/latest?cb=20180131080743"
+        background_url: "https://wallpapers.com/images/hd/yukari-yukino-the-elegant-literature-teacher-in-the-autumn-setting-70atccva2q6f522v.jpg"
       }
     ],
     criticalAnalysis: {
