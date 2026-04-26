@@ -9,6 +9,7 @@ import { Send, User, LogOut, Lock, Sparkles, PenTool } from 'lucide-react';
 import { getChatState, sendMessage, updatePresence, setTypingStatus, ChatMessage } from '@/app/actions/chat-actions';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { toast } from '@/hooks/use-toast';
 
 export default function ChatPage() {
   const [user, setUser] = useState<'Abhi' | 'Priya' | null>(null);
@@ -24,36 +25,23 @@ export default function ChatPage() {
   
   const scrollRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Sync scroll to bottom when messages or typing status changes
-  useEffect(() => {
+  // Sync scroll to bottom
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior
+      });
     }
+  };
+
+  useEffect(() => {
+    scrollToBottom('smooth');
   }, [messages, isOtherTyping]);
 
-  // Polling for State and Presence
-  useEffect(() => {
-    if (!user) return;
-
-    const syncChat = async () => {
-      try {
-        await updatePresence(user);
-        const state = await getChatState(user);
-        setMessages(state.messages);
-        setIsOtherOnline(state.isOtherOnline);
-        setIsOtherTyping(state.isOtherTyping);
-      } catch (error) {
-        console.error("Sync error:", error);
-      }
-    };
-
-    syncChat();
-    const interval = setInterval(syncChat, 2000); // 2 second sync for typing/presence
-    return () => clearInterval(interval);
-  }, [user]);
-
-  // Persistent login check
+  // Handle initialization and polling
   useEffect(() => {
     const savedUser = localStorage.getItem('chat_user');
     if (savedUser === 'Abhi' || savedUser === 'Priya') {
@@ -61,18 +49,41 @@ export default function ChatPage() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const sync = async () => {
+      try {
+        const state = await getChatState(user);
+        setMessages(state.messages);
+        setIsOtherOnline(state.isOtherOnline);
+        setIsOtherTyping(state.isOtherTyping);
+      } catch (err) {
+        console.error("Archive sync heartbeat failed.");
+      }
+    };
+
+    sync();
+    pollingRef.current = setInterval(sync, 3000);
+
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, [user]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === 'priyu_abhi' && password === 'abhi') {
+    const uname = username.trim();
+    const pword = password.trim();
+
+    if (uname === 'priyu_abhi' && pword === 'abhi') {
       setUser('Abhi');
       localStorage.setItem('chat_user', 'Abhi');
-      setLoginError('');
-    } else if (username === 'priyu_abhi' && password === 'priya_kaur') {
+    } else if (uname === 'priyu_abhi' && pword === 'priya_kaur') {
       setUser('Priya');
       localStorage.setItem('chat_user', 'Priya');
-      setLoginError('');
     } else {
-      setLoginError('Invalid coordinates.');
+      setLoginError('Portal access denied. Check coordinates.');
     }
   };
 
@@ -83,37 +94,54 @@ export default function ChatPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
-    
-    if (user) {
-      // Notify server that user is typing
-      setTypingStatus(user, true);
-      
-      // Clear previous timeout
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-      
-      // Set timeout to stop typing status after 2.5s of no activity
-      typingTimeoutRef.current = setTimeout(() => {
-        setTypingStatus(user, false);
-      }, 2500);
-    }
+    if (!user) return;
+
+    setTypingStatus(user, true);
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      setTypingStatus(user, false);
+    }, 2000);
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim() || !user || isSending) return;
+    const text = inputText.trim();
+    if (!text || !user || isSending) return;
 
     setIsSending(true);
-    const result = await sendMessage(user, inputText);
-    if (result.success) {
-      setInputText('');
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-      setTypingStatus(user, false);
+    setInputText('');
+
+    // Optimistic Update
+    const tempId = Math.random().toString();
+    const optimisticMsg: ChatMessage = {
+      id: tempId,
+      sender: user,
+      text: text,
+      timestamp: Date.now()
+    };
+    
+    setMessages(prev => [...prev, optimisticMsg]);
+
+    try {
+      const res = await sendMessage(user, text);
+      if (!res.success) throw new Error();
       
-      // Immediate local state update for responsiveness
+      // Refresh state to confirm message landed
       const state = await getChatState(user);
       setMessages(state.messages);
+    } catch (err) {
+      toast({ 
+        title: "Transmission Failed", 
+        description: "Echo could not be saved to archive.", 
+        variant: "destructive" 
+      });
+      // Revert optimism
+      setMessages(prev => prev.filter(m => m.id !== tempId));
+      setInputText(text);
+    } finally {
+      setIsSending(false);
+      setTypingStatus(user, false);
     }
-    setIsSending(false);
   };
 
   if (!user) {
@@ -139,7 +167,7 @@ export default function ChatPage() {
                   <Lock className="text-primary" size={32} />
                 </div>
                 <h2 className="text-3xl font-headline font-bold text-white tracking-tighter">Secure Portal</h2>
-                <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">Identify Yourself</p>
+                <p className="text-white/40 text-[10px] font-black uppercase tracking-widest">Identity Yourself</p>
               </div>
 
               <form onSubmit={handleLogin} className="space-y-6">
@@ -162,7 +190,7 @@ export default function ChatPage() {
                 </div>
                 {loginError && <p className="text-destructive text-center text-xs font-bold uppercase">{loginError}</p>}
                 <Button type="submit" className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 font-bold text-lg shadow-2xl">
-                  Access Live Session
+                  Establish Link
                 </Button>
               </form>
             </CardContent>
@@ -204,7 +232,7 @@ export default function ChatPage() {
                 {user} <Sparkles className="text-accent" size={14} />
               </h3>
               <p className="text-[9px] uppercase font-black tracking-widest text-white/40">
-                {isOtherOnline ? `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Online` : 'Offline (Messages will wait)'}
+                {isOtherOnline ? `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Online` : 'Offline (History Saved)'}
               </p>
             </div>
           </div>
@@ -221,14 +249,14 @@ export default function ChatPage() {
           {messages.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center opacity-20 select-none">
               <Sparkles size={64} className="mb-4" />
-              <p className="text-xs uppercase font-black tracking-[0.5em]">No echoes in the archive</p>
+              <p className="text-xs uppercase font-black tracking-[0.5em]">Archive is empty</p>
             </div>
           )}
           {messages.map((msg) => (
             <div 
               key={msg.id}
               className={cn(
-                "flex flex-col max-w-[80%] md:max-w-[70%] animate-in slide-in-from-bottom-2 duration-300",
+                "flex flex-col max-w-[85%] md:max-w-[75%] animate-in slide-in-from-bottom-2 duration-300",
                 msg.sender === user ? "ml-auto items-end" : "mr-auto items-start"
               )}
             >

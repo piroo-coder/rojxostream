@@ -1,9 +1,8 @@
 'use server';
 
 /**
- * @fileOverview Chat Actions with Dual-Persistence (Memory + File)
- * Uses a Global Memory Store for immediate "Live" feel and 
- * attempts to sync with src/app/lib/messages.json for file-based persistence.
+ * @fileOverview Refined Chat Actions with Stable Global Persistence
+ * Implements a robust memory store with a file-system backup.
  */
 
 import fs from 'fs';
@@ -16,100 +15,90 @@ export interface ChatMessage {
   timestamp: number;
 }
 
-// Global Store Keys for persistence across Server Action re-executions
-const CHAT_STORE_KEY = Symbol.for('rojxo.chat.global_store');
+const CHAT_STORE_KEY = 'ROJXO_CHAT_STORE_V2';
+const MAX_HISTORY = 100;
+const ONLINE_THRESHOLD = 10000;
+const TYPING_THRESHOLD = 3000;
 
-interface GlobalChatStore {
+interface GlobalStore {
   messages: ChatMessage[];
   presence: Record<string, number>;
   typingStatus: Record<string, number>;
   initialized: boolean;
 }
 
-// Initialize or retrieve the global store
-const store: GlobalChatStore = (global as any)[CHAT_STORE_KEY] || {
-  messages: [],
-  presence: {},
-  typingStatus: {},
-  initialized: false,
-};
-
-if (!(global as any)[CHAT_STORE_KEY]) {
-  (global as any)[CHAT_STORE_KEY] = store;
+// Access the global store securely
+function getStore(): GlobalStore {
+  const g = global as any;
+  if (!g[CHAT_STORE_KEY]) {
+    g[CHAT_STORE_KEY] = {
+      messages: [],
+      presence: {},
+      typingStatus: {},
+      initialized: false,
+    };
+  }
+  return g[CHAT_STORE_KEY];
 }
 
-const ONLINE_THRESHOLD_MS = 10000; 
-const TYPING_THRESHOLD_MS = 3000;  
-const MAX_HISTORY = 100;
+const getFilePath = () => path.join(process.cwd(), 'src/app/lib/messages.json');
 
-// Helper to get the absolute path to messages.json
-const getMessagesPath = () => path.join(process.cwd(), 'src/app/lib/messages.json');
-
-// Initial load from file if not already initialized in memory
-function ensureInitialized() {
+// Ensure history is loaded from disk if memory is empty
+function syncStore() {
+  const store = getStore();
   if (store.initialized) return;
-  
+
   try {
-    const filePath = getMessagesPath();
+    const filePath = getFilePath();
     if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf8');
-      const parsed = JSON.parse(data || '[]');
-      store.messages = Array.isArray(parsed) ? parsed.slice(-MAX_HISTORY) : [];
+      const content = fs.readFileSync(filePath, 'utf8');
+      const parsed = JSON.parse(content || '[]');
+      if (Array.isArray(parsed)) {
+        store.messages = parsed.slice(-MAX_HISTORY);
+      }
     }
-  } catch (error) {
-    console.error("Failed to load initial chat history from file:", error);
+  } catch (e) {
+    console.warn("Note: File persistence skipped (likely read-only environment). Memory store remains active.");
   } finally {
     store.initialized = true;
   }
 }
 
-// Persist current memory messages to file (Best Effort)
-function syncToFile() {
+// Best-effort save to disk
+function saveToDisk() {
+  const store = getStore();
   try {
-    const filePath = getMessagesPath();
-    const data = JSON.stringify(store.messages, null, 2);
-    // Ensure dir exists
+    const filePath = getFilePath();
     const dir = path.dirname(filePath);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(filePath, data);
-  } catch (error) {
-    // This will likely fail on Vercel, which is expected.
-    // The memory store will still handle the active session history.
-    console.warn("File system sync skipped (likely read-only environment). History will persist in memory for this session.");
+    fs.writeFileSync(filePath, JSON.stringify(store.messages, null, 2));
+  } catch (e) {
+    // Silence error on serverless environments
   }
 }
 
-export async function updatePresence(user: 'Abhi' | 'Priya') {
-  store.presence[user] = Date.now();
-  return { success: true };
-}
-
-export async function setTypingStatus(user: 'Abhi' | 'Priya', isTyping: boolean) {
-  store.typingStatus[user] = isTyping ? Date.now() : 0;
-  return { success: true };
-}
-
 export async function getChatState(currentUser: 'Abhi' | 'Priya') {
-  ensureInitialized();
+  syncStore();
+  const store = getStore();
   const now = Date.now();
+  
+  // Update current user presence
+  store.presence[currentUser] = now;
+  
   const otherUser = currentUser === 'Abhi' ? 'Priya' : 'Abhi';
-  
-  const lastSeenOther = store.presence[otherUser] || 0;
-  const isOtherOnline = (now - lastSeenOther) < ONLINE_THRESHOLD_MS;
-  
-  const lastTypingOther = store.typingStatus[otherUser] || 0;
-  const isOtherTyping = (now - lastTypingOther) < TYPING_THRESHOLD_MS;
+  const isOtherOnline = (now - (store.presence[otherUser] || 0)) < ONLINE_THRESHOLD;
+  const isOtherTyping = (now - (store.typingStatus[otherUser] || 0)) < TYPING_THRESHOLD;
 
   return {
-    messages: store.messages,
+    messages: [...store.messages],
     isOtherOnline,
-    isOtherTyping,
-    onlineUsers: Object.keys(store.presence).filter(u => (now - store.presence[u]) < ONLINE_THRESHOLD_MS)
+    isOtherTyping
   };
 }
 
 export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
-  ensureInitialized();
+  syncStore();
+  const store = getStore();
   
   const newMessage: ChatMessage = {
     id: Math.random().toString(36).substring(2, 11),
@@ -118,24 +107,30 @@ export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
     timestamp: Date.now(),
   };
 
-  // Update Memory Store
   store.messages.push(newMessage);
+  
+  // Enforce 100 message limit
   if (store.messages.length > MAX_HISTORY) {
     store.messages = store.messages.slice(-MAX_HISTORY);
   }
-  
-  // Update Presence & Typing
+
+  // Update sender state
   store.typingStatus[sender] = 0;
   store.presence[sender] = Date.now();
 
-  // Trigger File Sync
-  syncToFile();
+  saveToDisk();
 
-  return { success: true, message: newMessage };
+  return { success: true };
 }
 
-export async function clearSession() {
-  store.messages = [];
-  syncToFile();
+export async function setTypingStatus(user: 'Abhi' | 'Priya', isTyping: boolean) {
+  const store = getStore();
+  store.typingStatus[user] = isTyping ? Date.now() : 0;
+  return { success: true };
+}
+
+export async function updatePresence(user: 'Abhi' | 'Priya') {
+  const store = getStore();
+  store.presence[user] = Date.now();
   return { success: true };
 }
