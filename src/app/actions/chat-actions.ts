@@ -13,16 +13,19 @@ export interface ChatMessage {
   timestamp: number;
 }
 
-// Global state to simulate a persistent store/file in serverless environments
-const globalState = global as unknown as {
-  chatMessages: ChatMessage[];
-  presence: Record<string, number>;
-  typingStatus: Record<string, number>;
+// Global state to simulate a persistent store in serverless environments
+// We use a specific key on global to avoid issues with Hot Module Replacement in dev
+const CHAT_STORE_KEY = Symbol.for('rojxo.chat.store');
+
+const globalState = (global as any)[CHAT_STORE_KEY] || {
+  chatMessages: [],
+  presence: {},
+  typingStatus: {},
 };
 
-if (!globalState.chatMessages) globalState.chatMessages = [];
-if (!globalState.presence) globalState.presence = {};
-if (!globalState.typingStatus) globalState.typingStatus = {};
+if (!(global as any)[CHAT_STORE_KEY]) {
+  (global as any)[CHAT_STORE_KEY] = globalState;
+}
 
 const ONLINE_THRESHOLD_MS = 10000; // 10 seconds
 const TYPING_THRESHOLD_MS = 3000;  // 3 seconds
@@ -52,7 +55,7 @@ export async function getChatState(currentUser: 'Abhi' | 'Priya') {
   const isOtherTyping = (now - lastTypingOther) < TYPING_THRESHOLD_MS;
 
   return {
-    messages: globalState.chatMessages,
+    messages: [...globalState.chatMessages], // Return a copy
     isOtherOnline,
     isOtherTyping,
     onlineUsers: Object.keys(globalState.presence).filter(u => (now - globalState.presence[u]) < ONLINE_THRESHOLD_MS)
@@ -79,7 +82,7 @@ export async function sendMessage(sender: 'Abhi' | 'Priya', text: string) {
   globalState.typingStatus[sender] = 0;
   globalState.presence[sender] = Date.now();
 
-  return { success: true };
+  return { success: true, message: newMessage };
 }
 
 export async function clearSession() {

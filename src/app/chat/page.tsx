@@ -5,7 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, User, LogOut, MessageSquare, Lock, ShieldCheck, Sparkles, Wifi, WifiOff, Loader2, PenTool } from 'lucide-react';
+import { Send, User, LogOut, Lock, Sparkles, PenTool } from 'lucide-react';
 import { getChatState, sendMessage, updatePresence, setTypingStatus, ChatMessage } from '@/app/actions/chat-actions';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -25,7 +25,7 @@ export default function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Sync scroll to bottom
+  // Sync scroll to bottom when messages or typing status changes
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -37,11 +37,15 @@ export default function ChatPage() {
     if (!user) return;
 
     const syncChat = async () => {
-      await updatePresence(user);
-      const state = await getChatState(user);
-      setMessages(state.messages);
-      setIsOtherOnline(state.isOtherOnline);
-      setIsOtherTyping(state.isOtherTyping);
+      try {
+        await updatePresence(user);
+        const state = await getChatState(user);
+        setMessages(state.messages);
+        setIsOtherOnline(state.isOtherOnline);
+        setIsOtherTyping(state.isOtherTyping);
+      } catch (error) {
+        console.error("Sync error:", error);
+      }
     };
 
     syncChat();
@@ -87,7 +91,7 @@ export default function ChatPage() {
       // Clear previous timeout
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       
-      // Set timeout to stop typing status
+      // Set timeout to stop typing status after 2.5s of no activity
       typingTimeoutRef.current = setTimeout(() => {
         setTypingStatus(user, false);
       }, 2500);
@@ -105,6 +109,7 @@ export default function ChatPage() {
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       setTypingStatus(user, false);
       
+      // Immediate local state update for responsiveness
       const state = await getChatState(user);
       setMessages(state.messages);
     }
@@ -199,7 +204,7 @@ export default function ChatPage() {
                 {user} <Sparkles className="text-accent" size={14} />
               </h3>
               <p className="text-[9px] uppercase font-black tracking-widest text-white/40">
-                {isOtherOnline ? `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Online` : 'Other user is offline'}
+                {isOtherOnline ? `${user === 'Abhi' ? 'Priya' : 'Abhi'} is Online` : 'Offline (Messages will wait)'}
               </p>
             </div>
           </div>
@@ -213,6 +218,12 @@ export default function ChatPage() {
           ref={scrollRef}
           className="flex-1 overflow-y-auto pr-2 space-y-4 mb-4 scroll-smooth scrollbar-hide"
         >
+          {messages.length === 0 && (
+            <div className="h-full flex flex-col items-center justify-center opacity-20 select-none">
+              <Sparkles size={64} className="mb-4" />
+              <p className="text-xs uppercase font-black tracking-[0.5em]">No echoes in the archive</p>
+            </div>
+          )}
           {messages.map((msg) => (
             <div 
               key={msg.id}
@@ -237,8 +248,8 @@ export default function ChatPage() {
           
           {/* Typing Indicator */}
           {isOtherTyping && (
-            <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl w-fit animate-pulse">
-              <PenTool size={12} className="text-accent" />
+            <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl w-fit animate-in fade-in slide-in-from-left-2 duration-300">
+              <PenTool size={12} className="text-accent animate-bounce" />
               <span className="text-[10px] font-black uppercase tracking-widest text-white/60">
                 {user === 'Abhi' ? 'Priya' : 'Abhi'} is typing...
               </span>
@@ -249,17 +260,18 @@ export default function ChatPage() {
         {/* Input */}
         <form onSubmit={handleSendMessage} className="p-2 bg-white/5 border border-white/10 backdrop-blur-3xl rounded-3xl flex items-center gap-2 shadow-2xl">
           <Input 
-            placeholder="Type a message..."
+            placeholder="Whisper to the archive..."
             value={inputText}
             onChange={handleInputChange}
             disabled={isSending}
+            autoComplete="off"
             className="flex-1 h-14 bg-transparent border-0 focus-visible:ring-0 text-white placeholder:text-white/20 text-base"
           />
           <Button 
             type="submit" 
             size="icon" 
             disabled={isSending || !inputText.trim()}
-            className="h-12 w-12 rounded-2xl bg-accent hover:bg-accent/80 text-background shadow-xl"
+            className="h-12 w-12 rounded-2xl bg-accent hover:bg-accent/80 text-background shadow-xl transition-all active:scale-90"
           >
             <Send size={20} />
           </Button>
