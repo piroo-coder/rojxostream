@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
@@ -41,14 +42,7 @@ const initialData: MediaItem[] = [
     characters: [
       { name: "Suzume Iwato", role: "Main Protagonist", image_url: "https://cdn.anisearch.com/images/character/cover/121/121822_400.webp" },
       { name: "Souta Munakata", role: "The Closer", image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTkJb7HiZNRg5og-WOFj1kdoacn2WZuN9Z3qseWZxbuyjVpbhrLIjSPSOi2eZWn7sLb2jck7L4dwLTC-1BOz73C_1CIOOzYah-rbnomjLigUg&s=10" }
-    ],
-    criticalAnalysis: {
-      characterMotivations: [{ topic: "Suzume's Drive", explanation: "Unresolved grief." }],
-      narrativeEvents: [{ event: "The Worm", explanation: "Disasters manifest in ruins." }],
-      writersMessage: "Acknowledge history to move forward.",
-      realLifeRelation: "2011 Earthquake dialogue.",
-      importanceToUs: "Resilience is facing fears."
-    }
+    ]
   },
   {
     id: 'a2',
@@ -56,25 +50,24 @@ const initialData: MediaItem[] = [
     title: 'I Want to Eat Your Pancreas',
     thumbnailUrl: 'https://wallpapercave.com/wp/wp5496669.jpg',
     mediaUrl: 'https://app.videas.fr/embed/media/69469d2b-d21b-4636-94d2-b6613c005089/',
-    hindiExplanationUrl: 'http://www.youtube.com/watch?v=vYqD3PEFRno',
     creator: 'Shin\'ichirō Ushijima',
     imdbRating: '8.0',
-    summary: 'A dying girl and an aloof boy find a connection.',
-    moral: 'Live every day to the fullest.',
+    summary: 'A dying girl and an aloof boy find a connection that transcends life and death.',
+    moral: 'Live every day to the fullest, for every heartbeat is a gift.',
     genre: ['Drama', 'Romance'],
-    relatedShortIds: ['sh8', 'sh9']
+    relatedShortIds: ['sh1'],
+    characters: [
+      { name: "Sakura Yamauchi", role: "The Dying Girl", image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2P6I_S5H1X7L2U6H3_N2N5A3S4P5_U6V7W8&s" },
+      { name: "Haruki Shiga", role: "Aloof Boy", image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6_P9U6I_S5H1X7L2U6H3_N2N5A3S4P5_U6V7W8&s" }
+    ]
   },
   {
-    id: 'a3',
-    type: 'anime',
-    title: 'The Garden of Words',
-    thumbnailUrl: 'https://wallpaperaccess.com/full/970464.jpg',
-    mediaUrl: 'https://vimeo.com/855974784?fl=pl&fe=sh',
-    creator: 'Makoto Shinkai',
-    imdbRating: '7.4',
-    summary: 'Rainy day meetings in a Japanese garden.',
-    moral: 'Brief connections give us strength.',
-    genre: ['Drama', 'Romance']
+    id: 'sh1',
+    type: 'short',
+    title: 'Pancreas Sad Moment',
+    thumbnailUrl: 'https://picsum.photos/seed/sh1/600/400',
+    mediaUrl: 'https://www.youtube.com/shorts/vAEc_DMNz00',
+    creator: 'AnimeFragments'
   },
   {
     id: 'a4',
@@ -84,33 +77,13 @@ const initialData: MediaItem[] = [
     mediaUrl: 'https://www.dropbox.com/scl/fi/wo0nqqg27jckoym42v8hc/a-silent-voice.mp4?rlkey=nl6cmtjct02abzjtebje4ouy2&st=z3n2evlg&dl=0',
     creator: 'Naoko Yamada',
     imdbRating: '8.1',
-    summary: 'Making amends for childhood bullying.',
+    summary: 'Making amends for childhood bullying through empathy and growth.',
     moral: 'Forgiveness is the path to redemption.',
-    genre: ['Drama', 'Romance']
-  },
-  {
-    id: 'a5',
-    type: 'anime',
-    title: 'Your Name',
-    thumbnailUrl: 'https://4kwallpapers.com/images/walls/thumbs_3t/14943.jpg',
-    mediaUrl: 'https://www.youtube.com/watch?v=vAEc_DMNz00',
-    creator: 'Makoto Shinkai',
-    imdbRating: '8.4',
-    summary: 'Body-swapping teenagers connected by fate.',
-    moral: 'Destiny requires effort and memory.',
-    genre: ['Fantasy', 'Romance']
-  },
-  {
-    id: 'a6',
-    type: 'anime',
-    title: 'Weathering with You',
-    thumbnailUrl: 'https://m.gettywallpapers.com/wp-content/uploads/2021/09/Weathering-With-You-Background-Images.png',
-    mediaUrl: 'https://www.dailymotion.com/video/x9fne28',
-    creator: 'Makoto Shinkai',
-    imdbRating: '7.5',
-    summary: 'A runaway boy meets a weather-controlling girl.',
-    moral: 'Love vs The World.',
-    genre: ['Fantasy', 'Drama']
+    genre: ['Drama', 'Romance'],
+    characters: [
+      { name: "Shoya Ishida", role: "Repentant Bully", image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3_P9U6I_S5H1X7L2U6H3_N2N5A3S4P5_U6V7W8&s" },
+      { name: "Shoko Nishimiya", role: "Gentle Soul", image_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4_P9U6I_S5H1X7L2U6H3_N2N5A3S4P5_U6V7W8&s" }
+    ]
   },
   {
     id: 'm1',
@@ -120,51 +93,9 @@ const initialData: MediaItem[] = [
     mediaUrl: 'https://www.youtube.com/watch?v=3Q1yTBHjwXc',
     creator: 'Nitesh Tiwari',
     imdbRating: '8.3',
-    summary: 'College friends reunite after a tragedy.',
+    summary: 'College friends reunite after a tragedy to learn that failing isn\'t the end.',
     moral: 'Effort counts more than success.',
     genre: ['Comedy', 'Drama']
-  },
-  {
-    id: 'm2',
-    type: 'movie',
-    title: 'Half Girlfriend',
-    thumbnailUrl: 'https://wallpapercave.com/wp/wp8276890.jpg',
-    mediaUrl: 'https://www.youtube.com/watch?v=AI9r3XjyOXs',
-    creator: 'Mohit Suri',
-    imdbRating: '4.5',
-    summary: 'Persistence in love across classes.',
-    moral: 'Persistence in love can bridge any gap.',
-    genre: ['Romance', 'Drama']
-  },
-  {
-    id: 'm3',
-    type: 'movie',
-    title: 'Oh My God',
-    thumbnailUrl: 'https://i.ytimg.com/vi/1d3WlZAgZ7o/maxresdefault.jpg',
-    mediaUrl: 'https://www.youtube.com/watch?v=MWxBbTtjmXg',
-    creator: 'Umesh Shukla',
-    imdbRating: '8.1',
-    summary: 'A shopkeeper sues God after a disaster.',
-    moral: 'Spirituality is in humanity.',
-    genre: ['Comedy', 'Fantasy']
-  },
-  {
-    id: 's1',
-    type: 'song',
-    title: 'Suzume Theme Song',
-    thumbnailUrl: 'https://wallpapercave.com/wp/wp12664354.jpg',
-    mediaUrl: 'https://www.youtube.com/watch?v=m3w1mUXtCj0',
-    creator: 'Radwimps',
-    genre: ['J-Pop']
-  },
-  {
-    id: 's2',
-    type: 'song',
-    title: 'Fir Bhi Tumko Chahunga',
-    thumbnailUrl: 'https://wallpapers.com/images/hd/a-silent-voice-crying-couple-2hrblheq4u5w4q8c.jpg',
-    mediaUrl: 'https://www.youtube.com/watch?v=jQdDpRTVe9k',
-    creator: 'Arijit Singh',
-    genre: ['Bollywood']
   }
 ];
 
@@ -178,7 +109,6 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [syncData, setSyncData] = useState<SyncData | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
-  // LOGOUT ON REFRESH: Use sessionStorage only
   useEffect(() => {
     const stored = sessionStorage.getItem('rojxo_user');
     if (stored) setUserNameState(stored);
@@ -196,7 +126,6 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const data = await getSyncState(userName);
     if (data) {
       setSyncData(data);
-      // Sharing logic: If follower, teleport to the item
       if (data.sharing.status === 'active' && data.sharing.leader !== userName) {
         if (data.sharing.mediaId && currentlyPlaying?.id !== data.sharing.mediaId) {
           const item = library.find(i => i.id === data.sharing.mediaId);
@@ -208,7 +137,6 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     if (userName) {
-      // HIGH FREQUENCY POLLING (800ms) for "Instant" feel
       const interval = setInterval(fetchSync, 800);
       return () => clearInterval(interval);
     }

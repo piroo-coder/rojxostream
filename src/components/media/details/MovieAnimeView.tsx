@@ -2,7 +2,7 @@
 "use client";
 
 import { MediaItem } from '@/app/types/media';
-import { X, Play, Sparkles, Share2, CircleDot, Layers, ShieldAlert, Maximize2, MonitorPlay } from 'lucide-react';
+import { X, Play, Sparkles, Share2, CircleDot, Layers, ShieldAlert, Maximize2, MonitorPlay, Users, BookOpen, Quote, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
@@ -10,6 +10,9 @@ import { cn } from '@/lib/utils';
 import { useMedia } from '@/context/MediaContext';
 import { updateSharingState, syncPlayback } from '@/app/actions/sync-actions';
 import { toast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import Link from 'next/link';
 
 interface MovieAnimeViewProps {
   item: MediaItem;
@@ -32,7 +35,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
     if (scrollRef.current) scrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
   }, [mode]);
 
-  // Sync Video State
   useEffect(() => {
     if (isLeader && videoRef.current && mode === 'playing') {
       const pushSync = () => {
@@ -92,7 +94,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
           src={item.thumbnailUrl} 
           alt=""
           fill
-          className="object-cover opacity-30 blur-2xl"
+          className="object-cover opacity-20 blur-3xl scale-110"
           unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
@@ -108,35 +110,87 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
       </Button>
 
       <div ref={scrollRef} className="flex-1 w-full relative z-10 overflow-y-auto scrollbar-hide">
-        <div className="container mx-auto max-w-6xl px-4 py-16 md:py-24 flex flex-col items-center">
+        <div className="container mx-auto max-w-6xl px-4 py-16 md:py-24">
           
           {mode === 'discovery' ? (
-            <div className="w-full space-y-12 md:space-y-16 animate-in slide-in-from-bottom-8 duration-700">
-              <div className="text-center space-y-4 md:space-y-6">
+            <div className="space-y-16 animate-in slide-in-from-bottom-8 duration-700">
+              {/* Hero Info */}
+              <div className="text-center space-y-6">
                 <div className="inline-flex items-center gap-3 bg-black/40 border border-primary/30 px-6 py-2 rounded-full backdrop-blur-3xl">
                   <Sparkles size={14} className="text-primary animate-pulse" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Multiverse Portal</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Multiverse Archive</span>
                 </div>
-                <h1 className="text-4xl sm:text-7xl md:text-9xl font-headline font-bold tracking-tighter text-white drop-shadow-2xl leading-none">{item.title}</h1>
+                <h1 className="text-4xl sm:text-7xl md:text-8xl font-headline font-bold tracking-tighter text-white drop-shadow-2xl leading-none">{item.title}</h1>
                 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                   <Button onClick={() => setMode('playing')} className="w-full sm:w-auto h-16 px-10 rounded-2xl bg-primary hover:bg-primary/90 font-black text-lg gap-3 shadow-2xl">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+                   <Button onClick={() => setMode('playing')} className="w-full sm:w-auto h-16 px-12 rounded-2xl bg-primary hover:bg-primary/90 font-black text-lg gap-3 shadow-2xl transition-all hover:scale-105 active:scale-95">
                      <Play fill="currentColor" size={20} /> Enter Solo
                    </Button>
                    {!isFollowing && !isLeader && (
-                     <Button onClick={handleStartSharing} variant="outline" className="w-full sm:w-auto h-16 px-10 rounded-2xl border-accent/20 bg-accent/5 hover:bg-accent/10 text-white font-black text-lg gap-3 group">
+                     <Button onClick={handleStartSharing} variant="outline" className="w-full sm:w-auto h-16 px-10 rounded-2xl border-accent/20 bg-accent/5 hover:bg-accent/10 text-white font-black text-lg gap-3 group transition-all hover:scale-105">
                        <MonitorPlay size={22} className="text-accent group-hover:scale-110 transition-transform" /> Share with {otherUser}
                      </Button>
                    )}
                 </div>
               </div>
 
-              {isFollowing && (
-                <div className="w-full p-8 rounded-[2.5rem] bg-accent/10 border border-accent/20 text-center space-y-4 animate-pulse backdrop-blur-3xl">
-                   <h3 className="text-2xl font-headline font-bold text-white italic">"{otherUser} is waiting for you!"</h3>
-                   <p className="text-white/40 text-sm font-medium">Join the shared cinematic timeline now.</p>
-                   <Button onClick={() => setMode('playing')} className="rounded-full bg-accent text-accent-foreground font-black px-12 h-14 text-base shadow-2xl">Connect to Stream</Button>
+              {/* Character Grid */}
+              {item.characters && item.characters.length > 0 && (
+                <div className="space-y-8">
+                   <h3 className="text-2xl font-headline font-bold flex items-center gap-3">
+                     <Users size={24} className="text-accent" /> Essential Souls
+                   </h3>
+                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                     {item.characters.map((char, i) => (
+                       <div key={i} className="group relative aspect-[3/4] rounded-3xl overflow-hidden bg-white/5 border border-white/10 hover:border-accent/30 transition-all duration-500">
+                         <Image src={char.image_url} alt={char.name} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
+                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                         <div className="absolute bottom-4 left-4 right-4">
+                           <p className="text-xs font-black text-white truncate">{char.name}</p>
+                           <p className="text-[9px] text-accent uppercase font-black tracking-widest">{char.role || 'Protagonist'}</p>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
                 </div>
+              )}
+
+              {/* Plot & Moral */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+                <div className="md:col-span-2 space-y-6">
+                  <h3 className="text-2xl font-headline font-bold flex items-center gap-3">
+                    <BookOpen size={24} className="text-primary" /> The Chronicle
+                  </h3>
+                  <p className="text-lg md:text-xl text-white/60 leading-relaxed font-light italic">
+                    "{item.summary || item.description}"
+                  </p>
+                </div>
+                <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 space-y-4">
+                   <h4 className="text-[10px] font-black uppercase tracking-widest text-accent flex items-center gap-2">
+                     <Quote size={12} /> The Essence
+                   </h4>
+                   <p className="text-2xl font-headline font-bold text-white italic leading-tight">
+                     {item.moral || "Brief connections give us strength."}
+                   </p>
+                </div>
+              </div>
+
+              {/* Related Shorts Link */}
+              {item.relatedShortIds && item.relatedShortIds.length > 0 && (
+                 <Link href={`/shorts?ids=${item.relatedShortIds.join(',')}`}>
+                   <div className="group relative w-full h-32 md:h-40 rounded-[2.5rem] overflow-hidden border border-white/10 hover:border-primary/40 transition-all cursor-pointer shadow-2xl">
+                      <div className="absolute inset-0 bg-primary/20 group-hover:bg-primary/30 transition-colors" />
+                      <div className="absolute inset-0 flex items-center justify-between px-8 md:px-12">
+                        <div className="space-y-1">
+                          <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Multiverse Fragments</p>
+                          <h4 className="text-2xl md:text-4xl font-headline font-bold text-white">Explore Related Shorts</h4>
+                        </div>
+                        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-4 transition-transform">
+                          <ChevronRight size={32} className="text-white" />
+                        </div>
+                      </div>
+                   </div>
+                 </Link>
               )}
             </div>
           ) : (
@@ -191,31 +245,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                       className="w-full h-full object-contain"
                     />
                  )}
-                 
-                 {isFollowing && !isYoutube && (
-                    <div className="absolute inset-0 z-50 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
-                       <div className="p-8 bg-background/90 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 text-center space-y-4 max-w-sm shadow-2xl">
-                          <ShieldAlert className="mx-auto text-accent size-8" />
-                          <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-1">Timeline Guard</p>
-                            <p className="text-lg font-bold text-white">{otherUser} is directing this universe</p>
-                          </div>
-                          <p className="text-[10px] italic text-white/20">Controls are synchronized to the leader.</p>
-                       </div>
-                    </div>
-                 )}
                </div>
-
-               {isFullScreen && (
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={() => setIsFullScreen(false)}
-                    className="absolute top-8 right-8 z-[100] bg-black/60 hover:bg-black/80 rounded-full text-white/60 h-12 w-12 border border-white/10 backdrop-blur-xl"
-                  >
-                    <X size={24} />
-                  </Button>
-               )}
             </div>
           )}
         </div>

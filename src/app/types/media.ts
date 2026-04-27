@@ -22,13 +22,13 @@ export interface MediaItem {
   type: MediaType;
   title: string;
   thumbnailUrl: string;
-  audioBackgroundUrl?: string; // Background image for audio-only mode
+  audioBackgroundUrl?: string; 
   mediaUrl: string;
-  hindiExplanationUrl?: string; // Link for Hindi summary/explanation
+  hindiExplanationUrl?: string; 
   description?: string;
   summary?: string;
   moral?: string;
-  creator?: string; // Movie: Director, Song: Singer, Short: Channel
+  creator?: string; 
   writers?: string;
   producers?: string;
   theme?: string;
