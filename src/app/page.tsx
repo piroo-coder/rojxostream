@@ -13,7 +13,7 @@ import { updateScreenShareState, addIceCandidate, resetScreenShare } from '@/app
 import { toast } from '@/hooks/use-toast';
 
 export default function HomePage() {
-  const { userName, syncData, otherUser } = useMedia();
+  const { userName, syncData, otherUser, isInitializing } = useMedia();
   const [isSharing, setIsSharing] = useState(false);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -135,6 +135,7 @@ export default function HomePage() {
     }
   }, [screenShare, userName]);
 
+  if (isInitializing) return null;
   if (!userName) return <LoginGate />;
 
   return (
@@ -179,7 +180,7 @@ export default function HomePage() {
                   disabled={screenShare?.status === 'active' || screenShare?.status === 'requesting'}
                   className="h-16 md:h-20 px-8 md:px-12 rounded-2xl md:rounded-[2rem] bg-primary hover:bg-primary/90 text-lg md:text-xl font-black shadow-2xl hover:scale-105 transition-all group"
                 >
-                  {screenShare?.status !== 'idle' ? `${otherUser} is Sharing` : "Start Sharing Screen"} 
+                  {screenShare?.status !== 'idle' && screenShare?.status !== undefined ? `${otherUser} is Sharing` : "Start Sharing Screen"} 
                   <Sparkles size={20} className="ml-3 group-hover:rotate-12 transition-transform" />
                 </Button>
               </div>

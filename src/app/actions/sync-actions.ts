@@ -51,7 +51,24 @@ export async function getSyncState(userName: string) {
   try {
     ensureFileSync();
     const now = Date.now();
-    const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
+    const rawData = fs.readFileSync(SYNC_FILE, 'utf8');
+    const data: SyncData = JSON.parse(rawData || '{}');
+
+    // Initialize missing fields to prevent crashes
+    if (!data.presence) data.presence = {};
+    if (!data.typing) data.typing = {};
+    if (!data.messages) data.messages = [];
+    if (!data.screenShare) {
+      data.screenShare = { 
+        leader: null, 
+        status: 'idle',
+        offer: null,
+        answer: null,
+        iceCandidatesA: [],
+        iceCandidatesB: [],
+        timestamp: 0
+      };
+    }
 
     data.presence[userName] = now;
     
@@ -68,19 +85,6 @@ export async function getSyncState(userName: string) {
     data.presence = cleanedPresence;
     data.typing = cleanedTyping;
 
-    // Ensure screenShare structure exists to prevent crashes
-    if (!data.screenShare) {
-      data.screenShare = { 
-        leader: null, 
-        status: 'idle',
-        offer: null,
-        answer: null,
-        iceCandidatesA: [],
-        iceCandidatesB: [],
-        timestamp: 0
-      };
-    }
-
     fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
     return data;
   } catch (e) {
@@ -93,6 +97,7 @@ export async function setTypingStatus(userName: string, isTyping: boolean) {
   try {
     ensureFileSync();
     const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
+    if (!data.typing) data.typing = {};
     if (isTyping) data.typing[userName] = Date.now();
     else delete data.typing[userName];
     fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
@@ -106,6 +111,9 @@ export async function sendSyncMessage(sender: string, text: string) {
   try {
     ensureFileSync();
     const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
+    if (!data.messages) data.messages = [];
+    if (!data.typing) data.typing = {};
+    
     data.messages.push({ sender, text, timestamp: Date.now() });
     if (data.messages.length > 50) data.messages = data.messages.slice(-50);
     delete data.typing[sender];
@@ -120,6 +128,17 @@ export async function updateScreenShareState(update: Partial<SyncData['screenSha
   try {
     ensureFileSync();
     const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
+    if (!data.screenShare) {
+      data.screenShare = { 
+        leader: null, 
+        status: 'idle',
+        offer: null,
+        answer: null,
+        iceCandidatesA: [],
+        iceCandidatesB: [],
+        timestamp: 0
+      };
+    }
     data.screenShare = { ...data.screenShare, ...update, timestamp: Date.now() };
     fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
     return true;
@@ -132,6 +151,8 @@ export async function addIceCandidate(sender: string, candidate: any) {
   try {
     ensureFileSync();
     const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
+    if (!data.screenShare) return false;
+    
     if (sender === 'Abhi') data.screenShare.iceCandidatesA.push(candidate);
     else data.screenShare.iceCandidatesB.push(candidate);
     fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
