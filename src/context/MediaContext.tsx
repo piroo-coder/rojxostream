@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
@@ -15,6 +16,7 @@ interface MediaContextType {
   syncData: SyncData | null;
   isOtherOnline: boolean;
   otherUser: string | null;
+  isInitializing: boolean;
 }
 
 const initialData: MediaItem[] = [
@@ -174,10 +176,12 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [searchTerm, setSearchTerm] = useState('');
   const [userName, setUserNameState] = useState<string | null>(null);
   const [syncData, setSyncData] = useState<SyncData | null>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem('rojxo_user');
     if (stored) setUserNameState(stored);
+    setIsInitializing(false);
   }, []);
 
   const setUserName = (name: string | null) => {
@@ -191,22 +195,21 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const data = await getSyncState(userName);
     if (data) {
       setSyncData(data);
-      // Handle Watch Party Sync
       if (data.sharing.status === 'active' && data.sharing.leader !== userName) {
         const item = library.find(i => i.id === data.sharing.mediaId);
         if (item && currentlyPlaying?.id !== item.id) {
           setCurrentlyPlaying(item);
         }
-      } else if (data.sharing.status === 'idle' && data.sharing.leader !== userName) {
-        // If leader stopped sharing, follower should probably stop too if they are in sync mode
       }
     }
   }, [userName, library, currentlyPlaying]);
 
   useEffect(() => {
-    const interval = setInterval(fetchSync, 5000);
-    return () => clearInterval(interval);
-  }, [fetchSync]);
+    if (userName) {
+      const interval = setInterval(fetchSync, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [fetchSync, userName]);
 
   const otherUser = userName === 'Abhi' ? 'Priyu' : 'Abhi';
   const isOtherOnline = !!syncData?.presence[otherUser];
@@ -222,7 +225,8 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setUserName,
       syncData,
       isOtherOnline,
-      otherUser
+      otherUser,
+      isInitializing
     }}>
       {children}
     </MediaContext.Provider>

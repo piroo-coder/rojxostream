@@ -1,6 +1,15 @@
 {
-  "presence": {},
-  "messages": [],
+  "presence": {
+    "hihi": 1777300145747,
+    "piroo": 1777300151446
+  },
+  "messages": [
+    {
+      "sender": "piroo",
+      "text": "yo",
+      "timestamp": 1777300106257
+    }
+  ],
   "sharing": {
     "leader": null,
     "mediaId": null,

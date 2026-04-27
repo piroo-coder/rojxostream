@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState } from 'react';
 import { useMedia } from '@/context/MediaContext';
-import { Lock, ArrowRight, ShieldCheck, Heart } from 'lucide-react';
+import { Lock, ArrowRight, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,12 +16,13 @@ const CREDENTIALS = {
 };
 
 export const LoginGate = () => {
-  const { userName, setUserName } = useMedia();
+  const { userName, setUserName, isInitializing } = useMedia();
   const [inputName, setInputName] = useState('');
   const [inputPass, setInputPass] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (userName) return null;
+  // Avoid flicker by waiting for context to initialize from localStorage
+  if (isInitializing || userName) return null;
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
