@@ -5,7 +5,7 @@ import { useMedia } from '@/context/MediaContext';
 import { Navbar } from '@/components/layout/Navbar';
 import { LoginGate } from '@/components/auth/LoginGate';
 import { FloatingChat } from '@/components/chat/FloatingChat';
-import { MonitorPlay, X, Mic, MicOff, Maximize2, Sparkles, ShieldCheck, Activity } from 'lucide-react';
+import { MonitorPlay, X, Mic, Maximize2, Sparkles, ShieldCheck, Activity, AlertTriangle } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -13,23 +13,19 @@ import { updateScreenShareState, addIceCandidate, resetScreenShare } from '@/app
 import { toast } from '@/hooks/use-toast';
 
 export default function HomePage() {
-  const { userName, syncData, otherUser, isOtherOnline } = useMedia();
+  const { userName, syncData, otherUser } = useMedia();
   const [isSharing, setIsSharing] = useState(false);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
 
+  // Safety check for production environments (Vercel)
+  const isVercel = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
+
   const screenShare = syncData?.screenShare;
   const isLeader = screenShare?.leader === userName;
   const isFollowing = screenShare?.status === 'active' && !isLeader;
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      stopSharing();
-    };
-  }, []);
 
   const createPeerConnection = () => {
     const pc = new RTCPeerConnection({
@@ -117,24 +113,20 @@ export default function HomePage() {
     await resetScreenShare();
   };
 
-  // Signaling Loop
   useEffect(() => {
     if (!userName || !screenShare) return;
 
     const pc = peerConnection.current;
     const { status, leader, offer, answer, iceCandidatesA, iceCandidatesB } = screenShare;
 
-    // Handle Join Request (Follower Side)
     if (status === 'requesting' && leader !== userName && !pc) {
       joinSharing(offer);
     }
 
-    // Handle Answer (Leader side)
     if (status === 'active' && leader === userName && pc && answer && !pc.remoteDescription) {
       pc.setRemoteDescription(new RTCSessionDescription(answer));
     }
 
-    // Handle ICE Candidates
     if (pc && pc.remoteDescription) {
       const remoteCandidates = leader === userName ? iceCandidatesB : iceCandidatesA;
       remoteCandidates.forEach(cand => {
@@ -143,7 +135,6 @@ export default function HomePage() {
     }
   }, [screenShare, userName]);
 
-  // Handle auto-scroll-to-top prevention by ensuring the layout is stable
   if (!userName) return <LoginGate />;
 
   return (
@@ -153,18 +144,24 @@ export default function HomePage() {
       
       <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-12 pt-24">
         
-        <div className="w-full max-w-6xl space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+        <div className="w-full max-w-6xl space-y-8">
           
           <header className="text-center space-y-4">
+            {isVercel && (
+              <div className="inline-flex items-center gap-2 bg-yellow-500/10 backdrop-blur-xl px-4 py-2 rounded-full border border-yellow-500/30 mb-2">
+                 <AlertTriangle size={12} className="text-yellow-500" />
+                 <span className="text-[10px] font-black tracking-widest uppercase text-yellow-500">Live Sync Limited on Vercel</span>
+              </div>
+            )}
             <div className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-xl px-4 py-2 rounded-full border border-primary/30 mb-2">
                <Activity size={12} className="text-primary animate-pulse" />
-               <span className="text-[10px] font-black tracking-widest uppercase text-primary">Private Multi-Channel Tunnel</span>
+               <span className="text-[10px] font-black tracking-widest uppercase text-primary">Private Screen Hub</span>
             </div>
             <h1 className="text-4xl md:text-7xl font-headline font-bold tracking-tighter text-white drop-shadow-2xl">
-              {isLeader ? "Broadcasting..." : isFollowing ? `Watching ${otherUser}` : "Screen Sharing Hub"}
+              {isLeader ? "Broadcasting..." : isFollowing ? `Watching ${otherUser}` : "Screen Sharing Portal"}
             </h1>
             <p className="text-white/40 font-light italic text-sm md:text-lg max-w-xl mx-auto">
-              {isLeader ? "Your screen and audio are being transmitted across the multiverse." : "A private tunnel between Priyu and Abhi."}
+              A private tunnel between Priyu and Abhi. Share your world instantly.
             </p>
           </header>
 
@@ -182,7 +179,7 @@ export default function HomePage() {
                   disabled={screenShare?.status === 'active' || screenShare?.status === 'requesting'}
                   className="h-16 md:h-20 px-8 md:px-12 rounded-2xl md:rounded-[2rem] bg-primary hover:bg-primary/90 text-lg md:text-xl font-black shadow-2xl hover:scale-105 transition-all group"
                 >
-                  {screenShare?.status !== 'idle' ? `${otherUser} is Sharing` : "Start Sharing Universe"} 
+                  {screenShare?.status !== 'idle' ? `${otherUser} is Sharing` : "Start Sharing Screen"} 
                   <Sparkles size={20} className="ml-3 group-hover:rotate-12 transition-transform" />
                 </Button>
               </div>
@@ -202,7 +199,7 @@ export default function HomePage() {
             />
 
             {(isLeader || isFollowing) && (
-              <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-4 z-20 animate-in slide-in-from-bottom-4 duration-500 w-full justify-center px-4">
+              <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-4 z-20 w-full justify-center px-4">
                 <Button variant="ghost" size="icon" className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-3xl border border-white/10 text-white hover:bg-white/20">
                   <Mic size={20} />
                 </Button>
@@ -215,7 +212,6 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* Background Ambience */}
             <div className="absolute inset-0 pointer-events-none opacity-20">
               <div className="absolute top-10 left-10 w-64 h-64 bg-primary/20 rounded-full blur-[100px]" />
               <div className="absolute bottom-10 right-10 w-64 h-64 bg-accent/20 rounded-full blur-[100px]" />
@@ -226,14 +222,14 @@ export default function HomePage() {
             <div className="flex items-center gap-8">
                <div className="flex flex-col items-center">
                  <ShieldCheck className="text-emerald-400 mb-1" size={16} />
-                 <span className="text-[9px] font-black uppercase tracking-widest text-center">End-to-End Encryption</span>
+                 <span className="text-[9px] font-black uppercase tracking-widest text-center">Identity Secured</span>
                </div>
                <div className="flex flex-col items-center">
                  <Mic className="text-primary mb-1" size={16} />
-                 <span className="text-[9px] font-black uppercase tracking-widest text-center">Hi-Fi Audio Sync</span>
+                 <span className="text-[9px] font-black uppercase tracking-widest text-center">Direct Audio Link</span>
                </div>
             </div>
-            <p className="text-[8px] font-black uppercase tracking-[0.5em] text-center">2026 Multiverse Network • Secure Connection</p>
+            <p className="text-[8px] font-black uppercase tracking-[0.5em] text-center">Private Multiverse Connection • 2026</p>
           </footer>
         </div>
       </div>

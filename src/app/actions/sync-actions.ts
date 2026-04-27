@@ -3,7 +3,6 @@
 
 /**
  * @fileOverview High-Speed File-Based Sync Actions for WebRTC Signaling.
- * Handles Presence, Chat, and WebRTC Screen Sharing (Offer/Answer/ICE).
  */
 
 import fs from 'fs';
@@ -54,10 +53,8 @@ export async function getSyncState(userName: string) {
     const now = Date.now();
     const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
 
-    // Update current user presence
     data.presence[userName] = now;
     
-    // Clean old presence and typing (inactive for > 15s)
     const cleanedPresence: Record<string, number> = {};
     const cleanedTyping: Record<string, number> = {};
     
@@ -71,9 +68,23 @@ export async function getSyncState(userName: string) {
     data.presence = cleanedPresence;
     data.typing = cleanedTyping;
 
+    // Ensure screenShare structure exists to prevent crashes
+    if (!data.screenShare) {
+      data.screenShare = { 
+        leader: null, 
+        status: 'idle',
+        offer: null,
+        answer: null,
+        iceCandidatesA: [],
+        iceCandidatesB: [],
+        timestamp: 0
+      };
+    }
+
     fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
     return data;
   } catch (e) {
+    console.error("Sync read error:", e);
     return null;
   }
 }
@@ -96,7 +107,7 @@ export async function sendSyncMessage(sender: string, text: string) {
     ensureFileSync();
     const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
     data.messages.push({ sender, text, timestamp: Date.now() });
-    if (data.messages.length > 100) data.messages = data.messages.slice(-100);
+    if (data.messages.length > 50) data.messages = data.messages.slice(-50);
     delete data.typing[sender];
     fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
     return true;
@@ -121,7 +132,6 @@ export async function addIceCandidate(sender: string, candidate: any) {
   try {
     ensureFileSync();
     const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
-    // Abhi is A, Priyu is B (arbitrary assignment for signaling)
     if (sender === 'Abhi') data.screenShare.iceCandidatesA.push(candidate);
     else data.screenShare.iceCandidatesB.push(candidate);
     fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
