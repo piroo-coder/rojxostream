@@ -2,7 +2,7 @@
 "use client";
 
 import { MediaItem } from '@/app/types/media';
-import { X, Play, Sparkles, Share2, CircleDot, Layers, ShieldAlert, Maximize2 } from 'lucide-react';
+import { X, Play, Sparkles, Share2, CircleDot, Layers, ShieldAlert, Maximize2, MonitorPlay } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
@@ -32,7 +32,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
     if (scrollRef.current) scrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
   }, [mode]);
 
-  // LEADER SYNC: Push video state to server
+  // Sync Video State
   useEffect(() => {
     if (isLeader && videoRef.current && mode === 'playing') {
       const pushSync = () => {
@@ -44,7 +44,6 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
     }
   }, [isLeader, mode, userName]);
 
-  // FOLLOWER SYNC: Pull video state from leader
   useEffect(() => {
     if (isFollowing && videoRef.current && mode === 'playing' && syncData?.sharing.videoState) {
       const state = syncData.sharing.videoState;
@@ -67,7 +66,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
       else if (item.mediaUrl.includes('youtu.be/')) youtubeId = item.mediaUrl.split('be/')[1].split('?')[0];
     }
     updateSharingState(userName, item.id, 'requesting', isYoutube, youtubeId);
-    toast({ title: "Sharing Request Sent", description: `Waiting for ${otherUser} to join the universe.` });
+    toast({ title: "Sharing Universe...", description: `Asking ${otherUser} to join the cinematic stream.` });
   };
 
   const isYoutube = item.mediaUrl.includes('youtube.com') || item.mediaUrl.includes('youtu.be');
@@ -93,7 +92,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
           src={item.thumbnailUrl} 
           alt=""
           fill
-          className="object-cover opacity-30 blur-2xl transition-all duration-1000"
+          className="object-cover opacity-30 blur-2xl"
           unoptimized
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
@@ -108,35 +107,35 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
         <X size={20} className="md:size-6" />
       </Button>
 
-      <div ref={scrollRef} className="flex-1 w-full relative z-10 overflow-y-auto scroll-smooth scrollbar-hide">
-        <div className="container mx-auto max-w-6xl px-4 py-16 md:py-32 flex flex-col items-center">
+      <div ref={scrollRef} className="flex-1 w-full relative z-10 overflow-y-auto scrollbar-hide">
+        <div className="container mx-auto max-w-6xl px-4 py-16 md:py-24 flex flex-col items-center">
           
           {mode === 'discovery' ? (
             <div className="w-full space-y-12 md:space-y-16 animate-in slide-in-from-bottom-8 duration-700">
               <div className="text-center space-y-4 md:space-y-6">
-                <div className="inline-flex items-center gap-3 bg-black/40 border border-primary/30 px-4 md:px-6 py-2 rounded-full backdrop-blur-3xl">
+                <div className="inline-flex items-center gap-3 bg-black/40 border border-primary/30 px-6 py-2 rounded-full backdrop-blur-3xl">
                   <Sparkles size={14} className="text-primary animate-pulse" />
-                  <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] md:tracking-[0.4em] text-white">Multiverse Archive</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Multiverse Portal</span>
                 </div>
-                <h1 className="text-3xl sm:text-6xl md:text-8xl font-headline font-bold tracking-tighter text-white drop-shadow-2xl leading-none">{item.title}</h1>
+                <h1 className="text-4xl sm:text-7xl md:text-9xl font-headline font-bold tracking-tighter text-white drop-shadow-2xl leading-none">{item.title}</h1>
                 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                   <Button onClick={() => setMode('playing')} className="w-full sm:w-auto h-14 md:h-16 px-8 md:px-10 rounded-2xl bg-primary hover:bg-primary/90 font-black text-base md:text-lg gap-3">
-                     <Play fill="currentColor" size={20} /> Enter Universe
+                   <Button onClick={() => setMode('playing')} className="w-full sm:w-auto h-16 px-10 rounded-2xl bg-primary hover:bg-primary/90 font-black text-lg gap-3 shadow-2xl">
+                     <Play fill="currentColor" size={20} /> Enter Solo
                    </Button>
                    {!isFollowing && !isLeader && (
-                     <Button onClick={handleStartSharing} variant="outline" className="w-full sm:w-auto h-14 md:h-16 px-8 md:px-10 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-black text-base md:text-lg gap-3 group">
-                       <Share2 size={20} className="group-hover:scale-110" /> Share Universe
+                     <Button onClick={handleStartSharing} variant="outline" className="w-full sm:w-auto h-16 px-10 rounded-2xl border-accent/20 bg-accent/5 hover:bg-accent/10 text-white font-black text-lg gap-3 group">
+                       <MonitorPlay size={22} className="text-accent group-hover:scale-110 transition-transform" /> Share with {otherUser}
                      </Button>
                    )}
                 </div>
               </div>
 
               {isFollowing && (
-                <div className="w-full p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] bg-accent/10 border border-accent/20 text-center space-y-4 animate-pulse">
-                   <h3 className="text-xl md:text-2xl font-headline font-bold text-white italic">"Ready to watch together?"</h3>
-                   <p className="text-white/60 text-xs md:text-sm">Leader: {otherUser}</p>
-                   <Button onClick={() => setMode('playing')} className="rounded-full bg-accent text-accent-foreground font-black px-8">Join Party</Button>
+                <div className="w-full p-8 rounded-[2.5rem] bg-accent/10 border border-accent/20 text-center space-y-4 animate-pulse backdrop-blur-3xl">
+                   <h3 className="text-2xl font-headline font-bold text-white italic">"{otherUser} is waiting for you!"</h3>
+                   <p className="text-white/40 text-sm font-medium">Join the shared cinematic timeline now.</p>
+                   <Button onClick={() => setMode('playing')} className="rounded-full bg-accent text-accent-foreground font-black px-12 h-14 text-base shadow-2xl">Connect to Stream</Button>
                 </div>
               )}
             </div>
@@ -146,36 +145,36 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
               isFullScreen && "fixed inset-0 z-[90] p-0 bg-black justify-center"
             )}>
                {!isFullScreen && (
-                 <div className="text-center space-y-2 md:space-y-4 px-4">
-                   <h2 className="text-2xl md:text-5xl font-headline font-bold text-white line-clamp-1">{item.title}</h2>
-                   <div className="flex flex-wrap items-center justify-center gap-2">
+                 <div className="text-center space-y-4 px-4">
+                   <h2 className="text-2xl md:text-5xl font-headline font-bold text-white tracking-tight">{item.title}</h2>
+                   <div className="flex flex-wrap items-center justify-center gap-3">
                      {isLeader && (
-                       <div className="inline-flex items-center gap-2 bg-emerald-500/20 px-3 md:px-4 py-1.5 rounded-full border border-emerald-500/30">
-                          <CircleDot size={10} className="text-emerald-400 animate-pulse" />
-                          <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-emerald-400">Broadcasting to {otherUser}</span>
+                       <div className="inline-flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20 shadow-xl">
+                          <CircleDot size={12} className="text-emerald-400 animate-pulse" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Broadcasting to {otherUser}</span>
                        </div>
                      )}
                      {isFollowing && (
-                       <div className="inline-flex items-center gap-2 bg-accent/20 px-3 md:px-4 py-1.5 rounded-full border border-accent/30">
-                          <Layers size={10} className="text-accent animate-pulse" />
-                          <span className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-accent">Following {otherUser}'s Timeline</span>
+                       <div className="inline-flex items-center gap-2 bg-accent/10 px-4 py-2 rounded-full border border-accent/20 shadow-xl">
+                          <Layers size={12} className="text-accent animate-pulse" />
+                          <span className="text-[10px] font-black uppercase tracking-widest text-accent">Following {otherUser}</span>
                        </div>
                      )}
                      <Button 
                       variant="ghost" 
                       size="sm" 
                       onClick={() => setIsFullScreen(!isFullScreen)}
-                      className="rounded-full bg-white/5 hover:bg-white/10 text-white/40 h-8 px-3"
+                      className="rounded-full bg-white/5 hover:bg-white/10 text-white/40 h-10 px-4 border border-white/5"
                      >
-                       <Maximize2 size={12} className="mr-2" /> {isFullScreen ? "Exit Full" : "Cinema Mode"}
+                       <Maximize2 size={14} className="mr-2" /> {isFullScreen ? "Exit Fullscreen" : "Immersive Mode"}
                      </Button>
                    </div>
                  </div>
                )}
                
                <div className={cn(
-                 "w-full max-w-5xl aspect-video overflow-hidden border border-white/10 bg-black relative group transition-all duration-500",
-                 isFullScreen ? "max-w-none w-screen h-screen rounded-0 border-0" : "rounded-[1.5rem] md:rounded-[2.5rem] shadow-[0_32px_128px_rgba(0,0,0,0.8)]"
+                 "w-full max-w-5xl aspect-video overflow-hidden border border-white/10 bg-black relative group transition-all duration-700",
+                 isFullScreen ? "max-w-none w-screen h-screen rounded-0 border-0" : "rounded-[2rem] md:rounded-[3rem] shadow-[0_32px_128px_rgba(0,0,0,1)]"
                )}>
                  {isYoutube ? (
                    <iframe 
@@ -194,11 +193,14 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                  )}
                  
                  {isFollowing && !isYoutube && (
-                    <div className="absolute inset-0 z-50 bg-black/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                       <div className="p-4 md:p-6 bg-background/80 backdrop-blur-3xl rounded-[1.5rem] md:rounded-[2rem] border border-white/10 text-center space-y-2 max-w-[200px] md:max-w-none">
-                          <ShieldAlert className="mx-auto text-accent size-5 md:size-6" />
-                          <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-white/40">Timeline Locked</p>
-                          <p className="text-xs md:text-sm font-bold">{otherUser} is Directing</p>
+                    <div className="absolute inset-0 z-50 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+                       <div className="p-8 bg-background/90 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 text-center space-y-4 max-w-sm shadow-2xl">
+                          <ShieldAlert className="mx-auto text-accent size-8" />
+                          <div>
+                            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-1">Timeline Guard</p>
+                            <p className="text-lg font-bold text-white">{otherUser} is directing this universe</p>
+                          </div>
+                          <p className="text-[10px] italic text-white/20">Controls are synchronized to the leader.</p>
                        </div>
                     </div>
                  )}
@@ -209,7 +211,7 @@ export const MovieAnimeView: React.FC<MovieAnimeViewProps> = ({ item, onClose })
                     variant="ghost" 
                     size="icon" 
                     onClick={() => setIsFullScreen(false)}
-                    className="absolute top-6 right-6 z-[100] bg-black/60 hover:bg-black/80 rounded-full text-white/60"
+                    className="absolute top-8 right-8 z-[100] bg-black/60 hover:bg-black/80 rounded-full text-white/60 h-12 w-12 border border-white/10 backdrop-blur-xl"
                   >
                     <X size={24} />
                   </Button>
