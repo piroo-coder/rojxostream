@@ -20,10 +20,11 @@ export default function HomePage() {
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const peerConnection = useRef<RTCPeerConnection | null>(null);
 
-  const isLeader = syncData?.screenShare?.leader === userName;
-  const isFollowing = syncData?.screenShare?.status === 'active' && !isLeader;
+  const screenShare = syncData?.screenShare;
+  const isLeader = screenShare?.leader === userName;
+  const isFollowing = screenShare?.status === 'active' && !isLeader;
 
-  // Cleanup on unmount or logout
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       stopSharing();
@@ -44,6 +45,9 @@ export default function HomePage() {
     pc.ontrack = (event) => {
       if (event.streams && event.streams[0]) {
         setRemoteStream(event.streams[0]);
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = event.streams[0];
+        }
       }
     };
 
@@ -54,7 +58,7 @@ export default function HomePage() {
   const startSharing = async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
+        video: { cursor: "always" },
         audio: true
       });
 
@@ -70,12 +74,12 @@ export default function HomePage() {
       await pc.setLocalDescription(offer);
 
       await updateScreenShareState({
-        leader: userName,
+        leader: userName!,
         status: 'requesting',
         offer: offer
       });
 
-      toast({ title: "Signal Sent", description: "Waiting for " + otherUser + " to tune in." });
+      toast({ title: "Broadcasting", description: `Waiting for ${otherUser} to join.` });
 
       stream.getVideoTracks()[0].onended = () => stopSharing();
     } catch (err) {
@@ -84,11 +88,11 @@ export default function HomePage() {
     }
   };
 
-  const joinSharing = async () => {
-    if (!syncData?.screenShare.offer) return;
+  const joinSharing = async (offer: any) => {
+    if (!offer || peerConnection.current) return;
 
     const pc = createPeerConnection();
-    await pc.setRemoteDescription(new RTCSessionDescription(syncData.screenShare.offer));
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));
 
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
@@ -115,14 +119,14 @@ export default function HomePage() {
 
   // Signaling Loop
   useEffect(() => {
-    if (!userName || !syncData?.screenShare) return;
+    if (!userName || !screenShare) return;
 
     const pc = peerConnection.current;
-    const { status, leader, offer, answer, iceCandidatesA, iceCandidatesB } = syncData.screenShare;
+    const { status, leader, offer, answer, iceCandidatesA, iceCandidatesB } = screenShare;
 
-    // Handle Join Request
+    // Handle Join Request (Follower Side)
     if (status === 'requesting' && leader !== userName && !pc) {
-      joinSharing();
+      joinSharing(offer);
     }
 
     // Handle Answer (Leader side)
@@ -132,49 +136,54 @@ export default function HomePage() {
 
     // Handle ICE Candidates
     if (pc && pc.remoteDescription) {
-      const candidatesToApply = leader === userName ? iceCandidatesB : iceCandidatesA;
-      // We only apply candidates we haven't applied yet - local state would be better but this is a start
-      // For a prototype, applying all can work if we check state
+      const remoteCandidates = leader === userName ? iceCandidatesB : iceCandidatesA;
+      remoteCandidates.forEach(cand => {
+        pc.addIceCandidate(new RTCIceCandidate(cand)).catch(() => {});
+      });
     }
-  }, [syncData?.screenShare, userName]);
+  }, [screenShare, userName]);
+
+  // Handle auto-scroll-to-top prevention by ensuring the layout is stable
+  if (!userName) return <LoginGate />;
 
   return (
-    <main className="min-h-screen bg-background relative overflow-hidden flex flex-col">
-      <LoginGate />
+    <main className="min-h-screen bg-background relative overflow-x-hidden flex flex-col">
       <Navbar />
       <FloatingChat />
       
-      <div className={cn("flex-1 flex flex-col items-center justify-center p-6 md:p-12 transition-opacity duration-1000 pt-24", userName ? "opacity-100" : "opacity-0")}>
+      <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-12 pt-24">
         
         <div className="w-full max-w-6xl space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           
           <header className="text-center space-y-4">
             <div className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-xl px-4 py-2 rounded-full border border-primary/30 mb-2">
                <Activity size={12} className="text-primary animate-pulse" />
-               <span className="text-[10px] font-black tracking-widest uppercase text-primary">Private Connection Established</span>
+               <span className="text-[10px] font-black tracking-widest uppercase text-primary">Private Multi-Channel Tunnel</span>
             </div>
             <h1 className="text-4xl md:text-7xl font-headline font-bold tracking-tighter text-white drop-shadow-2xl">
-              {isLeader ? "Broadcasting..." : isFollowing ? "Watching " + otherUser : "Screen Sharing Hub"}
+              {isLeader ? "Broadcasting..." : isFollowing ? `Watching ${otherUser}` : "Screen Sharing Hub"}
             </h1>
             <p className="text-white/40 font-light italic text-sm md:text-lg max-w-xl mx-auto">
               {isLeader ? "Your screen and audio are being transmitted across the multiverse." : "A private tunnel between Priyu and Abhi."}
             </p>
           </header>
 
-          <div className="relative aspect-video w-full rounded-[3rem] overflow-hidden bg-black/60 border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] group">
+          <div className="relative aspect-video w-full rounded-[2rem] md:rounded-[3rem] overflow-hidden bg-black/60 border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] group">
             {!isSharing && !isFollowing && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 z-10">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 z-10 p-6 text-center">
                 <div className="relative">
                   <div className="absolute -inset-4 bg-primary/20 rounded-full blur-2xl animate-pulse" />
-                  <div className="w-32 h-32 rounded-full bg-primary/10 border-4 border-primary/30 flex items-center justify-center relative shadow-2xl">
-                    <MonitorPlay size={48} className="text-primary" />
+                  <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-primary/10 border-4 border-primary/30 flex items-center justify-center relative shadow-2xl">
+                    <MonitorPlay size={40} className="text-primary" />
                   </div>
                 </div>
                 <Button 
                   onClick={startSharing} 
-                  className="h-20 px-12 rounded-[2rem] bg-primary hover:bg-primary/90 text-xl font-black shadow-2xl hover:scale-105 transition-all group"
+                  disabled={screenShare?.status === 'active' || screenShare?.status === 'requesting'}
+                  className="h-16 md:h-20 px-8 md:px-12 rounded-2xl md:rounded-[2rem] bg-primary hover:bg-primary/90 text-lg md:text-xl font-black shadow-2xl hover:scale-105 transition-all group"
                 >
-                  Start Sharing Universe <Sparkles size={20} className="ml-3 group-hover:rotate-12 transition-transform" />
+                  {screenShare?.status !== 'idle' ? `${otherUser} is Sharing` : "Start Sharing Universe"} 
+                  <Sparkles size={20} className="ml-3 group-hover:rotate-12 transition-transform" />
                 </Button>
               </div>
             )}
@@ -190,19 +199,18 @@ export default function HomePage() {
               ref={remoteVideoRef} 
               autoPlay 
               className={cn("w-full h-full object-contain", isFollowing ? "block" : "hidden")}
-              srcObject={remoteStream}
             />
 
             {(isLeader || isFollowing) && (
-              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-20 animate-in slide-in-from-bottom-4 duration-500">
-                <Button variant="ghost" size="icon" className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-3xl border border-white/10 text-white hover:bg-white/20">
-                  <Mic size={24} />
+              <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-4 z-20 animate-in slide-in-from-bottom-4 duration-500 w-full justify-center px-4">
+                <Button variant="ghost" size="icon" className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-3xl border border-white/10 text-white hover:bg-white/20">
+                  <Mic size={20} />
                 </Button>
-                <Button variant="ghost" size="icon" className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-3xl border border-white/10 text-white hover:bg-white/20">
-                  <Maximize2 size={24} />
+                <Button variant="ghost" size="icon" className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/10 backdrop-blur-3xl border border-white/10 text-white hover:bg-white/20">
+                  <Maximize2 size={20} />
                 </Button>
-                <Button onClick={stopSharing} variant="destructive" className="h-14 px-8 rounded-full font-black uppercase tracking-widest text-[10px] shadow-2xl">
-                  End Broadcast <X size={16} className="ml-2" />
+                <Button onClick={stopSharing} variant="destructive" className="h-10 md:h-14 px-4 md:px-8 rounded-full font-black uppercase tracking-widest text-[8px] md:text-[10px] shadow-2xl">
+                  End {isLeader ? "Broadcast" : "Session"} <X size={14} className="ml-2" />
                 </Button>
               </div>
             )}
@@ -218,14 +226,14 @@ export default function HomePage() {
             <div className="flex items-center gap-8">
                <div className="flex flex-col items-center">
                  <ShieldCheck className="text-emerald-400 mb-1" size={16} />
-                 <span className="text-[9px] font-black uppercase tracking-widest">End-to-End Tunnel</span>
+                 <span className="text-[9px] font-black uppercase tracking-widest text-center">End-to-End Encryption</span>
                </div>
                <div className="flex flex-col items-center">
                  <Mic className="text-primary mb-1" size={16} />
-                 <span className="text-[9px] font-black uppercase tracking-widest">Hi-Fi System Audio</span>
+                 <span className="text-[9px] font-black uppercase tracking-widest text-center">Hi-Fi Audio Sync</span>
                </div>
             </div>
-            <p className="text-[8px] font-black uppercase tracking-[0.5em]">2026 Multiverse Network • Priyu & Abhi Only</p>
+            <p className="text-[8px] font-black uppercase tracking-[0.5em] text-center">2026 Multiverse Network • Secure Connection</p>
           </footer>
         </div>
       </div>

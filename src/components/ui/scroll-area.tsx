@@ -12,13 +12,12 @@ const ScrollArea = React.forwardRef<
     viewportRef?: React.RefObject<HTMLDivElement | null>
   }
 >(({ className, children, viewportRef, ...props }, ref) => {
-  const { viewportRef: _vr, ...cleanProps } = props as any;
-  
+  // Destructure viewportRef so it's not passed to the Root element
   return (
     <ScrollAreaPrimitive.Root
       ref={ref}
       className={cn("relative overflow-hidden", className)}
-      {...cleanProps}
+      {...props}
     >
       <ScrollAreaPrimitive.Viewport ref={viewportRef} className="h-full w-full rounded-[inherit]">
         {children}

@@ -23,7 +23,7 @@ interface MediaContextType {
 const MediaContext = createContext<MediaContextType | undefined>(undefined);
 
 export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [library] = useState<MediaItem[]>([]); // Media content removed for screen sharing focus
+  const [library] = useState<MediaItem[]>([]);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<MediaItem | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [userName, setUserNameState] = useState<string | null>(null);
@@ -33,7 +33,9 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Authentication uses sessionStorage to ensure logout on refresh as requested
   useEffect(() => {
     const stored = sessionStorage.getItem('rojxo_user');
-    if (stored) setUserNameState(stored);
+    if (stored) {
+      setUserNameState(stored);
+    }
     setIsInitializing(false);
   }, []);
 
@@ -45,14 +47,19 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const fetchSync = useCallback(async () => {
     if (!userName) return;
-    const data = await getSyncState(userName);
-    if (data) {
-      setSyncData(data);
+    try {
+      const data = await getSyncState(userName);
+      if (data) {
+        setSyncData(data);
+      }
+    } catch (e) {
+      console.error("Sync fetch failed", e);
     }
   }, [userName]);
 
   useEffect(() => {
     if (userName) {
+      // High-frequency polling for instant feel (800ms)
       const interval = setInterval(fetchSync, 800);
       return () => clearInterval(interval);
     }
