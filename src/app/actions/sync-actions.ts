@@ -1,8 +1,9 @@
+
 'use server';
 
 /**
- * @fileOverview High-Speed File-Based Sync Actions for Priyu & Abhi.
- * Handles Presence, Instant Chat, Typing Indicators, and Video Playback Sync.
+ * @fileOverview High-Speed File-Based Sync Actions for WebRTC Signaling.
+ * Handles Presence, Chat, and WebRTC Screen Sharing (Offer/Answer/ICE).
  */
 
 import fs from 'fs';
@@ -14,17 +15,14 @@ export interface SyncData {
   presence: Record<string, number>;
   typing: Record<string, number>;
   messages: { sender: string; text: string; timestamp: number }[];
-  sharing: {
+  screenShare: {
     leader: string | null;
-    mediaId: string | null;
     status: 'idle' | 'requesting' | 'active';
-    videoState: {
-      currentTime: number;
-      isPlaying: boolean;
-      lastUpdated: number;
-      isYouTube: boolean;
-      youtubeId?: string;
-    };
+    offer: any | null;
+    answer: any | null;
+    iceCandidatesA: any[];
+    iceCandidatesB: any[];
+    timestamp: number;
   };
 }
 
@@ -36,11 +34,14 @@ function ensureFileSync() {
       presence: {},
       typing: {},
       messages: [],
-      sharing: { 
+      screenShare: { 
         leader: null, 
-        mediaId: null, 
         status: 'idle',
-        videoState: { currentTime: 0, isPlaying: false, lastUpdated: 0, isYouTube: false }
+        offer: null,
+        answer: null,
+        iceCandidatesA: [],
+        iceCandidatesB: [],
+        timestamp: 0
       }
     };
     fs.writeFileSync(SYNC_FILE, JSON.stringify(initial, null, 2));
@@ -104,30 +105,11 @@ export async function sendSyncMessage(sender: string, text: string) {
   }
 }
 
-export async function updateSharingState(
-  leader: string | null, 
-  mediaId: string | null, 
-  status: SyncData['sharing']['status'],
-  isYouTube = false,
-  youtubeId?: string
-) {
+export async function updateScreenShareState(update: Partial<SyncData['screenShare']>) {
   try {
     ensureFileSync();
     const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
-    data.sharing = { 
-      ...data.sharing,
-      leader, 
-      mediaId, 
-      status,
-      videoState: { 
-        ...data.sharing.videoState,
-        isYouTube,
-        youtubeId: youtubeId || data.sharing.videoState.youtubeId
-      }
-    };
-    if (status === 'idle') {
-       data.sharing.videoState = { currentTime: 0, isPlaying: false, lastUpdated: 0, isYouTube: false };
-    }
+    data.screenShare = { ...data.screenShare, ...update, timestamp: Date.now() };
     fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
     return true;
   } catch (e) {
@@ -135,16 +117,34 @@ export async function updateSharingState(
   }
 }
 
-export async function syncPlayback(leader: string, time: number, playing: boolean) {
+export async function addIceCandidate(sender: string, candidate: any) {
   try {
     ensureFileSync();
     const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
-    if (data.sharing.leader === leader) {
-      data.sharing.videoState.currentTime = time;
-      data.sharing.videoState.isPlaying = playing;
-      data.sharing.videoState.lastUpdated = Date.now();
-      fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
-    }
+    // Abhi is A, Priyu is B (arbitrary assignment for signaling)
+    if (sender === 'Abhi') data.screenShare.iceCandidatesA.push(candidate);
+    else data.screenShare.iceCandidatesB.push(candidate);
+    fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+export async function resetScreenShare() {
+  try {
+    ensureFileSync();
+    const data: SyncData = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
+    data.screenShare = {
+      leader: null,
+      status: 'idle',
+      offer: null,
+      answer: null,
+      iceCandidatesA: [],
+      iceCandidatesB: [],
+      timestamp: Date.now()
+    };
+    fs.writeFileSync(SYNC_FILE, JSON.stringify(data, null, 2));
     return true;
   } catch (e) {
     return false;

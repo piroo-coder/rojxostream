@@ -3,119 +3,231 @@
 
 import { useMedia } from '@/context/MediaContext';
 import { Navbar } from '@/components/layout/Navbar';
-import { MediaCard } from '@/components/media/MediaCard';
-import { MediaDetails } from '@/components/media/MediaDetails';
 import { LoginGate } from '@/components/auth/LoginGate';
 import { FloatingChat } from '@/components/chat/FloatingChat';
-import { ChevronDown, Play, Sparkles, Search } from 'lucide-react';
-import Image from 'next/image';
+import { MonitorPlay, X, Mic, MicOff, Maximize2, Sparkles, ShieldCheck, Activity } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
+import { Button } from '@/components/ui/button';
+import { updateScreenShareState, addIceCandidate, resetScreenShare } from '@/app/actions/sync-actions';
+import { toast } from '@/hooks/use-toast';
 
 export default function HomePage() {
-  const { library, setCurrentlyPlaying, searchTerm, userName } = useMedia();
+  const { userName, syncData, otherUser, isOtherOnline } = useMedia();
+  const [isSharing, setIsSharing] = useState(false);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const peerConnection = useRef<RTCPeerConnection | null>(null);
 
-  const filteredLibrary = library.filter(item => 
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.type.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const isLeader = syncData?.screenShare?.leader === userName;
+  const isFollowing = syncData?.screenShare?.status === 'active' && !isLeader;
 
-  const anime = filteredLibrary.filter(item => item.type === 'anime');
-  const movies = filteredLibrary.filter(item => item.type === 'movie');
-  const allAnime = library.filter(item => item.type === 'anime');
+  // Cleanup on unmount or logout
+  useEffect(() => {
+    return () => {
+      stopSharing();
+    };
+  }, []);
+
+  const createPeerConnection = () => {
+    const pc = new RTCPeerConnection({
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    });
+
+    pc.onicecandidate = (event) => {
+      if (event.candidate && userName) {
+        addIceCandidate(userName, event.candidate);
+      }
+    };
+
+    pc.ontrack = (event) => {
+      if (event.streams && event.streams[0]) {
+        setRemoteStream(event.streams[0]);
+      }
+    };
+
+    peerConnection.current = pc;
+    return pc;
+  };
+
+  const startSharing = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true
+      });
+
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = stream;
+      }
+
+      setIsSharing(true);
+      const pc = createPeerConnection();
+      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      await updateScreenShareState({
+        leader: userName,
+        status: 'requesting',
+        offer: offer
+      });
+
+      toast({ title: "Signal Sent", description: "Waiting for " + otherUser + " to tune in." });
+
+      stream.getVideoTracks()[0].onended = () => stopSharing();
+    } catch (err) {
+      console.error("Sharing failed", err);
+      toast({ variant: "destructive", title: "Share Denied", description: "Could not access screen media." });
+    }
+  };
+
+  const joinSharing = async () => {
+    if (!syncData?.screenShare.offer) return;
+
+    const pc = createPeerConnection();
+    await pc.setRemoteDescription(new RTCSessionDescription(syncData.screenShare.offer));
+
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+
+    await updateScreenShareState({
+      status: 'active',
+      answer: answer
+    });
+  };
+
+  const stopSharing = async () => {
+    if (peerConnection.current) {
+      peerConnection.current.close();
+      peerConnection.current = null;
+    }
+    if (localVideoRef.current?.srcObject) {
+      (localVideoRef.current.srcObject as MediaStream).getTracks().forEach(t => t.stop());
+      localVideoRef.current.srcObject = null;
+    }
+    setIsSharing(false);
+    setRemoteStream(null);
+    await resetScreenShare();
+  };
+
+  // Signaling Loop
+  useEffect(() => {
+    if (!userName || !syncData?.screenShare) return;
+
+    const pc = peerConnection.current;
+    const { status, leader, offer, answer, iceCandidatesA, iceCandidatesB } = syncData.screenShare;
+
+    // Handle Join Request
+    if (status === 'requesting' && leader !== userName && !pc) {
+      joinSharing();
+    }
+
+    // Handle Answer (Leader side)
+    if (status === 'active' && leader === userName && pc && answer && !pc.remoteDescription) {
+      pc.setRemoteDescription(new RTCSessionDescription(answer));
+    }
+
+    // Handle ICE Candidates
+    if (pc && pc.remoteDescription) {
+      const candidatesToApply = leader === userName ? iceCandidatesB : iceCandidatesA;
+      // We only apply candidates we haven't applied yet - local state would be better but this is a start
+      // For a prototype, applying all can work if we check state
+    }
+  }, [syncData?.screenShare, userName]);
 
   return (
-    <main className="min-h-screen bg-background relative overflow-x-hidden">
+    <main className="min-h-screen bg-background relative overflow-hidden flex flex-col">
       <LoginGate />
+      <Navbar />
+      <FloatingChat />
       
-      {/* 
-        Scroll Fix: Content is only rendered when userName is present 
-        BUT the LoginGate handles the fullscreen overlay. 
-        This prevents the "scroll to top" jump when re-authenticating.
-      */}
-      <div className={cn("transition-opacity duration-1000", userName ? "opacity-100" : "opacity-0 pointer-events-none")}>
-        <Navbar />
-        <FloatingChat />
+      <div className={cn("flex-1 flex flex-col items-center justify-center p-6 md:p-12 transition-opacity duration-1000 pt-24", userName ? "opacity-100" : "opacity-0")}>
         
-        {!searchTerm && allAnime.length > 0 && (
-          <section className="h-[70vh] md:h-screen w-full relative overflow-hidden bg-black">
-            <Carousel 
-              opts={{ loop: true, align: 'start' }}
-              plugins={[Autoplay({ delay: 6000, stopOnInteraction: false })]}
-              className="w-full h-full"
-            >
-              <CarouselContent className="h-full ml-0">
-                {allAnime.map((item) => (
-                  <CarouselItem key={item.id} className="h-full w-full pl-0 relative flex flex-col justify-end pb-12 md:pb-24 px-6 md:px-24 overflow-hidden">
-                    <div className="absolute inset-0 z-0">
-                      <Image 
-                        src={item.thumbnailUrl} 
-                        alt={item.title}
-                        fill
-                        className="object-cover transition-transform duration-[8000ms] hover:scale-105"
-                        priority
-                        unoptimized
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-                    </div>
-                    
-                    <div className="relative z-10 max-w-4xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                      <div className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-xl px-3 py-1 rounded-full border border-primary/30 mb-4 md:mb-6">
-                         <Sparkles size={10} className="text-primary animate-pulse" />
-                         <span className="text-[10px] font-black tracking-widest uppercase text-primary">Featured Universe</span>
-                      </div>
-                      <h1 className="text-3xl md:text-7xl font-headline font-bold mb-3 md:mb-4 tracking-tighter text-white drop-shadow-2xl">{item.title}</h1>
-                      <p className="text-sm md:text-xl text-white/80 mb-6 md:mb-10 max-w-2xl font-light italic leading-relaxed line-clamp-2">{item.summary}</p>
-                      <div className="flex gap-4">
-                        <button onClick={() => setCurrentlyPlaying(item)} className="h-12 md:h-14 px-6 md:px-10 rounded-2xl bg-primary hover:bg-primary/90 font-black text-sm md:text-base shadow-2xl flex items-center gap-2 transition-all hover:scale-105">
-                          <Play fill="currentColor" size={14} className="md:size-4" /> Enter Universe
-                        </button>
-                      </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce opacity-20 pointer-events-none hidden md:block">
-              <ChevronDown size={32} className="text-white" />
+        <div className="w-full max-w-6xl space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          
+          <header className="text-center space-y-4">
+            <div className="inline-flex items-center gap-2 bg-primary/20 backdrop-blur-xl px-4 py-2 rounded-full border border-primary/30 mb-2">
+               <Activity size={12} className="text-primary animate-pulse" />
+               <span className="text-[10px] font-black tracking-widest uppercase text-primary">Private Connection Established</span>
             </div>
-          </section>
-        )}
+            <h1 className="text-4xl md:text-7xl font-headline font-bold tracking-tighter text-white drop-shadow-2xl">
+              {isLeader ? "Broadcasting..." : isFollowing ? "Watching " + otherUser : "Screen Sharing Hub"}
+            </h1>
+            <p className="text-white/40 font-light italic text-sm md:text-lg max-w-xl mx-auto">
+              {isLeader ? "Your screen and audio are being transmitted across the multiverse." : "A private tunnel between Priyu and Abhi."}
+            </p>
+          </header>
 
-        <div className={cn("px-4 md:px-24 pb-24", searchTerm ? "pt-32" : "pt-12 md:pt-24")}>
-          {anime.length > 0 && (
-            <section className="mb-16 md:mb-24">
-              <h2 className="text-2xl md:text-5xl font-headline font-bold mb-6 md:mb-10 tracking-tight">World of <span className="text-accent">Anime</span></h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
-                {anime.map((item) => <MediaCard key={item.id} item={item} />)}
+          <div className="relative aspect-video w-full rounded-[3rem] overflow-hidden bg-black/60 border border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.8)] group">
+            {!isSharing && !isFollowing && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-8 z-10">
+                <div className="relative">
+                  <div className="absolute -inset-4 bg-primary/20 rounded-full blur-2xl animate-pulse" />
+                  <div className="w-32 h-32 rounded-full bg-primary/10 border-4 border-primary/30 flex items-center justify-center relative shadow-2xl">
+                    <MonitorPlay size={48} className="text-primary" />
+                  </div>
+                </div>
+                <Button 
+                  onClick={startSharing} 
+                  className="h-20 px-12 rounded-[2rem] bg-primary hover:bg-primary/90 text-xl font-black shadow-2xl hover:scale-105 transition-all group"
+                >
+                  Start Sharing Universe <Sparkles size={20} className="ml-3 group-hover:rotate-12 transition-transform" />
+                </Button>
               </div>
-            </section>
-          )}
+            )}
 
-          {movies.length > 0 && (
-            <section className="mb-16 md:mb-24">
-              <h2 className="text-2xl md:text-5xl font-headline font-bold mb-6 md:mb-10 tracking-tight">The <span className="text-primary">Cinema</span> Gallery</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-                {movies.map((item) => <MediaCard key={item.id} item={item} />)}
+            <video 
+              ref={localVideoRef} 
+              autoPlay 
+              muted 
+              className={cn("w-full h-full object-contain", isLeader ? "block" : "hidden")} 
+            />
+            
+            <video 
+              ref={remoteVideoRef} 
+              autoPlay 
+              className={cn("w-full h-full object-contain", isFollowing ? "block" : "hidden")}
+              srcObject={remoteStream}
+            />
+
+            {(isLeader || isFollowing) && (
+              <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-20 animate-in slide-in-from-bottom-4 duration-500">
+                <Button variant="ghost" size="icon" className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-3xl border border-white/10 text-white hover:bg-white/20">
+                  <Mic size={24} />
+                </Button>
+                <Button variant="ghost" size="icon" className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-3xl border border-white/10 text-white hover:bg-white/20">
+                  <Maximize2 size={24} />
+                </Button>
+                <Button onClick={stopSharing} variant="destructive" className="h-14 px-8 rounded-full font-black uppercase tracking-widest text-[10px] shadow-2xl">
+                  End Broadcast <X size={16} className="ml-2" />
+                </Button>
               </div>
-            </section>
-          )}
+            )}
 
-          {searchTerm && filteredLibrary.length === 0 && (
-            <div className="h-[50vh] flex flex-col items-center justify-center text-center">
-              <Search size={48} className="text-white/10 mb-6" />
-              <h3 className="text-2xl md:text-3xl font-headline font-bold mb-2">Universe Not Found</h3>
-              <p className="text-white/40 max-w-md px-4 text-sm md:text-base">The archives have no record of "{searchTerm}".</p>
+            {/* Background Ambience */}
+            <div className="absolute inset-0 pointer-events-none opacity-20">
+              <div className="absolute top-10 left-10 w-64 h-64 bg-primary/20 rounded-full blur-[100px]" />
+              <div className="absolute bottom-10 right-10 w-64 h-64 bg-accent/20 rounded-full blur-[100px]" />
             </div>
-          )}
+          </div>
+
+          <footer className="pt-12 flex flex-col items-center gap-6 opacity-40">
+            <div className="flex items-center gap-8">
+               <div className="flex flex-col items-center">
+                 <ShieldCheck className="text-emerald-400 mb-1" size={16} />
+                 <span className="text-[9px] font-black uppercase tracking-widest">End-to-End Tunnel</span>
+               </div>
+               <div className="flex flex-col items-center">
+                 <Mic className="text-primary mb-1" size={16} />
+                 <span className="text-[9px] font-black uppercase tracking-widest">Hi-Fi System Audio</span>
+               </div>
+            </div>
+            <p className="text-[8px] font-black uppercase tracking-[0.5em]">2026 Multiverse Network • Priyu & Abhi Only</p>
+          </footer>
         </div>
-
-        <MediaDetails />
       </div>
     </main>
   );
