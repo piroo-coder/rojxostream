@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
@@ -15,6 +14,7 @@ interface MediaContextType {
   setUserName: (name: string | null) => void;
   syncData: SyncData | null;
   isOtherOnline: boolean;
+  isOtherTyping: boolean;
   otherUser: string | null;
   isInitializing: boolean;
 }
@@ -178,15 +178,16 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [syncData, setSyncData] = useState<SyncData | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
+  // LOGOUT ON REFRESH: Use sessionStorage only
   useEffect(() => {
-    const stored = localStorage.getItem('rojxo_user');
+    const stored = sessionStorage.getItem('rojxo_user');
     if (stored) setUserNameState(stored);
     setIsInitializing(false);
   }, []);
 
   const setUserName = (name: string | null) => {
-    if (name) localStorage.setItem('rojxo_user', name);
-    else localStorage.removeItem('rojxo_user');
+    if (name) sessionStorage.setItem('rojxo_user', name);
+    else sessionStorage.removeItem('rojxo_user');
     setUserNameState(name);
   };
 
@@ -195,10 +196,11 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const data = await getSyncState(userName);
     if (data) {
       setSyncData(data);
+      // Sharing logic: If follower, teleport to the item
       if (data.sharing.status === 'active' && data.sharing.leader !== userName) {
-        const item = library.find(i => i.id === data.sharing.mediaId);
-        if (item && currentlyPlaying?.id !== item.id) {
-          setCurrentlyPlaying(item);
+        if (data.sharing.mediaId && currentlyPlaying?.id !== data.sharing.mediaId) {
+          const item = library.find(i => i.id === data.sharing.mediaId);
+          if (item) setCurrentlyPlaying(item);
         }
       }
     }
@@ -206,13 +208,15 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     if (userName) {
-      const interval = setInterval(fetchSync, 5000);
+      // HIGH FREQUENCY POLLING (800ms) for "Instant" feel
+      const interval = setInterval(fetchSync, 800);
       return () => clearInterval(interval);
     }
   }, [fetchSync, userName]);
 
   const otherUser = userName === 'Abhi' ? 'Priyu' : 'Abhi';
   const isOtherOnline = !!syncData?.presence[otherUser];
+  const isOtherTyping = !!syncData?.typing[otherUser];
 
   return (
     <MediaContext.Provider value={{ 
@@ -225,6 +229,7 @@ export const MediaProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setUserName,
       syncData,
       isOtherOnline,
+      isOtherTyping,
       otherUser,
       isInitializing
     }}>

@@ -7,29 +7,39 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { sendSyncMessage } from '@/app/actions/sync-actions';
+import { sendSyncMessage, setTypingStatus } from '@/app/actions/sync-actions';
 import { cn } from '@/lib/utils';
 
 export const FloatingChat = () => {
-  const { userName, syncData, isOtherOnline, otherUser } = useMedia();
+  const { userName, syncData, isOtherOnline, isOtherTyping, otherUser } = useMedia();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [message, setMessage] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
+  const typingTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
     }
-  }, [syncData?.messages]);
+  }, [syncData?.messages, isOtherTyping]);
 
   if (!userName) return null;
+
+  const handleTyping = () => {
+    if (typingTimer.current) clearTimeout(typingTimer.current);
+    setTypingStatus(userName, true);
+    typingTimer.current = setTimeout(() => {
+      setTypingStatus(userName, false);
+    }, 2000);
+  };
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
     const text = message;
     setMessage('');
+    if (typingTimer.current) clearTimeout(typingTimer.current);
     await sendSyncMessage(userName, text);
   };
 
@@ -37,7 +47,7 @@ export const FloatingChat = () => {
     <div className="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-4 pointer-events-none">
       
       {isOpen && !isMinimized && (
-        <Card className="w-[320px] sm:w-[380px] h-[500px] bg-background/60 backdrop-blur-3xl border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.5)] rounded-[2.5rem] overflow-hidden border flex flex-col pointer-events-auto animate-in slide-in-from-bottom-4 duration-500">
+        <Card className="w-[320px] sm:w-[380px] h-[550px] bg-background/60 backdrop-blur-3xl border-white/10 shadow-[0_32px_128px_rgba(0,0,0,0.5)] rounded-[2.5rem] overflow-hidden border flex flex-col pointer-events-auto animate-in slide-in-from-bottom-4 duration-500">
           <CardHeader className="p-6 border-b border-white/5 bg-white/5 flex flex-row items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="relative">
@@ -78,6 +88,15 @@ export const FloatingChat = () => {
                   <span className="text-[8px] text-white/20 mt-1 uppercase font-black tracking-widest">{msg.sender === userName ? "You" : msg.sender} • {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
               ))}
+              
+              {isOtherTyping && (
+                <div className="flex items-center gap-2 animate-in fade-in duration-300">
+                   <div className="bg-white/5 px-4 py-2 rounded-full border border-white/5">
+                      <span className="text-[10px] text-accent font-black uppercase tracking-widest italic">{otherUser} is whispering...</span>
+                   </div>
+                </div>
+              )}
+
               {(!syncData?.messages || syncData.messages.length === 0) && (
                 <div className="h-40 flex flex-col items-center justify-center text-center opacity-20 italic space-y-3">
                   <Heart size={32} className="text-primary" />
@@ -91,7 +110,10 @@ export const FloatingChat = () => {
             <Input 
               placeholder="Whisper to the multiverse..."
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                handleTyping();
+              }}
               className="h-12 bg-white/5 border-white/10 rounded-2xl text-xs placeholder:text-white/20 focus:bg-white/10 transition-all"
             />
             <Button type="submit" size="icon" className="h-12 w-12 rounded-2xl bg-primary hover:bg-primary/90 flex-shrink-0">

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, User, LogOut, Stars, Smile, Share2, AlertCircle } from 'lucide-react';
+import { Play, Home, Layers, Search, Heart, Menu, Sparkles, X, ChevronRight, User, LogOut, Stars, Smile, Share2, AlertCircle, CircleDot } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
@@ -111,6 +111,17 @@ export const Navbar: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2 md:gap-4 flex-1 justify-end">
+          {/* Active Partner Status */}
+          <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-full border border-white/5 mr-2">
+             <div className="relative flex h-2 w-2">
+                <div className={cn("absolute inline-flex h-full w-full rounded-full opacity-75", isOtherOnline ? "animate-ping bg-emerald-400" : "bg-white/20")}></div>
+                <div className={cn("relative inline-flex h-2 w-2 rounded-full", isOtherOnline ? "bg-emerald-500 shadow-[0_0_10px_#10b981]" : "bg-white/20")}></div>
+             </div>
+             <span className={cn("text-[9px] font-black uppercase tracking-widest", isOtherOnline ? "text-white" : "text-white/20")}>
+               {otherUser} {isOtherOnline ? "Online" : "Away"}
+             </span>
+          </div>
+
           {/* Share Status */}
           {syncData?.sharing.status === 'active' && syncData.sharing.leader === userName && (
             <Button onClick={handleStopSharing} variant="destructive" size="sm" className="hidden sm:flex rounded-full px-4 h-9 text-[9px] font-black tracking-widest uppercase">
@@ -155,7 +166,6 @@ export const Navbar: React.FC = () => {
             <div className="flex items-center gap-3 pl-3 border-l border-white/10">
               <div className="flex flex-col items-end">
                 <div className="flex items-center gap-2">
-                  {isOtherOnline && <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />}
                   <span className="text-[10px] font-black uppercase tracking-widest text-white">{userName}</span>
                 </div>
                 <button onClick={() => setUserName(null)} className="text-[8px] uppercase font-black text-white/20 hover:text-destructive flex items-center gap-1">
