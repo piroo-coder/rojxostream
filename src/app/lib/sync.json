@@ -1,0 +1,9 @@
+{
+  "presence": {},
+  "messages": [],
+  "sharing": {
+    "leader": null,
+    "mediaId": null,
+    "status": "idle"
+  }
+}
