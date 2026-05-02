@@ -255,14 +255,15 @@ export const Navbar: React.FC = () => {
               </Button>
             </PopoverTrigger>
             <PopoverContent 
-              className="w-[calc(100vw-2rem)] sm:w-[400px] bg-background/60 backdrop-blur-3xl border-white/10 rounded-[2.5rem] p-0 shadow-[0_32px_128px_rgba(0,0,0,0.5)] z-[100] overflow-hidden border animate-in zoom-in-95 duration-200"
+              className="w-[92vw] sm:w-[450px] bg-background/80 backdrop-blur-3xl border-white/10 rounded-[2.5rem] p-0 shadow-[0_32px_128px_rgba(0,0,0,0.5)] z-[100] overflow-hidden border animate-in zoom-in-95 duration-300"
               sideOffset={12}
+              align="end"
             >
               <div className="p-6 md:p-8 bg-gradient-to-br from-primary/20 via-transparent to-accent/20 border-b border-white/5">
                 <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-2 drop-shadow-sm">Mood Selector</h4>
                 <p className="text-lg md:text-xl font-headline font-bold text-white tracking-tight leading-none">How are you feeling?</p>
               </div>
-              <ScrollArea className="h-[400px] max-h-[60vh]">
+              <ScrollArea className="h-[400px] max-h-[70vh]">
                 <div className="p-4 md:p-6 space-y-6 md:space-y-8">
                   {moods.map((mood) => (
                     <div key={mood.name} className="space-y-4">
